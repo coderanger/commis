@@ -3,7 +3,7 @@ import urllib2
 
 from django.test import TestCase
 import chef
-from chef.rsa import SSLError
+from chef.rsa import Key, SSLError
 
 from commis.api.models import Client
 
@@ -24,7 +24,8 @@ class TestChefAPI(chef.ChefAPI):
             args['data'] = request.get_data()
         if request.has_header('Content-Type'):
             args['content_type'] = request.get_header('Content-Type')
-        args.update(request.header_items())
+        for key, value in request.header_items():
+            args['HTTP_'+key.upper().replace('-', '_')] = value
         resp = getattr(self.testclient, request.get_method().lower())(**args)
         if resp.status_code != 200:
             raise urllib2.HTTPError(request.get_full_url(), resp.status_code, '', resp, StringIO.StringIO(resp.content))
@@ -53,9 +54,14 @@ class ChefTestCase(TestCase):
 
     def _post_teardown(self):
         self.api.__exit__(None, None, None)
+        super(ChefTestCase, self)._post_teardown()
 
 
 class ClientAPITestCase(ChefTestCase):
     def test_list(self):
         clients = chef.Client.list()
         self.assertTrue('unittest' in clients)
+
+    def test_list_fail(self):
+        api = TestChefAPI(self.client, Key.generate(2048), self._client.name)
+        self.assertRaises(chef.ChefError, chef.Client.list, api=api)
