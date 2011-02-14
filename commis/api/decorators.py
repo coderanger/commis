@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from chef.auth import sha1_base64, canonical_request
 from chef.rsa import SSLError
 
+from commis.api import conf
 from commis.api.exceptions import ChefAPIError
 from commis.api.models import Client
 
@@ -41,9 +42,8 @@ def decode_signature(request):
 
 
 def verify_timestamp(request, timestamp):
-    allowed_skew = getattr(settings, 'COMMIS_TIME_SKEW', 15*60)
     delta = datetime.datetime.utcnow() - timestamp
-    if abs(delta.total_seconds()) > allowed_skew:
+    if abs(delta.total_seconds()) > conf.COMMIS_TIME_SKEW:
         raise ChefAPIError(401, 'Failed to authenticate. Please synchronize the clock on your client')
 
 
