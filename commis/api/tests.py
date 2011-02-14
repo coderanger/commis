@@ -1,8 +1,11 @@
+import datetime
 import StringIO
 import urllib2
+import urlparse
 
 from django.test import TestCase
 import chef
+from chef.auth import sign_request
 from chef.rsa import Key, SSLError
 
 from commis.api.models import Client
@@ -18,17 +21,17 @@ class TestChefAPI(chef.ChefAPI):
         super(TestChefAPI, self).__init__(*args, **kwargs)
         self.testclient = testclient
 
-    def _request(self, request):
-        args = {'path': request.get_full_url()[len(self.fake_url):]}
-        if request.has_data():
-            args['data'] = request.get_data()
-        if request.has_header('Content-Type'):
-            args['content_type'] = request.get_header('Content-Type')
-        for key, value in request.header_items():
+    def _request(self, method, url, data, headers):
+        args = {'path': urlparse.urlparse(url).path}
+        if data:
+            args['data'] = data
+        if 'Content-Type' in headers:
+            args['content_type'] = headers['Content-Type']
+        for key, value in headers.iteritems():
             args['HTTP_'+key.upper().replace('-', '_')] = value
-        resp = getattr(self.testclient, request.get_method().lower())(**args)
+        resp = getattr(self.testclient, method.lower())(**args)
         if resp.status_code != 200:
-            raise urllib2.HTTPError(request.get_full_url(), resp.status_code, '', resp, StringIO.StringIO(resp.content))
+            raise urllib2.HTTPError(url, resp.status_code, '', resp, StringIO.StringIO(resp.content))
         return resp.content
 
 
@@ -55,6 +58,46 @@ class ChefTestCase(TestCase):
     def _post_teardown(self):
         self.api.__exit__(None, None, None)
         super(ChefTestCase, self)._post_teardown()
+
+
+class APITestCase(ChefTestCase):
+    def test_good(self):
+        path = '/clients'
+        auth_headers = sign_request(key=self.api.key, http_method='GET',
+            path=self.api.parsed_url.path+path.split('?', 1)[0], body=None,
+            host=self.api.parsed_url.netloc, timestamp=datetime.datetime.utcnow(),
+            user_id=self.api.client)
+        headers = {}
+        for key, value in auth_headers.iteritems():
+            headers['HTTP_'+key.upper().replace('-', '_')] = value
+        response = self.client.get(path, **headers)
+        self.assertEqual(response.status_code, 200)
+
+    def test_bad_timestamp(self):
+        path = '/clients'
+        auth_headers = sign_request(key=self.api.key, http_method='GET',
+            path=self.api.parsed_url.path+path.split('?', 1)[0], body=None,
+            host=self.api.parsed_url.netloc, timestamp=datetime.datetime(2000, 1, 1),
+            user_id=self.api.client)
+        headers = {}
+        for key, value in auth_headers.iteritems():
+            headers['HTTP_'+key.upper().replace('-', '_')] = value
+        response = self.client.get(path, **headers)
+        self.assertContains(response, 'clock', status_code=401)
+
+    def test_no_sig(self):
+        path = '/clients'
+        auth_headers = sign_request(key=self.api.key, http_method='GET',
+            path=self.api.parsed_url.path+path.split('?', 1)[0], body=None,
+            host=self.api.parsed_url.netloc, timestamp=datetime.datetime.utcnow(),
+            user_id=self.api.client)
+        headers = {}
+        for key, value in auth_headers.iteritems():
+            if key.lower().startswith('x-ops-authorization'):
+                continue
+            headers['HTTP_'+key.upper().replace('-', '_')] = value
+        response = self.client.get(path, **headers)
+        self.assertEqual(response.status_code, 401)
 
 
 class ClientAPITestCase(ChefTestCase):
