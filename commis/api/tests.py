@@ -67,34 +67,56 @@ class APITestCase(ChefTestCase):
             host=self.api.parsed_url.netloc, timestamp=datetime.datetime.utcnow(),
             user_id=self.api.client)
         d.update(kwargs)
-        return sign_request(**d)
-
-    def test_good(self):
-        path = '/clients'
-        auth_headers = self.sign_request(path)
+        auth_headers = sign_request(**d)
         headers = {}
         for key, value in auth_headers.iteritems():
             headers['HTTP_'+key.upper().replace('-', '_')] = value
+        return headers
+
+    def test_good(self):
+        path = '/clients'
+        headers = self.sign_request(path)
         response = self.client.get(path, **headers)
         self.assertEqual(response.status_code, 200)
 
     def test_bad_timestamp(self):
         path = '/clients'
-        auth_headers = self.sign_request(path, timestamp=datetime.datetime(2000, 1, 1))
-        headers = {}
-        for key, value in auth_headers.iteritems():
-            headers['HTTP_'+key.upper().replace('-', '_')] = value
+        headers = self.sign_request(path, timestamp=datetime.datetime(2000, 1, 1))
         response = self.client.get(path, **headers)
         self.assertContains(response, 'clock', status_code=401)
 
+    def test_no_timestamp(self):
+        path = '/clients'
+        headers = self.sign_request(path)
+        del headers['HTTP_X_OPS_TIMESTAMP']
+        response = self.client.get(path, **headers)
+        self.assertEqual(response.status_code, 401)
+
     def test_no_sig(self):
         path = '/clients'
-        auth_headers = self.sign_request(path)
-        headers = {}
-        for key, value in auth_headers.iteritems():
-            if key.lower().startswith('x-ops-authorization'):
-                continue
-            headers['HTTP_'+key.upper().replace('-', '_')] = value
+        headers = self.sign_request(path)
+        for key in headers.keys():
+            if key.startswith('HTTP_X_OPS_AUTHORIZATION'):
+                del headers[key]
+        response = self.client.get(path, **headers)
+        self.assertEqual(response.status_code, 401)
+
+    def test_no_sig(self):
+        path = '/clients'
+        headers = self.sign_request(path, key=Key.generate(2048))
+        response = self.client.get(path, **headers)
+        self.assertEqual(response.status_code, 401)
+
+    def test_bad_method(self):
+        path = '/clients'
+        headers = self.sign_request(path, http_method='POST')
+        response = self.client.get(path, **headers)
+        self.assertEqual(response.status_code, 401)
+
+    def test_no_userid(self):
+        path = '/clients'
+        headers = self.sign_request(path)
+        del headers['HTTP_X_OPS_USERID']
         response = self.client.get(path, **headers)
         self.assertEqual(response.status_code, 401)
 
