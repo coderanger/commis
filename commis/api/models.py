@@ -1,5 +1,5 @@
-from django.db import models
 from chef.rsa import Key
+from django.db import models
 
 from commis.db import update
 
