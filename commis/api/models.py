@@ -1,3 +1,4 @@
+import chef
 from chef.rsa import Key
 from django.db import models
 
@@ -30,3 +31,9 @@ class Client(models.Model):
         update(self, key_pem=key.public_export())
         self._key_cache = key
         return key
+
+    def to_dict(self):
+        client = chef.Client(self.name, skip_load=True)
+        client.admin = self.admin
+        client.public_key = self.key_pem
+        return client.to_dict()
