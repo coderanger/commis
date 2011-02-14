@@ -66,7 +66,7 @@ def verify_body_hash(request, hashed_body):
         raise ChefAPIError(401, 'Failed to authenticate. Ensure that your client key is valid')
 
 
-def chef_api(admin=False, admin_or_validator=False, admin_or_node=False):
+def chef_api(admin=False):
     def dec(fn):
         @functools.wraps(fn)
         def wrapper(request, *args, **kwargs):
