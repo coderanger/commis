@@ -61,12 +61,17 @@ class ChefTestCase(TestCase):
 
 
 class APITestCase(ChefTestCase):
-    def test_good(self):
-        path = '/clients'
-        auth_headers = sign_request(key=self.api.key, http_method='GET',
+    def sign_request(self, path, **kwargs):
+        d = dict(key=self.api.key, http_method='GET',
             path=self.api.parsed_url.path+path.split('?', 1)[0], body=None,
             host=self.api.parsed_url.netloc, timestamp=datetime.datetime.utcnow(),
             user_id=self.api.client)
+        d.update(kwargs)
+        return sign_request(**d)
+
+    def test_good(self):
+        path = '/clients'
+        auth_headers = self.sign_request(path)
         headers = {}
         for key, value in auth_headers.iteritems():
             headers['HTTP_'+key.upper().replace('-', '_')] = value
@@ -75,10 +80,7 @@ class APITestCase(ChefTestCase):
 
     def test_bad_timestamp(self):
         path = '/clients'
-        auth_headers = sign_request(key=self.api.key, http_method='GET',
-            path=self.api.parsed_url.path+path.split('?', 1)[0], body=None,
-            host=self.api.parsed_url.netloc, timestamp=datetime.datetime(2000, 1, 1),
-            user_id=self.api.client)
+        auth_headers = self.sign_request(path, timestamp=datetime.datetime(2000, 1, 1))
         headers = {}
         for key, value in auth_headers.iteritems():
             headers['HTTP_'+key.upper().replace('-', '_')] = value
@@ -87,10 +89,7 @@ class APITestCase(ChefTestCase):
 
     def test_no_sig(self):
         path = '/clients'
-        auth_headers = sign_request(key=self.api.key, http_method='GET',
-            path=self.api.parsed_url.path+path.split('?', 1)[0], body=None,
-            host=self.api.parsed_url.netloc, timestamp=datetime.datetime.utcnow(),
-            user_id=self.api.client)
+        auth_headers = self.sign_request(path)
         headers = {}
         for key, value in auth_headers.iteritems():
             if key.lower().startswith('x-ops-authorization'):
