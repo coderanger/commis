@@ -129,3 +129,8 @@ class ClientAPITestCase(ChefTestCase):
     def test_list_fail(self):
         api = TestChefAPI(self.client, Key.generate(2048), self._client.name)
         self.assertRaises(chef.ChefError, chef.Client.list, api=api)
+
+    def test_get(self):
+        client = chef.Client('unittest')
+        self.assertTrue(client.admin)
+        self.assertEqual(client.public_key, self.api.key.public_export())
