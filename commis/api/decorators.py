@@ -28,7 +28,10 @@ def decode_client(request):
     user_id = request.META.get('HTTP_X_OPS_USERID')
     if not user_id:
         raise ChefAPIError(401, 'Failed to authenticate. Ensure that your client key is valid')
-    return Client.objects.get(name=user_id.strip())
+    qs = Client.objects.filter(name=user_id.strip())
+    if not qs.exists:
+        raise ChefAPIError(401, 'Failed to authenticate. Ensure that your client key is valid')
+    return qs[0]
 
 
 def decode_signature(request):
