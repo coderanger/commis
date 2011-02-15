@@ -2,6 +2,7 @@ import base64
 import datetime
 import functools
 import itertools
+import traceback
 
 from chef.auth import sha1_base64, canonical_request
 from chef.rsa import SSLError
@@ -69,6 +70,20 @@ def verify_body_hash(request, hashed_body):
         raise ChefAPIError(401, 'Failed to authenticate. Ensure that your client key is valid')
 
 
+def decode_json(request):
+    request.json = None
+    if request.META['CONTENT_TYPE'] == 'application/json' and request.raw_post_data:
+        try:
+            request.json = json.loads(request.raw_post_data)
+        except ValueError:
+            pass
+
+
+def create_error(msg, code):
+    #msg += '\n' + traceback.format_exc()
+    return HttpResponse(json.dumps({'error': msg}), status=code, content_type='application/json')
+
+
 def chef_api(admin=False):
     def dec(fn):
         @functools.wraps(fn)
@@ -82,11 +97,12 @@ def chef_api(admin=False):
                 verify_body_hash(request, hashed_body)
                 if admin and not client.admin:
                     raise ChefAPIError(403, 'You are not allowed to take this action')
+                decode_json(request)
                 data = fn(request, *args, **kwargs)
                 return HttpResponse(json.dumps(data), content_type='application/json')
             except ChefAPIError, e:
-                return HttpResponse(json.dumps({'error': e.msg}), status=e.code, content_type='application/json')
+                return create_error(e.msg, e.code)
             except Exception, e:
-                return HttpResponse(json.dumps({'error': str(e)}), status=500, content_type='application/json')
+                return create_error(str(e), 500)
         return wrapper
     return dec
