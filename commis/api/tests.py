@@ -11,7 +11,7 @@ from chef.rsa import Key, SSLError
 from commis.api.models import Client
 
 class TestChefAPI(chef.ChefAPI):
-    fake_url = 'http://localhost'
+    fake_url = 'http://localhost/api'
 
     def __init__(self, testclient, *args, **kwargs):
         if 'url' in kwargs:
@@ -25,10 +25,10 @@ class TestChefAPI(chef.ChefAPI):
         args = {'path': urlparse.urlparse(url).path}
         if data:
             args['data'] = data
-        if 'Content-Type' in headers:
-            args['content_type'] = headers['Content-Type']
         for key, value in headers.iteritems():
             args['HTTP_'+key.upper().replace('-', '_')] = value
+        if 'HTTP_CONTENT_TYPE' in args:
+            args['content_type'] = args['HTTP_CONTENT_TYPE']
         resp = getattr(self.testclient, method.lower())(**args)
         if resp.status_code != 200:
             raise urllib2.HTTPError(url, resp.status_code, '', resp, StringIO.StringIO(resp.content))
@@ -76,20 +76,20 @@ class APITestCase(ChefTestCase):
     def test_good(self):
         path = '/clients'
         headers = self.sign_request(path)
-        response = self.client.get(path, **headers)
+        response = self.client.get('/api'+path, **headers)
         self.assertEqual(response.status_code, 200)
 
     def test_bad_timestamp(self):
         path = '/clients'
         headers = self.sign_request(path, timestamp=datetime.datetime(2000, 1, 1))
-        response = self.client.get(path, **headers)
+        response = self.client.get('/api'+path, **headers)
         self.assertContains(response, 'clock', status_code=401)
 
     def test_no_timestamp(self):
         path = '/clients'
         headers = self.sign_request(path)
         del headers['HTTP_X_OPS_TIMESTAMP']
-        response = self.client.get(path, **headers)
+        response = self.client.get('/api'+path, **headers)
         self.assertEqual(response.status_code, 401)
 
     def test_no_sig(self):
@@ -98,26 +98,26 @@ class APITestCase(ChefTestCase):
         for key in headers.keys():
             if key.startswith('HTTP_X_OPS_AUTHORIZATION'):
                 del headers[key]
-        response = self.client.get(path, **headers)
+        response = self.client.get('/api'+path, **headers)
         self.assertEqual(response.status_code, 401)
 
     def test_no_sig(self):
         path = '/clients'
         headers = self.sign_request(path, key=Key.generate(2048))
-        response = self.client.get(path, **headers)
+        response = self.client.get('/api'+path, **headers)
         self.assertEqual(response.status_code, 401)
 
     def test_bad_method(self):
         path = '/clients'
         headers = self.sign_request(path, http_method='POST')
-        response = self.client.get(path, **headers)
+        response = self.client.get('/api'+path, **headers)
         self.assertEqual(response.status_code, 401)
 
     def test_no_userid(self):
         path = '/clients'
         headers = self.sign_request(path)
         del headers['HTTP_X_OPS_USERID']
-        response = self.client.get(path, **headers)
+        response = self.client.get('/api'+path, **headers)
         self.assertEqual(response.status_code, 401)
 
 

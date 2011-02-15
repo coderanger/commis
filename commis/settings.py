@@ -97,4 +97,5 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'commis.api',
+    'commis.api.sandbox',
 )
