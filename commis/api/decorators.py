@@ -98,6 +98,7 @@ def chef_api(admin=False):
                 if admin and not client.admin:
                     raise ChefAPIError(403, 'You are not allowed to take this action')
                 decode_json(request)
+                request.client = client
                 data = fn(request, *args, **kwargs)
                 return HttpResponse(json.dumps(data), content_type='application/json')
             except ChefAPIError, e:
