@@ -1,5 +1,7 @@
 import datetime
+import shutil
 import StringIO
+import tempfile
 import urllib2
 import urlparse
 
@@ -8,6 +10,7 @@ import chef
 from chef.auth import sign_request
 from chef.rsa import Key, SSLError
 
+from commis.api import conf
 from commis.api.models import Client
 
 class TestChefAPI(chef.ChefAPI):
@@ -49,15 +52,21 @@ class ClientTestCase(TestCase):
 
 
 class ChefTestCase(TestCase):
-    def _pre_setup(self):
-        super(ChefTestCase, self)._pre_setup()
+    def setUp(self):
+        super(ChefTestCase, self).setUp()
+        self.old_file_root = conf.COMMIS_FILE_ROOT
+        conf.COMMIS_FILE_ROOT = tempfile.mkdtemp()
+
         self._client = Client.objects.create(name='unittest', admin=True)
         self.api = TestChefAPI(self.client, self._client.key, self._client.name)
         self.api.__enter__()
 
-    def _post_teardown(self):
+    def tearDown(self):
         self.api.__exit__(None, None, None)
-        super(ChefTestCase, self)._post_teardown()
+
+        shutil.rmtree(conf.COMMIS_FILE_ROOT)
+        conf.COMMIS_FILE_ROOT = self.old_file_root
+        super(ChefTestCase, self).tearDown()
 
 
 class APITestCase(ChefTestCase):
