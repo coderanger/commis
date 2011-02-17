@@ -77,6 +77,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
+    'commis.api.CrazyMiddleware',
 )
 
 ROOT_URLCONF = 'commis.urls'
