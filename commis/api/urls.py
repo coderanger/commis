@@ -4,6 +4,8 @@ from commis.api.views import client
 from commis.api.sandbox.views import sandbox
 
 urlpatterns = patterns('',
-    url('^clients(?:/(?P<name>.*))?', client, name='client'),
-    url('^sandboxes(?:/(?P<sandbox_id>[^/]*(?:/(?P<checksum>.*))?))?', sandbox, name='sandbox'),
+    url(r'^clients(?:/(?P<name>.*))?', client, name='client'),
+    url(r'^sandboxes/(?P<sandbox_id>[^/]*)/(?P<checksum>[^/]*)', sandbox),
+    url(r'^sandboxes/(?P<sandbox_id>[^/]*)', sandbox),
+    url(r'^sandboxes', sandbox),
 )
