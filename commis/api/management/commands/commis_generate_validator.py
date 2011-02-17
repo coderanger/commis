@@ -43,7 +43,7 @@ class Command(NoArgsCommand):
         name = conf.COMMIS_VALIDATOR_NAME
 
         qs = Client.objects.filter(name=name)
-        if qs.exists:
+        if qs.exists():
             if self.ask('A client named %s already exists. Would you like to create a new key?'%name, options):
                 qs.delete()
             else:
