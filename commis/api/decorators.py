@@ -80,8 +80,7 @@ def decode_json(request):
 
 
 def create_error(msg, code):
-    #msg += '\n' + traceback.format_exc()
-    return HttpResponse(json.dumps({'error': msg}), status=code, content_type='application/json')
+    return HttpResponse(json.dumps({'error': msg, 'traceback': traceback.format_exc()}), status=code, content_type='application/json')
 
 
 def chef_api(admin=False):
