@@ -100,7 +100,9 @@ def chef_api(admin=False):
                 decode_json(request)
                 request.client = client
                 data = fn(request, *args, **kwargs)
-                return HttpResponse(json.dumps(data), content_type='application/json')
+                if not isinstance(data, HttpResponse):
+                    data = HttpResponse(json.dumps(data), content_type='application/json')
+                return data
             except ChefAPIError, e:
                 return create_error(e.msg, e.code)
             except Exception, e:
