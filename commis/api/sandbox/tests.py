@@ -2,6 +2,7 @@ import os
 
 from commis.api import conf
 from commis.api.tests import ChefTestCase
+from commis.api.sandbox.models import SandboxFile
 
 class SandboxAPITestCase(ChefTestCase):
     def test_create(self):
@@ -38,6 +39,10 @@ class SandboxAPITestCase(ChefTestCase):
         self.api.request('PUT', '/sandboxes/%s/9fb548d26b69c60aae1cbdfe25348377'%resp['sandbox_id'], headers={'Content-Type': 'text/plain'}, data='abc\nde')
         self.assertEqual(open(os.path.join(conf.COMMIS_FILE_ROOT, 'pending', resp['sandbox_id'], '9', 'f', '9fb548d26b69c60aae1cbdfe25348377')).read(), 'abc\nde')
 
+        self.assertFalse(SandboxFile.objects.get(checksum='ab56b4d92b40713acc5af89985d4b786').uploaded)
+        self.assertFalse(SandboxFile.objects.get(checksum='0fbd31a7d4febcc8ea2f84414ab95684').uploaded)
+        self.assertFalse(SandboxFile.objects.get(checksum='9fb548d26b69c60aae1cbdfe25348377').uploaded)
+
     def test_commit(self):
         checksums = [
             'ab56b4d92b40713acc5af89985d4b786', # 'abcde'
@@ -54,3 +59,7 @@ class SandboxAPITestCase(ChefTestCase):
         self.assertEqual(open(os.path.join(conf.COMMIS_FILE_ROOT, 'a', 'b', 'ab56b4d92b40713acc5af89985d4b786')).read(), 'abcde')
         self.assertEqual(open(os.path.join(conf.COMMIS_FILE_ROOT, '0', 'f', '0fbd31a7d4febcc8ea2f84414ab95684')).read(), 'abc\0de')
         self.assertEqual(open(os.path.join(conf.COMMIS_FILE_ROOT, '9', 'f', '9fb548d26b69c60aae1cbdfe25348377')).read(), 'abc\nde')
+
+        self.assertTrue(SandboxFile.objects.get(checksum='ab56b4d92b40713acc5af89985d4b786').uploaded)
+        self.assertTrue(SandboxFile.objects.get(checksum='0fbd31a7d4febcc8ea2f84414ab95684').uploaded)
+        self.assertTrue(SandboxFile.objects.get(checksum='9fb548d26b69c60aae1cbdfe25348377').uploaded)
