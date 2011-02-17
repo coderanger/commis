@@ -16,22 +16,23 @@ class Sandbox(models.Model):
         completed = []
         for sandbox_file in self.files.all():
             try:
-                sandbox_file.commit()
+                sandbox_file.commit(self)
             except Exception, e:
                 # Undo and bail
                 self.uncommit(completed)
                 raise
+        self.delete()
 
     def uncommit(self, completed):
         for sandbox_file in completed:
             try:
-                sandbox_file.uncommit()
+                sandbox_file.uncommit(self)
             except Exception, e:
                 pass
 
 
 class SandboxFile(models.Model):
-    sandbox = models.ForeignKey(Sandbox, related_name='files')
+    sandboxes = models.ManyToManyField(Sandbox, related_name='files')
     checksum = models.CharField(max_length=1024, unique=True)
     uploaded = models.BooleanField()
     content_type = models.CharField(max_length=32)
@@ -39,27 +40,19 @@ class SandboxFile(models.Model):
 
     @property
     def path(self):
-        if self.uploaded:
-            return self.commit_path
-        else:
-            return self.pending_path
-
-    @property
-    def commit_path(self):
         return os.path.join(conf.COMMIS_FILE_ROOT, self.checksum[0], self.checksum[1], self.checksum)
 
-    @property
-    def pending_path(self):
-        return os.path.join(conf.COMMIS_FILE_ROOT, 'pending', self.sandbox.uuid, self.checksum[0], self.checksum[1], self.checksum)
+    def pending_path(self, sandbox):
+        return os.path.join(conf.COMMIS_FILE_ROOT, 'pending', sandbox.uuid, self.checksum[0], self.checksum[1], self.checksum)
 
-    def write(self, data):
-        path = self.pending_path
+    def write(self, sandbox, data):
+        path = self.pending_path(sandbox)
         if not os.path.exists(os.path.dirname(path)):
             os.makedirs(os.path.dirname(path))
         open(path, 'wb').write(data)
 
-    def commit(self):
-        path = self.commit_path
+    def commit(self, sandbox):
+        path = self.path
         if not os.path.exists(os.path.dirname(path)):
             os.makedirs(os.path.dirname(path))
         if os.path.exists(path):
@@ -68,10 +61,11 @@ class SandboxFile(models.Model):
         if not rows:
             raise SandboxConflict
         self.uploaded = True
-        os.rename(self.pending_path, path)
+        self.sandboxes.remove(sandbox)
+        os.rename(self.pending_path(sandbox), path)
 
-    def uncommit(self):
-        path = self.pending_path
+    def uncommit(self, sandbox):
+        path = self.pending_path(sandbox)
         if not os.path.exists(os.path.dirname(path)):
             os.makedirs(os.path.dirname(path))
         if os.path.exists(path):
@@ -80,4 +74,8 @@ class SandboxFile(models.Model):
         if not rows:
             raise SandboxConflict
         self.uploaded = False
-        os.rename(self.commit_path, path)
+        self.sandboxes.add(sandbox)
+        try:
+            os.rename(self.path, path)
+        except Exception:
+            os.unlink(self.path)
