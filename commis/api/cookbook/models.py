@@ -5,6 +5,7 @@ from django.db import models
 from django_extensions.db.fields import UUIDField, CreationDateTimeField
 
 from commis.api import conf
+from commis.api.exceptions import ChefAPIError
 from commis.api.models import Client
 from commis.api.sandbox.models import SandboxFile
 from commis.db import update
@@ -27,7 +28,7 @@ class CookbookManager(models.Manager):
         for name, _unknown in dependencies.iteritems():
             cookbook.dependencies.get_or_create(name=name)
         recipes = data.get('metadata', {}).get('recipes', {})
-        for recipe in cookbool.recipes.all():
+        for recipe in cookbook.recipes.all():
             if recipe.name not in recipes:
                 recipe.delete()
         for name, description in recipes.iteritems():
@@ -39,17 +40,22 @@ class CookbookManager(models.Manager):
                 cookbook.recipes.create(name=name, description=description)
         for type, label in CookbookFile.TYPES:
             for file_info in data.get(type, []):
-                file, created = cookbook.files.get_or_create(type=type, file__checksum=file_info['checksum'])
-                if created:
+                try:
+                    cookbook_file = cookbook.files.get(type=type, file__checksum=file_info['checksum'])
+                except CookbookFile.DoesNotExist:
                     try:
-                        file.file = SandboxFile.objects.get(checksum=file_info['checksum'])
+                        file = SandboxFile.objects.get(checksum=file_info['checksum'])
                     except SandboxFile.DoesNotExist:
                         raise ChefAPIError(500, 'Checksum %s does not match any uploaded file', file_info['checksum'])
-                    if not file.file.uploaded:
+                    if not file.uploaded:
                         raise ChefAPIError(500, 'Checksum %s does not match any uploaded file', file_info['checksum'])
-                file.name = file_info['name']
-                file.path = file_info['path']
-                file.specificity = file_info['specificity']
+                    cookbook_file = cookbook.files.create(type=type, file=file)
+                cookbook_file.name = file_info['name']
+                cookbook_file.path = file_info['path']
+                cookbook_file.specificity = file_info['specificity']
+                cookbook_file.save()
+        cookbook.save()
+        return cookbook
 
 
 class Cookbook(models.Model):
@@ -60,10 +66,12 @@ class Cookbook(models.Model):
     description = models.CharField(max_length=1024, blank=True)
     long_description = models.TextField(blank=True)
     license = models.CharField(max_length=1024, blank=True)
-    
+
+    objects = CookbookManager()
+
     def to_dict(self, request=None):
         data = {}
-        data['name'] = self.name + '-' + self.verison
+        data['name'] = self.name + '-' + self.version
         data['cookbook_name'] = self.name
         data['version'] = self.version
         data['json_class'] = 'Chef::CookbookVersion'
@@ -76,7 +84,7 @@ class Cookbook(models.Model):
         metadata['description'] = self.description
         metadata['long_description'] = self.long_description
         metadata['license'] = self.license
-        dependencies = metatdata['dependencies'] = {}
+        dependencies = metadata['dependencies'] = {}
         for dep in self.dependencies.all():
             dependencies[dep.name] = []
         recipes = metadata['recipes'] = {}
@@ -122,7 +130,7 @@ class CookbookFile(models.Model):
             'specificity': self.specificity,
         }
         if request:
-            data['url'] = request.build_absolute_uri('/cookbooks/%s/%s/files/%s'%(self.cookbook.name, self.cookbook.version, self.file.checksum))
+            data['url'] = request.build_absolute_uri('/api/cookbooks/%s/%s/files/%s'%(self.cookbook.name, self.cookbook.version, self.file.checksum))
         return data
 
 

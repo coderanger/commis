@@ -100,4 +100,5 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'commis.api',
     'commis.api.sandbox',
+    'commis.api.cookbook',
 )
