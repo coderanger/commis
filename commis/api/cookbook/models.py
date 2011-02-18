@@ -99,8 +99,10 @@ class Cookbook(models.Model):
         metadata['groupings'] = {}
         metadata['replacing'] = {}
         metadata['providing'] = {}
+        for type, label in CookbookFile.TYPES:
+            data[type] = []
         for file in self.files.all():
-            data.setdefault(file.type, []).append(file.to_dict(request))
+            data[file.type].append(file.to_dict(request))
         return data
 
 
