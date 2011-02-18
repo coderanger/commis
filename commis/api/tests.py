@@ -33,7 +33,7 @@ class TestChefAPI(chef.ChefAPI):
         if 'HTTP_CONTENT_TYPE' in args:
             args['content_type'] = args['HTTP_CONTENT_TYPE']
         resp = getattr(self.testclient, method.lower())(**args)
-        if resp.status_code != 200:
+        if not (200 <= resp.status_code < 300):
             raise urllib2.HTTPError(url, resp.status_code, '', resp, StringIO.StringIO(resp.content))
         return resp.content
 
