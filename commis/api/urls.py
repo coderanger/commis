@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import url, patterns
+from django.conf.urls.defaults import url, patterns, include
 
 from commis.api.views import client
 from commis.api.sandbox.views import sandbox
@@ -13,4 +13,5 @@ urlpatterns = patterns('',
     url(r'^cookbooks/(?P<name>[^/]*)/(?P<version>[^/]*)', cookbook),
     url(r'^cookbooks/(?P<name>[^/]*)', cookbook),
     url(r'^cookbooks', cookbook),
+    url(r'^nodes', include('commis.api.node.urls')),
 )

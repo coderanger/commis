@@ -101,4 +101,5 @@ INSTALLED_APPS = (
     'commis.api',
     'commis.api.sandbox',
     'commis.api.cookbook',
+    'commis.api.node',
 )
