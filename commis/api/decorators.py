@@ -72,7 +72,7 @@ def verify_body_hash(request, hashed_body):
 
 def decode_json(request):
     request.json = None
-    if request.META['CONTENT_TYPE'] == 'application/json' and request.raw_post_data:
+    if request.META.get('CONTENT_TYPE') == 'application/json' and request.raw_post_data:
         try:
             request.json = json.loads(request.raw_post_data)
         except ValueError:
