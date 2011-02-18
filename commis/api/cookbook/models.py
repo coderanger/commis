@@ -111,6 +111,7 @@ class CookbookFile(models.Model):
         ('files', 'File'),
         ('libraries', 'Library'),
         ('templates', 'Template'),
+        ('providers', 'Provider'),
         ('resources', 'Resource'),
         ('recipes', 'Recipe'),
         ('root_files', 'Root File'),
