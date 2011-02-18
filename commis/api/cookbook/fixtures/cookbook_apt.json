@@ -1,0 +1,291 @@
+[
+  {
+    "pk": 1, 
+    "model": "cookbook.cookbook", 
+    "fields": {
+      "maintainer": "Opscode, Inc.", 
+      "description": "Configures apt and apt services and an LWRP for managing apt repositories", 
+      "license": "Apache 2.0", 
+      "maintainer_email": "cookbooks@opscode.com", 
+      "version": "1.0.0", 
+      "long_description": "Description\n===========\n\nConfigures various APT components on Debian-like systems.  Also includes a LWRP.\n\n", 
+      "name": "apt"
+    }
+  }, 
+  {
+    "pk": 1, 
+    "model": "cookbook.cookbookfile", 
+    "fields": {
+      "name": "apt-cacher", 
+      "file": 1, 
+      "specificity": "default", 
+      "path": "files/default/apt-cacher", 
+      "cookbook": 1, 
+      "type": "files"
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "cookbook.cookbookfile", 
+    "fields": {
+      "name": "apt-cacher.conf", 
+      "file": 4, 
+      "specificity": "default", 
+      "path": "files/default/apt-cacher.conf", 
+      "cookbook": 1, 
+      "type": "files"
+    }
+  }, 
+  {
+    "pk": 3, 
+    "model": "cookbook.cookbookfile", 
+    "fields": {
+      "name": "apt-proxy-v2.conf", 
+      "file": 10, 
+      "specificity": "default", 
+      "path": "files/default/apt-proxy-v2.conf", 
+      "cookbook": 1, 
+      "type": "files"
+    }
+  }, 
+  {
+    "pk": 4, 
+    "model": "cookbook.cookbookfile", 
+    "fields": {
+      "name": "repository.rb", 
+      "file": 3, 
+      "specificity": "default", 
+      "path": "resources/repository.rb", 
+      "cookbook": 1, 
+      "type": "resources"
+    }
+  }, 
+  {
+    "pk": 5, 
+    "model": "cookbook.cookbookfile", 
+    "fields": {
+      "name": "cacher.rb", 
+      "file": 8, 
+      "specificity": "default", 
+      "path": "recipes/cacher.rb", 
+      "cookbook": 1, 
+      "type": "recipes"
+    }
+  }, 
+  {
+    "pk": 6, 
+    "model": "cookbook.cookbookfile", 
+    "fields": {
+      "name": "default.rb", 
+      "file": 2, 
+      "specificity": "default", 
+      "path": "recipes/default.rb", 
+      "cookbook": 1, 
+      "type": "recipes"
+    }
+  }, 
+  {
+    "pk": 7, 
+    "model": "cookbook.cookbookfile", 
+    "fields": {
+      "name": "proxy.rb", 
+      "file": 6, 
+      "specificity": "default", 
+      "path": "recipes/proxy.rb", 
+      "cookbook": 1, 
+      "type": "recipes"
+    }
+  }, 
+  {
+    "pk": 8, 
+    "model": "cookbook.cookbookfile", 
+    "fields": {
+      "name": "metadata.json", 
+      "file": 5, 
+      "specificity": "default", 
+      "path": "metadata.json", 
+      "cookbook": 1, 
+      "type": "root_files"
+    }
+  }, 
+  {
+    "pk": 9, 
+    "model": "cookbook.cookbookfile", 
+    "fields": {
+      "name": "metadata.rb", 
+      "file": 7, 
+      "specificity": "default", 
+      "path": "metadata.rb", 
+      "cookbook": 1, 
+      "type": "root_files"
+    }
+  }, 
+  {
+    "pk": 10, 
+    "model": "cookbook.cookbookfile", 
+    "fields": {
+      "name": "README.md", 
+      "file": 11, 
+      "specificity": "default", 
+      "path": "README.md", 
+      "cookbook": 1, 
+      "type": "root_files"
+    }
+  }, 
+  {
+    "pk": 1, 
+    "model": "cookbook.cookbookrecipe", 
+    "fields": {
+      "cookbook": 1, 
+      "name": "apt::proxy", 
+      "description": "Set up an APT proxy"
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "cookbook.cookbookrecipe", 
+    "fields": {
+      "cookbook": 1, 
+      "name": "apt::cacher", 
+      "description": "Set up an APT cache"
+    }
+  }, 
+  {
+    "pk": 3, 
+    "model": "cookbook.cookbookrecipe", 
+    "fields": {
+      "cookbook": 1, 
+      "name": "apt", 
+      "description": "Runs apt-get update during compile phase and sets up preseed directories"
+    }
+  },
+  {
+    "pk": 1, 
+    "model": "cookbook.cookbookdependency", 
+    "fields": {
+      "cookbook": 1, 
+      "name": "ruby"
+    }
+  },
+  {
+    "pk": 1, 
+    "model": "sandbox.sandboxfile", 
+    "fields": {
+      "uploaded": true, 
+      "checksum": "046661f9e728b783ea90738769219d71", 
+      "sandboxes": [], 
+      "created_by": 1, 
+      "content_type": "application/x-binary"
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "sandbox.sandboxfile", 
+    "fields": {
+      "uploaded": true, 
+      "checksum": "112a8c22a020417dcc1c1fd06a4312ef", 
+      "sandboxes": [], 
+      "created_by": 1, 
+      "content_type": "application/x-binary"
+    }
+  }, 
+  {
+    "pk": 3, 
+    "model": "sandbox.sandboxfile", 
+    "fields": {
+      "uploaded": true, 
+      "checksum": "33653076212a8b7737838198bbea2d72", 
+      "sandboxes": [], 
+      "created_by": 1, 
+      "content_type": "application/x-binary"
+    }
+  }, 
+  {
+    "pk": 4, 
+    "model": "sandbox.sandboxfile", 
+    "fields": {
+      "uploaded": true, 
+      "checksum": "3e4afb4ca7cb38b707b803cbb2a316a7", 
+      "sandboxes": [], 
+      "created_by": 1, 
+      "content_type": "application/x-binary"
+    }
+  }, 
+  {
+    "pk": 5, 
+    "model": "sandbox.sandboxfile", 
+    "fields": {
+      "uploaded": true, 
+      "checksum": "3e7cc22c3f9a1a9e8708d5c2a3cd2d64", 
+      "sandboxes": [], 
+      "created_by": 1, 
+      "content_type": "application/x-binary"
+    }
+  }, 
+  {
+    "pk": 6, 
+    "model": "sandbox.sandboxfile", 
+    "fields": {
+      "uploaded": true, 
+      "checksum": "434450082c67c354884c4b8b5db23ffb", 
+      "sandboxes": [], 
+      "created_by": 1, 
+      "content_type": "application/x-binary"
+    }
+  }, 
+  {
+    "pk": 7, 
+    "model": "sandbox.sandboxfile", 
+    "fields": {
+      "uploaded": true, 
+      "checksum": "4d80cafd968bb603d9f1a6a9422663e4", 
+      "sandboxes": [], 
+      "created_by": 1, 
+      "content_type": "application/x-binary"
+    }
+  }, 
+  {
+    "pk": 8, 
+    "model": "sandbox.sandboxfile", 
+    "fields": {
+      "uploaded": true, 
+      "checksum": "5479013c6f17fb6e1930ea31e8fb1df5", 
+      "sandboxes": [], 
+      "created_by": 1, 
+      "content_type": "application/x-binary"
+    }
+  }, 
+  {
+    "pk": 9, 
+    "model": "sandbox.sandboxfile", 
+    "fields": {
+      "uploaded": true, 
+      "checksum": "75c2828fd851a5fc22b5d9e9b283dfab", 
+      "sandboxes": [], 
+      "created_by": 1, 
+      "content_type": "application/x-binary"
+    }
+  }, 
+  {
+    "pk": 10, 
+    "model": "sandbox.sandboxfile", 
+    "fields": {
+      "uploaded": true, 
+      "checksum": "a67a0204d4c54848aad67a8e9de5cad1", 
+      "sandboxes": [], 
+      "created_by": 1, 
+      "content_type": "application/x-binary"
+    }
+  }, 
+  {
+    "pk": 11, 
+    "model": "sandbox.sandboxfile", 
+    "fields": {
+      "uploaded": true, 
+      "checksum": "c7faa6cd1213a6afff1e59ee447b9fd0", 
+      "sandboxes": [], 
+      "created_by": 1, 
+      "content_type": "application/x-binary"
+    }
+  }
+]
