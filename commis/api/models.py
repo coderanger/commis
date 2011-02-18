@@ -2,6 +2,7 @@ import chef
 from chef.rsa import Key
 from django.db import models
 
+from commis.api import conf
 from commis.db import update
 
 class ClientManager(models.Manager):
@@ -25,6 +26,10 @@ class Client(models.Model):
         if not getattr(self, '_key_cache', None):
             self._key_cache = Key(self.key_pem)
         return self._key_cache
+
+    @property
+    def validator(self):
+        return self.name == conf.COMMIS_VALIDATOR_NAME
 
     def generate_key(self):
         key = Key.generate(2048)
