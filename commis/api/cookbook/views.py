@@ -21,7 +21,7 @@ def cookbook_get(request, name):
     versions = Cookbook.objects.filter(name=name).values_list('version', flat=True)
     if not versions:
         raise ChefAPIError(404, 'Cookbook %s not found', name)
-    return {'name': versions}
+    return {name: versions}
 
 
 @chef_api()
