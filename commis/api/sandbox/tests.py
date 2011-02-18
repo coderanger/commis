@@ -21,8 +21,8 @@ class SandboxAPITestCase(ChefTestCase):
             self.assertIn(csum, resp['checksums'])
             self.assertIn('needs_upload', resp['checksums'][csum])
             self.assertTrue(resp['checksums'][csum]['needs_upload'])
-            self.assertIn('uri', resp['checksums'][csum])
-            self.assertTrue(resp['checksums'][csum]['uri'])
+            self.assertIn('url', resp['checksums'][csum])
+            self.assertTrue(resp['checksums'][csum]['url'])
 
     def test_upload(self):
         checksums = [
