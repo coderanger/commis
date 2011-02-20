@@ -7,6 +7,7 @@ from django_extensions.db.fields import UUIDField, CreationDateTimeField
 
 from commis.api import conf
 from commis.api.models import Client
+from commis.api.role.models import Role
 from commis.db import update
 from commis.utils import json
 
@@ -75,7 +76,13 @@ class Node(models.Model):
         recipes = []
         for entry in self.run_list.all().order_by('id'):
             if entry.type == 'role':
-                pass # Do role lookup here
+                try:
+                    role = Role.objects.get(name=entry.name)
+                except Role.DoesNotExist:
+                    continue
+                for entry in role.expand_run_list():
+                    if entry.name not in recipes:
+                        recipes.append(entry.name)
             elif entry.type == 'recipe':
                 if entry.name not in recipes:
                     recipes.append(entry.name)
