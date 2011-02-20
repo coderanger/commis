@@ -64,9 +64,9 @@ class Role(models.Model):
                     role = Role.objects.get(name=entry.name)
                 except Role.DoesNotExist:
                     continue
-                for entry in role.expand_run_list():
-                    if entry.name not in recipes:
-                        recipes.append(entry.name)
+                for recipe in role.expand_run_list():
+                    if recipe not in recipes:
+                        recipes.append(recipe)
             elif entry.type == 'recipe':
                 if entry.name not in recipes:
                     recipes.append(entry.name)
