@@ -14,4 +14,5 @@ urlpatterns = patterns('',
     url(r'^cookbooks/(?P<name>[^/]*)', cookbook),
     url(r'^cookbooks', cookbook),
     url(r'^nodes', include('commis.api.node.urls')),
+    url(r'^roles', include('commis.api.role.urls')),
 )
