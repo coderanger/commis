@@ -55,6 +55,7 @@ def cookbook_file(request, name, version, checksum):
         raise ChefAPIError(404, 'File not found')
     cookbook_file = qs[0]
     response = HttpResponse(open(cookbook_file.file.path, 'rb').read(), content_type=cookbook_file.file.content_type)
+    return response
 
 
 @csrf_exempt
