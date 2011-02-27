@@ -8,3 +8,5 @@ dist
 .chef/
 *.db
 commis/media/sandbox
+.DS_Store
+
