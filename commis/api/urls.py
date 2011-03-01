@@ -16,4 +16,5 @@ urlpatterns = patterns('',
     url(r'^nodes', include('commis.api.node.urls')),
     url(r'^roles', include('commis.api.role.urls')),
     url(r'^search', include('commis.api.search.urls')),
+    url(r'^data', include('commis.api.data_bag.urls')),
 )

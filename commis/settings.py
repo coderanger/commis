@@ -106,6 +106,7 @@ INSTALLED_APPS = (
     'commis.api.cookbook',
     'commis.api.role',
     'commis.api.node',
+    'commis.api.data_bag',
 )
 
 from commis.api.search import backends
