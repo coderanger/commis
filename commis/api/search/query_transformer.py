@@ -9,7 +9,7 @@ DEFAULT_INDEXES = {
 }
 
 def transform_query(index, query_text):
-    qs = SearchQuerySet()
+    qs = SearchQuerySet().order_by('id_order')
     model = DEFAULT_INDEXES.get(index)
     if model is None:
         qs = qs.models(DataBagItem).narrow('data_bag:%s'%index)
