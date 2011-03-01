@@ -1,6 +1,7 @@
 from haystack.query import SearchQuerySet, SQ
 
 from commis.api.node.models import Node
+from commis.api.data_bag.models import DataBagItem
 from commis.api.search.query_parser import expression
 
 DEFAULT_INDEXES = {
