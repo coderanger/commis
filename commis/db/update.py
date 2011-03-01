@@ -1,5 +1,6 @@
 import operator
 
+from django.db.models import signals
 from django.db.models.expressions import F, ExpressionNode
 
 EXPRESSION_NODE_CALLBACKS = {
@@ -38,7 +39,9 @@ def update(instance, **kwargs):
         if hasattr(field, 'auto_now') and field.auto_now and field.name not in kwargs:
             kwargs[field.name] = field.pre_save(instance, False)
 
+    signals.pre_save.send(sender=instance.__class__, instance=instance, raw=False, using=None)
     rows_affected = instance.__class__._default_manager.filter(pk=instance.pk).update(**kwargs)
+    signals.post_save.send(sender=instance.__class__, instance=instance, created=False, raw=False, using=None)
 
     # apply the updated args to the instance to mimic the change
     # note that these might slightly differ from the true database values
