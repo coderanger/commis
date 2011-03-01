@@ -94,7 +94,7 @@ def data_bag_item_update(request, bag_name, name):
     except DataBagItem.DoesNotExist:
         raise ChefAPIError(404, 'Data bag item %s::%s not found', bag_name, name)
     update(item, data=request.raw_post_data)
-    return HttpResponse(item.data, status=200)
+    return HttpResponse(item.data, status=200, content_type='application/json')
 
 
 @chef_api(admin=True)
@@ -108,7 +108,7 @@ def data_bag_item_delete(request, bag_name, name):
     except DataBagItem.DoesNotExist:
         raise ChefAPIError(404, 'Data bag item %s::%s not found', bag_name, name)
     item.delete()
-    return HttpResponse(item.data, status=200)
+    return HttpResponse(item.data, status=200, content_type='application/json')
 
 
 @csrf_exempt
