@@ -9,4 +9,4 @@ dist
 *.db
 commis/media/sandbox
 .DS_Store
-
+commis/.search_index/*
