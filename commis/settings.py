@@ -98,9 +98,18 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'south',
+    'celery',
+    'haystack',
     'commis.api',
     'commis.api.sandbox',
     'commis.api.cookbook',
     'commis.api.role',
     'commis.api.node',
 )
+
+from commis.api.search import backends
+backends.setup_backends()
+HAYSTACK_SITECONF = 'commis.search_sites'
+HAYSTACK_SEARCH_ENGINE = 'commis_whoosh'
+HAYSTACK_WHOOSH_PATH = os.path.join(PROJECT_ROOT, '.search_index')

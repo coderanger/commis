@@ -10,6 +10,7 @@ from commis.api.models import Client
 from commis.api.role.models import Role
 from commis.db import update
 from commis.utils import json
+from commis.utils.dict import deep_merge
 
 class NodeManager(models.Manager):
     def from_dict(self, data):
@@ -71,6 +72,9 @@ class Node(models.Model):
         chef_node.default = self.default
         chef_node.run_list = [unicode(entry) for entry in self.run_list.all()]
         return chef_node
+
+    def to_search(self):
+        return deep_merge(self.automatic, self.override, self.normal, self.default)
 
     def expand_run_list(self):
         recipes = []

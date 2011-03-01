@@ -45,14 +45,14 @@ boost = (CARAT + number("boost"))
 string_expr = Group(string + proximity_modifier) | string
 word_expr = Group(valid_word + fuzzy_modifier) | valid_word
 term << (Optional(field_name("field") + COLON) + 
-         (word_expr | string_expr | range_search | Group(LPAR + expression + RPAR)) +
+         (word_expr("value") | string_expr("value") | range_search | Group(LPAR + expression + RPAR)) +
          Optional(boost))
 term.setParseAction(lambda t:[t] if 'field' in t or 'boost' in t else None)
 
 expression << operatorPrecedence(term,
     [
     (required_modifier | prohibit_modifier, 1, opAssoc.RIGHT),
-    ((not_ | '!').setParseAction(lambda:"NOT"), 1, opAssoc.RIGHT),
-    ((and_ | '&&').setParseAction(lambda:"AND"), 2, opAssoc.LEFT),
-    (Optional(or_ | '||').setParseAction(lambda:"OR"), 2, opAssoc.LEFT),
+    ((not_ | '!').setParseAction(lambda:"NOT")("not"), 1, opAssoc.RIGHT),
+    ((and_ | '&&').setParseAction(lambda:"AND")("and"), 2, opAssoc.LEFT),
+    (Optional(or_ | '||').setParseAction(lambda:"OR")("or"), 2, opAssoc.LEFT),
     ])
