@@ -99,7 +99,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'south',
-    'celery',
+    'djcelery',
     'haystack',
     'commis.api',
     'commis.api.sandbox',
@@ -109,6 +109,11 @@ INSTALLED_APPS = (
     'commis.api.data_bag',
     'commis.api.search',
 )
+
+import djcelery
+djcelery.setup_loader()
+CELERY_ALWAYS_EAGER = True
+CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 
 from commis.api.search import backends
 backends.setup_backends()
