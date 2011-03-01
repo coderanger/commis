@@ -30,3 +30,12 @@ class DataBagItem(models.Model):
 
     def to_search(self):
         return json.loads(self.data)
+
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'data_bag': self.bag.name,
+            'json_class': 'Chef::DataBagItem',
+            'chef_type': 'data_bag_item',
+            'raw_data': json.loads(self.data),
+        }

@@ -107,6 +107,7 @@ INSTALLED_APPS = (
     'commis.api.role',
     'commis.api.node',
     'commis.api.data_bag',
+    'commis.api.search',
 )
 
 from commis.api.search import backends

@@ -1,74 +1,44 @@
-import hashlib
+import itertools
 
-import chef
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from commis.api import conf
+from commis.api.data_bag.models import DataBag
 from commis.api.decorators import chef_api
 from commis.api.exceptions import ChefAPIError
-from commis.api.cookbook.models import Cookbook
-from commis.api.role.models import Role
-from commis.db import update
-from commis.utils import json
+from commis.api.search.query_transformer import transform_query, DEFAULT_INDEXES
 
 @chef_api()
-def role_list(request):
+def search_list(request):
     data = {}
-    for role in Role.objects.all():
-        data[role.name] = request.build_absolute_uri(reverse('role_get', args=[role.name]))
+    for name in itertools.chain(DEFAULT_INDEXES.iterkeys(), DataBag.objects.values_list('name', flat=True)):
+        data[name] = request.build_absolute_uri(reverse('search_get', args=[name]))
     return data
 
-@chef_api(admin=True)
-def role_create(request):
-    if Role.objects.filter(name=request.json['name']).exists():
-        raise ChefAPIError(409, 'Role %s already exists', request.json['name'])
-    role = Role.objects.from_dict(request.json)
-    data = {'uri': request.build_absolute_uri(reverse('role_get', args=[role.name]))}
-    return HttpResponse(json.dumps(data), status=201)
-
 
 @chef_api()
-def role_get(request, name):
-    try:
-        role = Role.objects.get(name=name)
-    except Role.DoesNotExist:
-        raise ChefAPIError(404, 'Role %s not found', name)
-    return role
-
-
-@chef_api(admin=True)
-def role_update(request, name):
-    if request.json['name'] != name:
-        raise ChefAPIError(500, 'Name mismatch')
-    if not Role.objects.filter(name=name).exists():
-        raise ChefAPIError(404, 'Role %s not found', name)
-    return Role.objects.from_dict(request.json)
-
-
-@chef_api(admin=True)
-def role_delete(request, name):
-    try:
-        role = Role.objects.get(name=name)
-    except Role.DoesNotExist:
-        raise ChefAPIError(404, 'Role %s not found', name)
-    role.delete()
-    return role
+def search_get(request, name):
+    if name not in DEFAULT_INDEXES and not DataBag.objects.filter(name=name).exists():
+        raise ChefAPIError(404, 'Index %s not found', name)
+    sqs = transform_query(name, request.GET['q'])
+    rows = int(request.GET['rows'])
+    start = int(request.GET['start'])
+    rows = [result.object for result in sqs[start:start+rows]]
+    return {
+        'total': sqs.count(),
+        'start': start,
+        'rows': rows,
+    }
+        
 
 
 @csrf_exempt
 def search(request, name=None):
     if not name:
         if request.method == 'GET':
-            return role_list(request)
-        if request.method == 'POST':
-            return role_create(request)
+            return search_list(request)
     else:
         if request.method == 'GET':
-            return role_get(request, name)
-        if request.method == 'PUT':
-            return role_update(request, name)
-        if request.method == 'DELETE':
-            return role_delete(request, name)
+            return search_get(request, name)
     raise Http404
