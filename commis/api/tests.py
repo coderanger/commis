@@ -25,7 +25,10 @@ class TestChefAPI(chef.ChefAPI):
         self.testclient = testclient
 
     def _request(self, method, url, data, headers):
-        args = {'path': urlparse.urlparse(url).path}
+        parsed_url = urlparse.urlparse(url)
+        args = {'path': parsed_url.path}
+        if parsed_url.query:
+            args['path'] += '?' + parsed_url.query
         if data:
             args['data'] = data
         for key, value in headers.iteritems():
