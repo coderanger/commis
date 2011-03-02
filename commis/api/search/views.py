@@ -21,9 +21,9 @@ def search_list(request):
 def search_get(request, name):
     if name not in DEFAULT_INDEXES and not DataBag.objects.filter(name=name).exists():
         raise ChefAPIError(404, 'Index %s not found', name)
-    sqs = transform_query(name, request.GET['q'])
-    rows = int(request.GET['rows'])
-    start = int(request.GET['start'])
+    sqs = transform_query(name, request.GET.get('q', '*:*'))
+    rows = int(request.GET.get('rows', 20))
+    start = int(request.GET.get('start', 0))
     rows = [result.object for result in sqs[start:start+rows]]
     return {
         'total': sqs.count(),
