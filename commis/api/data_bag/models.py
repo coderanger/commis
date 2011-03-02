@@ -33,7 +33,7 @@ class DataBagItem(models.Model):
 
     def to_dict(self):
         return {
-            'name': self.name,
+            'name': 'data_bag_item_%s_%s'%(self.bag.name, self.name),
             'data_bag': self.bag.name,
             'json_class': 'Chef::DataBagItem',
             'chef_type': 'data_bag_item',
