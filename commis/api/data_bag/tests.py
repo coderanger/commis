@@ -18,8 +18,8 @@ class DataBagAPITestCase(ChefTestCase):
 
     def test_get(self):
         bag = DataBag.objects.create(name='mybag')
-        bag.items.create(name='item1')
-        bag.items.create(name='item2')
+        bag.items.create(name='item1', data='{"id":"item1"}')
+        bag.items.create(name='item2', data='{"id":"item2"}')
         self.assertEqual(len(chef.DataBag('mybag')), 2)
         self.assertIn('item1', chef.DataBag('mybag'))
         self.assertIn('item2', chef.DataBag('mybag'))
