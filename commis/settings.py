@@ -110,6 +110,8 @@ INSTALLED_APPS = (
     'commis.api.search',
 )
 
+TEST_RUNNER = 'commis.test.runner.CommisTestSuiteRunner'
+
 import djcelery
 djcelery.setup_loader()
 CELERY_ALWAYS_EAGER = True
@@ -120,3 +122,4 @@ backends.setup_backends()
 HAYSTACK_SITECONF = 'commis.search_sites'
 HAYSTACK_SEARCH_ENGINE = 'commis_whoosh'
 HAYSTACK_WHOOSH_PATH = os.path.join(PROJECT_ROOT, '.search_index')
+HAYSTACK_SOLR_URL = 'http://127.0.0.1:8983/solr'
