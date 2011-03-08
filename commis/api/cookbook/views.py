@@ -1,4 +1,5 @@
 import chef
+from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -12,7 +13,7 @@ from commis.api.sandbox.models import SandboxFile
 def cookbook_index(request):
     data = {}
     for name in Cookbook.objects.values_list('name', flat=True):
-        data[name] = request.build_absolute_uri('/api/cookbooks/'+name)
+        data[name] = request.build_absolute_uri(reverse('cookbook_get', args=[name]))
     return data
 
 

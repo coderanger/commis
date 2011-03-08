@@ -1,6 +1,7 @@
 import os
 
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.db import models
 from django_extensions.db.fields import UUIDField, CreationDateTimeField
 
@@ -133,7 +134,7 @@ class CookbookFile(models.Model):
             'specificity': self.specificity,
         }
         if request:
-            data['url'] = request.build_absolute_uri('/api/cookbooks/%s/%s/files/%s'%(self.cookbook.name, self.cookbook.version, self.file.checksum))
+            data['url'] = request.build_absolute_uri(reverse('cookbook_file', args=[self.cookbook.name, self.cookbook.version, self.file.checksum]))
         return data
 
 
