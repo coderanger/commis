@@ -111,6 +111,13 @@ INSTALLED_APPS = [
     'commis.webui',
 ]
 
+# Enable PyZen optionally
+try:
+    import pyzen
+    INSTALLED_APPS.append('pyzen')
+except ImportError:
+    pass
+
 TEST_RUNNER = 'commis.test.runner.CommisTestSuiteRunner'
 
 import djcelery
