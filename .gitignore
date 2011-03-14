@@ -11,3 +11,4 @@ commis/media/sandbox
 .DS_Store
 commis/.search_index/*
 commis/.solr-home/*
+commis.sublime-project
