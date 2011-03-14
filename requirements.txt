@@ -1,5 +1,7 @@
 Django
-Celery
 South
 PyChef
+django-celery
+django-haystack
+Whoosh
 
