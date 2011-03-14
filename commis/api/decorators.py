@@ -6,7 +6,6 @@ import traceback
 
 from chef.auth import sha1_base64, canonical_request
 from chef.rsa import SSLError
-from django.conf import settings
 from django.http import HttpResponse
 
 from commis.api import conf
