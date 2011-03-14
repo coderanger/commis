@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.test.simple import build_suite, build_test, reorder_suite, DjangoTestSuiteRunner, TEST_MODULE
+from django.test.simple import DjangoTestSuiteRunner
 
 class CommisTestSuiteRunner(DjangoTestSuiteRunner):
     def setup_test_environment(self, **kwargs):
