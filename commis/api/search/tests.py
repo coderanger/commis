@@ -1,13 +1,12 @@
-import os
-
 import chef
+from django.utils import unittest
 
-from commis.api import conf
 from commis.api.tests import ChefTestCase
 from commis.api.data_bag.models import DataBag
 from commis.utils import json
 
 class SearchAPITestCase(ChefTestCase):
+    @unittest.skip('Still working on Haystack test setup')
     def test_bag(self):
         bag = DataBag.objects.create(name='mybag')
         data = {'id': 'item1', 'attr': 1, 'nested': {'nested_attr': 'foo'}}
