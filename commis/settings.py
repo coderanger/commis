@@ -88,7 +88,7 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -108,7 +108,8 @@ INSTALLED_APPS = (
     'commis.api.node',
     'commis.api.data_bag',
     'commis.api.search',
-)
+    'commis.webui',
+]
 
 TEST_RUNNER = 'commis.test.runner.CommisTestSuiteRunner'
 
