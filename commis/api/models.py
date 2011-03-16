@@ -1,6 +1,7 @@
 import chef
 from chef.rsa import Key
 from django.db import models
+from django.utils.translation import ugettext as _
 
 from commis.api import conf
 from commis.db import update
@@ -13,11 +14,14 @@ class ClientManager(models.Manager):
 
 
 class Client(models.Model):
-    name = models.CharField(unique=True, max_length=1024)
-    key_pem = models.TextField()
-    admin = models.BooleanField()
+    name = models.CharField(_('Name'), unique=True, max_length=1024)
+    key_pem = models.TextField(_('Public Key'))
+    admin = models.BooleanField(_('Admin'))
 
     objects = ClientManager()
+
+    def __unicode__(self):
+        return self.name
 
     @property
     def key(self):
