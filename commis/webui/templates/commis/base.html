@@ -35,9 +35,9 @@
           <ul>
             {% if user.is_authenticated %}
             <li><a href="/users/{{ user.username }}/edit">Edit account</a></li>
-            <li><a href="/users/logout" confirm="Are you sure you want to logout?">Logout {{ user.name }}</a></li>
+            <li><a href="{% url django.contrib.auth.views.logout %}?next={{ request.path }}" confirm="Are you sure you want to logout?">Logout {{ user.username }}</a></li>
             {% else %}
-            <li><a href="/users/login/" rel="facebox">Login</a></li>
+            <li><a href="{% url django.contrib.auth.views.login %}?next={{ request.path }}" rel="facebo">Login</a></li>
             {% endif %}
           </ul>
           <div class="clear"></div>
