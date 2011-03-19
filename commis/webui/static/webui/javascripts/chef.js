@@ -147,10 +147,6 @@ $(document).ready(function(){
     return false;
   }).next().hide();
 
-  // global facebox callback
-  $('a[rel*=facebox]').facebox();
-
-
   var enableDragDropBehavior = function() {
     $('.connectedSortable').sortable({
       placeholder: 'ui-state-highlight',

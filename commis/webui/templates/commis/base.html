@@ -8,7 +8,6 @@
     <link type="text/css" href="{{ STATIC_URL }}webui/stylesheets/base.css" rel="stylesheet" media="all" charset="utf-8" />
     <link type="text/css" href="{{ STATIC_URL }}webui/stylesheets/themes/djime-cerulean/style.css" rel="stylesheet" media="all" charset="utf-8" />
     <link type="text/css" href="{{ STATIC_URL }}webui/stylesheets/chef.css" rel="stylesheet" media="all" charset="utf-8" />
-    <link type="text/css" href="{{ STATIC_URL }}webui/facebox/facebox.css" rel="stylesheet" media="all" charset="utf-8" />
     <link type="text/css" href="{{ STATIC_URL }}webui/stylesheets/jquery-ui-1.7.1.custom.css" rel="stylesheet" media="all" charset="utf-8" />
     <link type="text/css" href="{{ STATIC_URL }}webui/stylesheets/jquery.treeTable.css" rel="stylesheet" media="all" charset="utf-8" />
     <link type="text/css" href="{{ STATIC_URL }}webui/stylesheets/jsonedit_main.css" rel="stylesheet" media="all" charset="utf-8" />
@@ -19,7 +18,6 @@
     <script type="text/javascript" src="{{ STATIC_URL }}webui/javascripts/jquery.localscroll.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}webui/javascripts/jquery.scrollTo.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}webui/javascripts/jquery.tools.min.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}webui/facebox/facebox.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}webui/javascripts/jquery-ui-1.7.1.custom.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}webui/javascripts/jquery.treeTable.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}webui/javascripts/chef.js"></script>
@@ -37,7 +35,7 @@
             <li><a href="/users/{{ user.username }}/edit">Edit account</a></li>
             <li><a href="{% url django.contrib.auth.views.logout %}?next={{ request.path }}" confirm="Are you sure you want to logout?">Logout {{ user.username }}</a></li>
             {% else %}
-            <li><a href="{% url django.contrib.auth.views.login %}?next={{ request.path }}" rel="facebo">Login</a></li>
+            <li><a href="{% url django.contrib.auth.views.login %}?next={{ request.path }}">Login</a></li>
             {% endif %}
           </ul>
           <div class="clear"></div>
