@@ -1,40 +1,93 @@
-<!doctype html>
-<!--[if lt IE 7 ]> <html class="no-js ie6" lang="en"> <![endif]-->
-<!--[if IE 7 ]>    <html class="no-js ie7" lang="en"> <![endif]-->
-<!--[if IE 8 ]>    <html class="no-js ie8" lang="en"> <![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>{% block title %}Commis{% endblock %}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" href="{{ STATIC_URL }}webui/favicon.ico">
-  <link rel="stylesheet" href="{{ STATIC_URL }}webui/css/style.css">
-  <script src="{{ STATIC_URL }}webui/js/libs/modernizr-1.7.min.js"></script>
-  {% block extrahead %}{% endblock %}
-</head>
-<body>
-  <div id="container">
-    <header>
-      <a href="/">Commis</a>
-      <a href="/nodes">Nodes</a>
-      <a href="/roles">Roles</a>
-      <a href="/clients">Clients</a>
-    </header>
-    <div id="main" role="main">
-      {% block content %}{% endblock %}
+{% load commis_nav %}
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Chef Server</title>
+    <link type="text/css" href="{{ STATIC_URL }}webui/stylesheets/base.css" rel="stylesheet" media="all" charset="utf-8" />
+    <link type="text/css" href="{{ STATIC_URL }}webui/stylesheets/themes/djime-cerulean/style.css" rel="stylesheet" media="all" charset="utf-8" />
+    <link type="text/css" href="{{ STATIC_URL }}webui/stylesheets/chef.css" rel="stylesheet" media="all" charset="utf-8" />
+    <link type="text/css" href="{{ STATIC_URL }}webui/facebox/facebox.css" rel="stylesheet" media="all" charset="utf-8" />
+    <link type="text/css" href="{{ STATIC_URL }}webui/stylesheets/jquery-ui-1.7.1.custom.css" rel="stylesheet" media="all" charset="utf-8" />
+    <link type="text/css" href="{{ STATIC_URL }}webui/stylesheets/jquery.treeTable.css" rel="stylesheet" media="all" charset="utf-8" />
+    <link type="text/css" href="{{ STATIC_URL }}webui/stylesheets/jsonedit_main.css" rel="stylesheet" media="all" charset="utf-8" />
+    <link type="text/css" href="{{ STATIC_URL }}webui/stylesheets/jquery.suggest.css" rel="stylesheet" media="all" charset="utf-8" />
+    <script type="text/javascript" src="{{ STATIC_URL }}webui/javascripts/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}webui/javascripts/jquery.jeditable.mini.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}webui/javascripts/jquery.livequery.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}webui/javascripts/jquery.localscroll.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}webui/javascripts/jquery.scrollTo.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}webui/javascripts/jquery.tools.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}webui/facebox/facebox.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}webui/javascripts/jquery-ui-1.7.1.custom.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}webui/javascripts/jquery.treeTable.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}webui/javascripts/chef.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}webui/javascripts/drop_down_menu.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}webui/javascripts/jquery.suggest.js"></script>
+    {% block extrahead %}{% endblock %}
+  </head>
+  <body>
+    <div id="container">
+      <div id="header">
+        <h1><a href="{% url commis-webui-index %}">Chef Server</a></h1>
+        <div id="user-navigation">
+          <ul>
+            {% if user.is_authenticated %}
+            <li><a href="/users/{{ user.username }}/edit">Edit account</a></li>
+            <li><a href="/users/logout" confirm="Are you sure you want to logout?">Logout {{ user.name }}</a></li>
+            {% else %}
+            <li><a href="/users/login/" rel="facebox">Login</a></li>
+            {% endif %}
+          </ul>
+          <div class="clear"></div>
+        </div>
+        <div id="main-navigation">
+          <ul>
+            {% commis_nav_item 'Search' 'commis-webui-index' %}
+            {% commis_nav_item 'Status' 'commis-webui-index' %}
+            {% commis_nav_item 'Roles' 'commis-webui-index' %}
+            {% commis_nav_item 'Nodes' 'commis-webui-node-index' %}
+            {% commis_nav_item 'Cookbooks' 'commis-webui-index' %}
+            {% commis_nav_item 'Databags' 'commis-webui-index' %}
+            {% commis_nav_item 'Clients' 'commis-webui-index' %}
+            {% commis_nav_item 'Users' 'commis-webui-user-index' %}
+          </ul>
+          <div class="clear"></div>
+        </div>
+      </div>
+      <div id="wrapper">
+        <div id="main">
+          {% if messages %}
+          <div id="block-messages" class="block">
+            <div class="content">
+              <h2 class="title">Messages</h2>
+              <div class="inner">
+                <div class="flash">
+                  {% for message in messages %}
+                  <div class="message {{ message.tags }}">
+                    <p>{{ message }}</p>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {% block content %}{% endblock %}
+         </div>
+          <div id="footer">
+            <div class="block">
+              <p>Version 0.1 &mdash; Copyright &copy; 2011 Noah Kantrowitz</p>
+            </div>
+          </div>
+        </div>
+        <div id="sidebar">
+          <div class="block notice" id="sidebar_block_notice">{% block sidebar_notice %}{% endblock %}</div>
+          <div class="block" id="sidebar_block">{% block sidebar %}{% endblock %}</div>
+        </div>
+        <div class="clear"></div>
+      </div>
     </div>
-    <footer>
-
-    </footer>
-  </div> 
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
-  <script>window.jQuery || document.write('<script src="js/libs/jquery-1.5.1.min.js">\x3C/script>')</script>
-  <script src="{{ STATIC_URL }}webui/js/plugins.js"></script>
-  <script src="{{ STATIC_URL }}webui/js/script.js"></script>
-  <!--[if lt IE 7 ]>
-    <script src="{{ STATIC_URL }}webui/js/libs/dd_belatedpng.js"></script>
-    <script>DD_belatedPNG.fix('img, .png_bg'); // Fix any <img> or .png_bg bg-images. Also, please read goo.gl/mZiyb </script>
-  <![endif]-->
-</body>
+  </body>
 </html>

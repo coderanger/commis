@@ -78,6 +78,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
     'django.core.context_processors.static',
+    'django.core.context_processors.request',
     'django.contrib.auth.context_processors.auth',
     'django.contrib.messages.context_processors.messages',
 )
@@ -119,6 +120,7 @@ INSTALLED_APPS = [
     'commis.api.data_bag',
     'commis.api.search',
     'commis.webui',
+    'commis.webui.user',
     'commis.webui.node',
 ]
 
@@ -130,6 +132,9 @@ except ImportError:
     pass
 
 TEST_RUNNER = 'commis.test.runner.CommisTestSuiteRunner'
+
+from django.contrib.messages import constants as message_constants
+MESSAGE_TAGS = {message_constants.INFO: 'notice', message_constants.SUCCESS: 'notice'}
 
 import djcelery
 djcelery.setup_loader()

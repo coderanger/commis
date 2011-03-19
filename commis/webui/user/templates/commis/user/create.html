@@ -1,0 +1,40 @@
+{% extends "commis/base.html" %}
+
+{% block content %}
+<div class="block" id="block-forms"> 
+  <div class="content"> 
+    <h2 class="title">Create New User</h2> 
+    <div class="inner"> 
+      <div class="secondary-navigation"> 
+        <ul> 
+          <li class="first"><a href="{% url commis-webui-user-index %}">List</a></li> 
+          <li class="active"><a href="{% url commis-webui-user-create %}">Create</a></li> 
+        </ul> 
+        <div class="clear"></div> 
+      </div> 
+    </div> 
+    <div class="content"> 
+      <div class="inner"> 
+        <form method="post">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+          <table class="table">
+            {% for field in form %}
+            {% if field.errors %}
+            <tr><td colspan="2">{{ field.errors }}</td></tr>
+            {% endif %}
+            <tr>
+              <td>{{ field.label_tag }}</td>
+              <td>{{ field }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+          <div class="group navform">
+            <input type="submit" value="Create">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
