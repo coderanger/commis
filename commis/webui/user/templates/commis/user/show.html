@@ -6,6 +6,8 @@
 <li class="first"><a href="{% url commis-webui-user-index %}">List</a></li>
 <li class=""><a href="{% url commis-webui-user-create %}">Create</a></li>
 <li class="active"><a href="{% url commis-webui-user-show cur_user.username %}">Show</a></li>
+<li class=""><a href="{% url commis-webui-user-edit cur_user.username %}">Edit</a></li>
+<li class=""><a href="{% url commis-webui-user-delete cur_user.username %}">Delete</a></li>
 {% endblock %}
 
 {% block block_content %}
@@ -16,4 +18,5 @@
   {% else %}
   False
   {% endif %}
+</div>
 {% endblock %}
