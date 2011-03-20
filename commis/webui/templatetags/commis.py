@@ -28,3 +28,13 @@ def commis_delete_confirmation(context, obj):
         'protected': protected,
         'opts': opts,
     }
+
+
+@register.inclusion_tag('commis/jsoneditor.html')
+def commis_jsoneditor():
+    return {}
+
+
+@register.inclusion_tag('commis/jsoneditor_includes.html', takes_context=True)
+def commis_jsoneditor_includes(context):
+    return context
