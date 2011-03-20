@@ -1,41 +1,30 @@
-{% extends "commis/base.html" %}
+{% extends "commis/block.html" %}
 
-{% block content %}
-<div class="block" id="block-tables"> 
-  <div class="content"> 
-    <h2 class="title">Users</h2> 
-    <div class="inner"> 
-      <div class="secondary-navigation"> 
-        <ul> 
-          <li class="first active"><a href="{% url commis-webui-user-index %}">List</a></li> 
-          <li class=""><a href="{% url commis-webui-user-create %}">Create</a></li> 
-        </ul> 
-        <div class="clear"></div> 
-      </div> 
-    </div> 
-    <div class="content"> 
-      <div class="inner"> 
-        <table class="table">
-          <tr> 
-            <th class="first" colspan="2">Username</th> 
-            <th>&nbsp;</th> 
-            <th class="last">&nbsp;</th> 
-          </tr>
-          {% for u in users %}
-          <tr class="{% cycle 'odd' 'even' %}">
-            <td colspan="2">
-              <a href="{% url commis-webui-user-show u.username %}">{{ u.username }}</a>
-            </td>
-            <td>
-              <a href="{% url commis-webui-user-edit u.username %}">Edit</a>
-              |
-              <a href="{% url commis-webui-user-delete u.username %}">Delete</a>
-            </td>
-          </tr>
-          {% endfor %}
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
+{% block block_title %}Users{% endblock %}
+
+{% block block_nav %}
+<li class="first active"><a href="{% url commis-webui-user-index %}">List</a></li> 
+<li class=""><a href="{% url commis-webui-user-create %}">Create</a></li> 
+{% endblock %}
+
+{% block block_content %}
+<table class="table">
+  <tr> 
+    <th class="first" colspan="2">Username</th> 
+    <th>&nbsp;</th> 
+    <th class="last">&nbsp;</th> 
+  </tr>
+  {% for u in users %}
+  <tr class="{% cycle 'odd' 'even' %}">
+    <td colspan="2">
+      <a href="{% url commis-webui-user-show u.username %}">{{ u.username }}</a>
+    </td>
+    <td>
+      <a href="{% url commis-webui-user-edit u.username %}">Edit</a>
+      |
+      <a href="{% url commis-webui-user-delete u.username %}">Delete</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
 {% endblock %}
