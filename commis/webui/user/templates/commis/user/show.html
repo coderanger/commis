@@ -1,6 +1,6 @@
 {% extends "commis/block.html" %}
 
-{% block block_title %}Users{% endblock %}
+{% block block_title %}User: {{ cur_user.username }}{% endblock %}
 
 {% block block_nav %}
 <li class="first"><a href="{% url commis-webui-user-index %}">List</a></li>
