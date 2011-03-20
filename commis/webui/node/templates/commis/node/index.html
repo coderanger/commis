@@ -1,5 +1,36 @@
-{% extends "commis/base.html" %}
+{% extends "commis/block.html" %}
+{% load i18n %}
 
-{% block content %}
-Welcome to nodes
+{% block block_title %}{{ opts.verbose_name_plural|capfirst }}{% endblock %}
+
+{% block block_nav %}
+<li class="first active"><a href="{% url commis-webui-node-index %}">List</a></li>
+<li class=""><a href="{% url commis-webui-node-create %}">Create</a></li>
+{% endblock %}
+
+{% block block_content %}
+<table class="table">
+  <tr>
+    <th class="first" colspan="2">Name</th>
+    <th>&nbsp;</th>
+    <th class="last">&nbsp;</th>
+  </tr>
+  {% if not objects %}
+  <tr><td colspan="4">
+    {% blocktrans with verbose_name_plural=opts.verbose_name_plural %}No {{ verbose_name_plural }} found.{% endblocktrans %}
+  </td></tr>
+  {% endif %}
+  {% for obj in objects %}
+  <tr class="{% cycle 'odd' 'even' %}">
+    <td colspan="2">
+      <a href="{% url commis-webui-node-show slug %}">{{ obj }}</a>
+    </td>
+    <td>
+      <a href="{% url commis-webui-node-edit slug %}">Edit</a>
+      |
+      <a href="{% url commis-webui-node-delete slug %}">Delete</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
 {% endblock %}
