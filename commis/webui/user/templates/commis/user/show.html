@@ -1,0 +1,19 @@
+{% extends "commis/block.html" %}
+
+{% block block_title %}Users{% endblock %}
+
+{% block block_nav %}
+<li class="first"><a href="{% url commis-webui-user-index %}">List</a></li>
+<li class=""><a href="{% url commis-webui-user-create %}">Create</a></li>
+<li class="active"><a href="{% url commis-webui-user-show cur_user.username %}">Show</a></li>
+{% endblock %}
+
+{% block block_content %}
+<div class="left">
+  <h3>Superuser</h3>
+  {% if cur_user.is_superuser %}
+  True
+  {% else %}
+  False
+  {% endif %}
+{% endblock %}

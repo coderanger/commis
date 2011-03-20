@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 
 def index(request):
@@ -23,7 +24,8 @@ def create(request):
 
 
 def show(request, username):
-    pass
+    user = get_object_or_404(User, username=username)
+    return TemplateResponse(request, 'commis/user/show.html', {'cur_user': user})
 
 
 def edit(request, username):

@@ -1,0 +1,22 @@
+{% extends "commis/base.html" %}
+
+{% block content %}
+<div class="block" id="block-{% block block_type %}tables{% endblock %}"> 
+  <div class="content"> 
+    <h2 class="title">{% block block_title %}{% endblock %}</h2> 
+    <div class="inner"> 
+      <div class="secondary-navigation"> 
+        <ul> 
+          {% block block_nav %}{% endblock %}
+        </ul> 
+        <div class="clear"></div> 
+      </div> 
+    </div> 
+    <div class="content"> 
+      <div class="inner"> 
+        {% block block_content %}{% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
