@@ -147,3 +147,6 @@ class CookbookRecipe(models.Model):
     cookbook = models.ForeignKey(Cookbook, related_name='recipes')
     name = models.CharField(max_length=1024)
     description = models.TextField(blank=True)
+
+    def __unicode__(self):
+        return self.name

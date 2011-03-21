@@ -31,10 +31,19 @@ def commis_delete_confirmation(context, obj):
 
 
 @register.inclusion_tag('commis/jsoneditor.html')
-def commis_jsoneditor():
-    return {}
+def commis_jsoneditor(json):
+    return {'json': json}
 
 
 @register.inclusion_tag('commis/jsoneditor_includes.html', takes_context=True)
 def commis_jsoneditor_includes(context):
     return context
+
+
+@register.simple_tag()
+def commis_class_for_run_list_list_entry(entry):
+    if entry.startswith('recipe['):
+        return 'ui-state-default'
+    elif entry.startswith('role['):
+        return 'ui-state-highlight'
+    raise ValueError('Unknown entry %s'%entry)

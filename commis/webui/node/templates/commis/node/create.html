@@ -1,0 +1,15 @@
+{% extends "commis/block.html" %}
+{% load i18n commis commis_node %}
+
+{% block extrahead %}{{ block.super }}{% commis_jsoneditor_includes %}{% endblock %}
+
+{% block block_title %}{{ opts.verbose_name_plural|capfirst }}{% endblock %}
+
+{% block block_nav %}
+<li class="first"><a href="{% url commis-webui-node-index %}">List</a></li>
+<li class="active"><a href="{% url commis-webui-node-create %}">Create</a></li>
+{% endblock %}
+
+{% block block_content_outer %}
+{% commis_node_form obj form_info %}
+{% endblock %}

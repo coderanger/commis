@@ -23,12 +23,12 @@
   {% for obj in objects %}
   <tr class="{% cycle 'odd' 'even' %}">
     <td colspan="2">
-      <a href="{% url commis-webui-node-show slug %}">{{ obj }}</a>
+      <a href="{% url commis-webui-node-show obj %}">{{ obj }}</a>
     </td>
     <td>
-      <a href="{% url commis-webui-node-edit slug %}">Edit</a>
+      <a href="{% url commis-webui-node-edit obj %}">Edit</a>
       |
-      <a href="{% url commis-webui-node-delete slug %}">Delete</a>
+      <a href="{% url commis-webui-node-delete obj %}">Delete</a>
     </td>
   </tr>
   {% endfor %}

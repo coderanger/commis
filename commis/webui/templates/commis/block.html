@@ -12,11 +12,13 @@
         <div class="clear"></div>
       </div>
     </div>
+    {% block block_content_outer %}
     <div class="content">
       <div class="inner">
         {% block block_content %}{% endblock %}
       </div>
     </div>
+    {% endblock %}
   </div>
 </div>
 {% endblock %}

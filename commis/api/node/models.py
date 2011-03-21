@@ -40,6 +40,9 @@ class Node(models.Model):
 
     objects = NodeManager()
 
+    def __unicode__(self):
+        return self.name
+
     @property
     def automatic(self):
         if not self.automatic_data:

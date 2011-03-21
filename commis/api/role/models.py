@@ -36,6 +36,9 @@ class Role(models.Model):
 
     objects = RoleManager()
 
+    def __unicode__(self):
+        return self.name
+
     @property
     def override(self):
         if not self.override_data:

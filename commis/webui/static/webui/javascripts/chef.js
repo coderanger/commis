@@ -61,14 +61,14 @@ $(document).ready(function(){
   $('form#edit_node, form#create_node').submit(function(event) {
     var form = $(this);
     var to_node = $('ul#for_node').sortable('toArray');
-    if (form.attr('id') == 'edit_node') {
-      form.append('<input type="hidden" name="_method" value="put">');
-    }
-    form.append($('input#node_name')).css('display', 'none');
-    form.append('<input type="hidden" id="attributes" name="attributes"/>');
-    $('input#attributes').attr('value', BCJTEP.save());
+    //if (form.attr('id') == 'edit_node') {
+    //  form.append('<input type="hidden" name="_method" value="put">');
+    //}
+    //form.append($('input#node_name')).css('display', 'none');
+    //form.append('<input type="hidden" id="attributes" name="attributes"/>');
+    //$('input#attributes').attr('value', BCJTEP.save());
     jQuery.each(to_node, function(i, field) {
-      form.append('<input type="hidden" name="for_node[]" value="' + field + '"/>');
+      form.append('<input type="hidden" name="run_list" value="' + field + '"/>');
     });
   });
 

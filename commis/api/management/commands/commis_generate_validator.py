@@ -4,7 +4,6 @@ from optparse import make_option
 from django.core.management.base import NoArgsCommand
 
 from commis.api import conf
-from commis.api.models import Client
 
 class Command(NoArgsCommand):
     help = 'Generate a validator client'
@@ -39,6 +38,7 @@ class Command(NoArgsCommand):
             return False
 
     def handle_noargs(self, **options):
+        from commis.api.models import Client
         output = options.get('output')
         name = conf.COMMIS_VALIDATOR_NAME
 

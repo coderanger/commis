@@ -1,6 +1,6 @@
 <script type="text/javascript">
 $(document).ready(function() {
-  $$('jsonstr').value = JSON.stringify({});
+  $$('jsonstr').value = '{{ json|escapejs }}';
   if (BCJTEP.build()) {
     $$('results').innerHTML = '&nbsp;';
     $$('editortab').className = 'show';
