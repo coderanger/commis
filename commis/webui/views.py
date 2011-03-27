@@ -16,6 +16,7 @@ class CommisGenericView(object):
             'opts': opts,
             'object_list': self.model.objects.all(),
             'action': 'list',
+            'block_title': opts.verbose_name_plural.capitalize(),
             'block_nav': self.block_nav(),
             'show_view': 'commis_webui_%s_show'%opts.app_label,
             'edit_view': 'commis_webui_%s_edit'%opts.app_label,
@@ -37,6 +38,7 @@ class CommisGenericView(object):
             'obj': self.model(),
             'form': form,
             'action': 'create',
+            'block_title': opts.verbose_name.capitalize(),
             'block_nav': self.block_nav(),
         })
 
@@ -47,6 +49,7 @@ class CommisGenericView(object):
             'opts': opts,
             'obj': obj,
             'action': 'show',
+            'block_title': u'%s %s'%(opts.verbose_name.capitalize(), obj),
             'block_nav': self.block_nav(obj),
         })
 
@@ -66,6 +69,7 @@ class CommisGenericView(object):
             'obj': obj,
             'form': form,
             'action': 'edit',
+            'block_title': u'%s %s'%(opts.verbose_name.capitalize(), obj),
             'block_nav': self.block_nav(obj),
         })
 
