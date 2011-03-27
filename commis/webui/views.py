@@ -1,14 +1,28 @@
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils.decorators import classonlymethod
 from django.utils.functional import update_wrapper
+from django.utils.translation import ugettext as _
+
+from commis.webui.utils import get_deleted_objects
 
 class CommisGenericView(object):
     model = None
     form = None
+
+    def get_create_form(self, request):
+        if hasattr(self, 'create_form'):
+            return self.create_form
+        return self.form
+
+    def get_edit_form(self, request):
+        if hasattr(self, 'edit_form'):
+            return self.edit_form
+        return self.form
 
     def index(self, request):
         opts = self.model._meta
@@ -25,14 +39,15 @@ class CommisGenericView(object):
 
     def create(self, request):
         opts = self.model._meta
+        form_class = self.get_create_form(request)
         if request.method == 'POST':
-            form = self.form(request.POST)
+            form = form_class(request.POST)
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Created %s %s'%(opts.verbose_name, form.cleaned_data['name']))
                 return HttpResponseRedirect(reverse('commis_webui_%s_index'%opts.app_label))
         else:
-            form = self.form()
+            form = form_class()
         return TemplateResponse(request, ('commis/%s/edit.html'%opts.app_label, 'commis/generic/edit.html'), {
             'opts': opts,
             'obj': self.model(),
@@ -56,14 +71,15 @@ class CommisGenericView(object):
     def edit(self, request, name):
         opts = self.model._meta
         obj = get_object_or_404(self.model, name=name)
+        form_class = self.get_edit_form(request)
         if request.method == 'POST':
-            form = self.form(request.POST, instance=obj)
+            form = form_class(request.POST, instance=obj)
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Edited %s %s'%(opts.verbose_name, form.cleaned_data['name']))
                 return HttpResponseRedirect(reverse('commis_webui_%s_index'%opts.app_label))
         else:
-            form = self.form(instance=obj)
+            form = form_class(instance=obj)
         return TemplateResponse(request, ('commis/%s/edit.html'%opts.app_label, 'commis/generic/edit.html'), {
             'opts': opts,
             'obj': obj,
@@ -74,7 +90,25 @@ class CommisGenericView(object):
         })
 
     def delete(self, request, name):
-        pass
+        opts = self.model._meta
+        obj = get_object_or_404(self.model, name=name)
+        deleted_objects, perms_needed, protected = get_deleted_objects(obj, request)
+        if request.POST: # The user has already confirmed the deletion.
+            if perms_needed:
+                raise PermissionDenied
+            obj.delete()
+            messages.success(request, _(u'Deleted %s %s')%(opts.verbose_name, obj))
+            return HttpResponseRedirect(reverse('commis_webui_%s_index'%opts.app_label))
+        return TemplateResponse(request, ('commis/%s/delete.html'%opts.app_label, 'commis/generic/delete.html'), {
+            'opts': opts,
+            'obj': obj,
+            'action': 'delete',
+            'block_title': u'%s %s'%(opts.verbose_name.capitalize(), obj),
+            'block_nav': self.block_nav(obj),
+            'deleted_objects': deleted_objects,
+            'perms_lacking': perms_needed,
+            'protected': protected,
+        })
 
     def block_nav(self, obj=None):
         opts = self.model._meta
