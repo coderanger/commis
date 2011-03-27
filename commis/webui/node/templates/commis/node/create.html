@@ -11,5 +11,26 @@
 {% endblock %}
 
 {% block block_content_outer %}
-{% commis_node_form obj form_info %}
+<div class="content nodeFormContainer">
+  <form method="post" id="{{ form_id }}" class="form">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="group form">
+      <label class="label" for="node_name">Name</label>
+        {{ form.name }}
+      <span class="description">The name of the Node</span>
+    </div>
+
+    {% if form.run_list.errors %}
+    <p>{{ form.run_list.errors }}</p>
+    {% endif %}
+    {{ form.run_list }}
+
+    <div class="group">
+      <div class="actions-bar">
+        <input type="submit" id="{{ submit_id }}" class="button" value="{{ submit_name }}" />
+      </div>
+    </div>
+  </form>
+</div>
 {% endblock %}

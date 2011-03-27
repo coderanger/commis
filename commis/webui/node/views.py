@@ -25,12 +25,10 @@ def create(request):
     return TemplateResponse(request, 'commis/node/create.html', {
         'opts': Node._meta,
         'obj': Node(),
-        'form_info': {
-            'form': form,
-            'form_id': 'create_node',
-            'submit_id': 'create_node_button',
-            'submit_name': 'Create Node',
-        },
+        'form': form,
+        'form_id': 'create_node',
+        'submit_id': 'create_node_button',
+        'submit_name': 'Create Node',
     })
 
 

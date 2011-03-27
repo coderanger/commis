@@ -1,9 +1,23 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.template.loader import render_to_string
 
 from commis.api.cookbook.models import CookbookRecipe
 from commis.api.node.models import Node
 from commis.api.role.models import Role
+
+class NodeRunList(forms.SelectMultiple):
+    def __init__(self, attrs=None, environment=None):
+        super(NodeRunList, self).__init__(attrs)
+        self.environment = environment
+
+    def render(self, name, value, attrs=None):
+        return render_to_string('commis/node/_run_list.html', {
+            'value': value,
+            'available_roles': Role.objects.all(),
+            'available_recipes': CookbookRecipe.objects.all(),
+        })
+
 
 class MultipleChoiceAnyField(forms.MultipleChoiceField):
     """A MultipleChoiceField with no validation."""
@@ -23,6 +37,7 @@ class NodeForm(forms.ModelForm):
         super(NodeForm, self).__init__(*args, **kwargs)
         if self.instance:
             self.initial['run_list'] = [str(entry) for entry in self.instance.run_list.all()]
+        self.fields['run_list'].widget = NodeRunList()
 
     def clean_run_list(self):
         run_list = self.cleaned_data['run_list']
