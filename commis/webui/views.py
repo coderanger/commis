@@ -43,7 +43,7 @@ class CommisGenericView(object):
         })
 
     def show(self, request, name):
-        opts = self.mode._meta
+        opts = self.model._meta
         obj = get_object_or_404(self.model, name=name)
         return TemplateResponse(request, ('commis/%s/show.html'%opts.app_label, 'commis/generic/show.html'), {
             'opts': opts,
