@@ -1,0 +1,30 @@
+{% extends "commis/generic/base.html" %}
+{% load url from future %}
+{% load i18n %}
+
+{% block block_content %}
+<table class="table">
+  <tr>
+    <th class="first" colspan="2">{% trans 'Name' %}</th>
+    <th>&nbsp;</th>
+    <th class="last">&nbsp;</th>
+  </tr>
+  {% if not object_list %}
+  <tr><td colspan="4">
+    {% blocktrans with verbose_name_plural=opts.verbose_name_plural %}No {{ verbose_name_plural }} found.{% endblocktrans %}
+  </td></tr>
+  {% endif %}
+  {% for obj in object_list %}
+  <tr class="{% cycle 'odd' 'even' %}">
+    <td colspan="2">
+      <a href="{% url show_view obj %}">{{ obj }}</a>
+    </td>
+    <td>
+      <a href="{% url edit_view obj %}">{% trans 'Edit' %}</a>
+      |
+      <a href="{% url delete_view obj %}">{% trans 'Delete' %}</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

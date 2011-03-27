@@ -1,0 +1,15 @@
+{% extends "commis/block.html" %}
+{% load url from future %}
+{% load i18n %}
+
+{% block block_title %}{{ block_title }}{% endblock %}
+
+{% block block_nav %}
+<li class="first{% if action == 'list' %} active{% endif %}"><a href="{{ block_nav.index }}">List</a></li>
+<li {% if action == 'create' %}class="active"{% endif %}><a href="{{ block_nav.create }}">Create</a></li>
+{% if action != 'list' and action != 'create' %}
+<li {% if action == 'show' %}class="active"{% endif %}><a href="{{ block_nav.show }}">Show</a></li>
+<li {% if action == 'edit' %}class="active"{% endif %}><a href="{{ block_nav.edit }}">Edit</a></li>
+<li {% if action == 'delete' %}class="active"{% endif %}><a href="{{ block_nav.delete }}">Delete</a></li>
+{% endif %}
+{% endblock %}

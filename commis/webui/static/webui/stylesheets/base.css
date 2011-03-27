@@ -248,7 +248,7 @@ input.checkbox {
   float: right;
 }
 
-.form label.label, .form input.text_field, .form textarea.text_area {
+.form label, .form input.text_field, .form textarea.text_area {
   font-size: 1.2em;
   padding: 1px 0;
   margin: 0;
@@ -266,13 +266,13 @@ input.checkbox {
   line-height: 1.5em;
 }
 
-.form label.label {
+.form label {
   display: inline-block;
   padding-bottom: 2px;
   font-weight: bold;
 }
 
-.form div.fieldWithErrors label.label {
+.form div.fieldWithErrors label {
   display: inline;
 }
 

@@ -49,14 +49,14 @@ class NodeForm(forms.ModelForm):
             entry_class = {'role': Role, 'recipe': CookbookRecipe}.get(entry_type)
             if entry_class is None:
                 raise ValidationError('Unknown run list entry type "%s"' % entry_type)
-            if not entry_class.objects.filter(name=entry_name).exists() or 1:
+            if not entry_class.objects.filter(name=entry_name).exists():
                 raise ValidationError('Unknown %s "%s"' % (entry_class._meta.verbose_name, entry_name))
             ret.append({'type': entry_type, 'name': entry_name})
         return ret
 
     def save(self, *args, **kwargs):
         node = super(NodeForm, self).save(*args, **kwargs)
-        node.run_list.delete()
+        node.run_list.all().delete()
         for entry in self.cleaned_data['run_list']:
             node.run_list.create(**entry)
         return node

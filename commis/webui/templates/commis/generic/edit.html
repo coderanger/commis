@@ -1,0 +1,24 @@
+{% extends "commis/generic/base.html" %}
+{% load i18n %}
+
+{% block block_content_outer %}
+<div class="content {{ opts.app_label }}FormContainer">
+  <form method="post" id="{{ action }}_{{ opts.app_label }}" class="form">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="group form">
+        {{ form.name.label_tag }}
+        {{ form.name }}
+      <span class="description">{% blocktrans with verbose_name=opts.verbose_name %}The name of the {{ verbose_name }}{% endblocktrans %}</span>
+    </div>
+
+    {% block edit_content %}{% endblock %}
+
+    <div class="group" style="clear:both;">
+      <div class="actions_bar">
+        <input type="submit" id="{{ action }}_{{ opts.app_label }}_button" class="button" value="{{ action|capfirst }} {{ opts.verbose_name|capfirst }}" />
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}
