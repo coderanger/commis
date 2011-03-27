@@ -42,7 +42,7 @@
           <div class="sortable runListContainer runListContainerForNode">
             <ul class="ui-sortable connectedSortable runListItemList" id="for_node">
               {% for entry in form.run_list.value %}
-              <li id="{{ entry }}" class="{% commis_class_for_run_list_list_entry entry %} runListItem">{{ entry }}</li>
+              <li id="{{ entry }}" class="{% commis_run_list_class entry %} runListItem">{% commis_run_list_name entry %}</li>
               {% endfor %}
             </ul>
           </div>

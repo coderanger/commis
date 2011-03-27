@@ -41,9 +41,14 @@ def commis_jsoneditor_includes(context):
 
 
 @register.simple_tag()
-def commis_class_for_run_list_list_entry(entry):
+def commis_run_list_class(entry):
     if entry.startswith('recipe['):
         return 'ui-state-default'
     elif entry.startswith('role['):
         return 'ui-state-highlight'
     raise ValueError('Unknown entry %s'%entry)
+
+
+@register.simple_tag()
+def commis_run_list_name(entry):
+    return entry.split('[', 1)[1].rstrip(']')
