@@ -13,6 +13,7 @@ from commis.webui.utils import get_deleted_objects
 class CommisGenericView(object):
     model = None
     form = None
+    search_key = 'name'
 
     def get_create_form(self, request):
         if hasattr(self, 'create_form'):
@@ -24,17 +25,25 @@ class CommisGenericView(object):
             return self.edit_form
         return self.form
 
+    def get_app_label(self):
+        if hasattr(self, 'app_label'):
+            return self.app_label
+        return self.model._meta.app_label
+
+    def get_object(self, request, name):
+        return get_object_or_404(self.model, **{self.search_key: name})
+
     def index(self, request):
         opts = self.model._meta
-        return TemplateResponse(request, ('commis/%s/index.html'%opts.app_label, 'commis/generic/index.html'), {
+        return TemplateResponse(request, ('commis/%s/index.html'%self.get_app_label(), 'commis/generic/index.html'), {
             'opts': opts,
             'object_list': self.model.objects.all(),
             'action': 'list',
             'block_title': opts.verbose_name_plural.capitalize(),
             'block_nav': self.block_nav(),
-            'show_view': 'commis_webui_%s_show'%opts.app_label,
-            'edit_view': 'commis_webui_%s_edit'%opts.app_label,
-            'delete_view': 'commis_webui_%s_delete'%opts.app_label,
+            'show_view': 'commis_webui_%s_show'%self.get_app_label(),
+            'edit_view': 'commis_webui_%s_edit'%self.get_app_label(),
+            'delete_view': 'commis_webui_%s_delete'%self.get_app_label(),
         })
 
     def create(self, request):
@@ -44,11 +53,11 @@ class CommisGenericView(object):
             form = form_class(request.POST)
             if form.is_valid():
                 form.save()
-                messages.success(request, 'Created %s %s'%(opts.verbose_name, form.cleaned_data['name']))
-                return HttpResponseRedirect(reverse('commis_webui_%s_index'%opts.app_label))
+                messages.success(request, 'Created %s %s'%(opts.verbose_name, form.cleaned_data[self.search_key]))
+                return HttpResponseRedirect(reverse('commis_webui_%s_index'%self.get_app_label()))
         else:
             form = form_class()
-        return TemplateResponse(request, ('commis/%s/edit.html'%opts.app_label, 'commis/generic/edit.html'), {
+        return TemplateResponse(request, ('commis/%s/edit.html'%self.get_app_label(), 'commis/generic/edit.html'), {
             'opts': opts,
             'obj': self.model(),
             'form': form,
@@ -59,8 +68,8 @@ class CommisGenericView(object):
 
     def show(self, request, name):
         opts = self.model._meta
-        obj = get_object_or_404(self.model, name=name)
-        return TemplateResponse(request, ('commis/%s/show.html'%opts.app_label, 'commis/generic/show.html'), {
+        obj = self.get_object(request, name)
+        return TemplateResponse(request, ('commis/%s/show.html'%self.get_app_label(), 'commis/generic/show.html'), {
             'opts': opts,
             'obj': obj,
             'action': 'show',
@@ -70,17 +79,17 @@ class CommisGenericView(object):
 
     def edit(self, request, name):
         opts = self.model._meta
-        obj = get_object_or_404(self.model, name=name)
+        obj = self.get_object(request, name)
         form_class = self.get_edit_form(request)
         if request.method == 'POST':
             form = form_class(request.POST, instance=obj)
             if form.is_valid():
                 form.save()
-                messages.success(request, 'Edited %s %s'%(opts.verbose_name, form.cleaned_data['name']))
-                return HttpResponseRedirect(reverse('commis_webui_%s_index'%opts.app_label))
+                messages.success(request, 'Edited %s %s'%(opts.verbose_name, form.cleaned_data[self.search_key]))
+                return HttpResponseRedirect(reverse('commis_webui_%s_index'%self.get_app_label()))
         else:
             form = form_class(instance=obj)
-        return TemplateResponse(request, ('commis/%s/edit.html'%opts.app_label, 'commis/generic/edit.html'), {
+        return TemplateResponse(request, ('commis/%s/edit.html'%self.get_app_label(), 'commis/generic/edit.html'), {
             'opts': opts,
             'obj': obj,
             'form': form,
@@ -91,15 +100,15 @@ class CommisGenericView(object):
 
     def delete(self, request, name):
         opts = self.model._meta
-        obj = get_object_or_404(self.model, name=name)
+        obj = self.get_object(request, name)
         deleted_objects, perms_needed, protected = get_deleted_objects(obj, request)
         if request.POST: # The user has already confirmed the deletion.
             if perms_needed:
                 raise PermissionDenied
             obj.delete()
             messages.success(request, _(u'Deleted %s %s')%(opts.verbose_name, obj))
-            return HttpResponseRedirect(reverse('commis_webui_%s_index'%opts.app_label))
-        return TemplateResponse(request, ('commis/%s/delete.html'%opts.app_label, 'commis/generic/delete.html'), {
+            return HttpResponseRedirect(reverse('commis_webui_%s_index'%self.get_app_label()))
+        return TemplateResponse(request, ('commis/%s/delete.html'%self.get_app_label(), 'commis/generic/delete.html'), {
             'opts': opts,
             'obj': obj,
             'action': 'delete',
@@ -111,21 +120,19 @@ class CommisGenericView(object):
         })
 
     def block_nav(self, obj=None):
-        opts = self.model._meta
         data = {
-            'index': reverse('commis_webui_%s_index'%opts.app_label),
-            'create': reverse('commis_webui_%s_create'%opts.app_label),
+            'index': reverse('commis_webui_%s_index'%self.get_app_label()),
+            'create': reverse('commis_webui_%s_create'%self.get_app_label()),
         }
         if obj is not None:
             data.update({
-                'show': reverse('commis_webui_%s_show'%opts.app_label, args=(obj,)),
-                'edit': reverse('commis_webui_%s_edit'%opts.app_label, args=(obj,)),
-                'delete': reverse('commis_webui_%s_delete'%opts.app_label, args=(obj,)),
+                'show': reverse('commis_webui_%s_show'%self.get_app_label(), args=(obj,)),
+                'edit': reverse('commis_webui_%s_edit'%self.get_app_label(), args=(obj,)),
+                'delete': reverse('commis_webui_%s_delete'%self.get_app_label(), args=(obj,)),
             })
         return data
 
-    @property
-    def urls(self):
+    def get_urls(self):
         from django.conf.urls.defaults import patterns, url
 
         def wrap(view):
@@ -133,26 +140,28 @@ class CommisGenericView(object):
                 return view(*args, **kwargs)
             return update_wrapper(wrapper, view)
 
-        app_label = self.model._meta.app_label
-
         urlpatterns = patterns('',
             url(r'^$',
                 wrap(self.index),
-                name='commis_webui_%s_index' % app_label),
+                name='commis_webui_%s_index' % self.get_app_label()),
             url(r'^new/$',
                 wrap(self.create),
-                name='commis_webui_%s_create' % app_label),
+                name='commis_webui_%s_create' % self.get_app_label()),
             url(r'^(?P<name>[^/]+)/delete/$',
                 wrap(self.delete),
-                name='commis_webui_%s_delete' % app_label),
+                name='commis_webui_%s_delete' % self.get_app_label()),
             url(r'^(?P<name>[^/]+)/edit/$',
                 wrap(self.edit),
-                name='commis_webui_%s_edit' % app_label),
+                name='commis_webui_%s_edit' % self.get_app_label()),
             url(r'^(?P<name>[^/]+)/$',
                 wrap(self.show),
-                name='commis_webui_%s_show' % app_label),
+                name='commis_webui_%s_show' % self.get_app_label()),
         )
         return urlpatterns
+
+    @property
+    def urls(self):
+        return self.get_urls()
 
     @classonlymethod
     def as_view(cls):
