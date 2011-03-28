@@ -160,6 +160,7 @@ body {
 }
 
 #footer {
+  clear: left;
   padding-bottom: 20px;
 }
 
