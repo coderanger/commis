@@ -1,0 +1,20 @@
+{% load commis %}
+<tr id="{{ name }}-{{ count }}" class="collapsed {% if is_dict or is_list %}parent {% endif %}{{ name }}{% if parent %} child-of-{{ name }}-{{ parent }}" style="display: none;{% endif %}">
+  <td class="table-key"><span {% if is_dict or is_list %}class="expander" {% endif %}toggle="{{ name }}-{{ count }}" />{{ key }}</td>
+  {% if is_dict or is_list %}
+  <td></td>
+  {% else %}
+  <td><div class="json-attr">{{ value }}</div></td>
+  {% endif %}
+</tr>
+{% if is_dict %}
+{% for subkey, subvalue in value.iteritems %}
+{% commis_json_tree subkey subvalue cur_count %}
+{% endfor %}
+{% else %}
+{% if is_list %}
+{% for subvalue in value %}
+{% commis_json_tree forloop.counter0 subvalue cur_count %}
+{% endfor %}
+{% endif %}
+{% endif %}

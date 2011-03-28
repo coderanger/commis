@@ -1,4 +1,6 @@
 from __future__ import absolute_import
+import collections
+
 from django import template
 from django.core.urlresolvers import reverse
 from django.utils.encoding import force_unicode
@@ -30,14 +32,31 @@ def commis_delete_confirmation(context, obj):
     }
 
 
-@register.inclusion_tag('commis/jsoneditor.html')
-def commis_jsoneditor(json):
-    return {'json': json}
+@register.inclusion_tag('commis/_json.html')
+def commis_json(name, obj):
+    return {
+        'name': name,
+        'obj': obj,
+        'count': 0,
+    }
 
 
-@register.inclusion_tag('commis/jsoneditor_includes.html', takes_context=True)
-def commis_jsoneditor_includes(context):
-    return context
+@register.inclusion_tag('commis/_json_tree.html', takes_context=True)
+def commis_json_tree(context, key, value, parent=0):
+    root_context = context.get('root_context', context)
+    root_dict = root_context.dicts[0]
+    root_dict['count'] += 1
+    return {
+        'root_context': root_context,
+        'name': context['name'],
+        'count': root_dict['count'],
+        'key': key,
+        'value': value,
+        'cur_count': root_dict['count'],
+        'parent': parent,
+        'is_dict': isinstance(value, collections.Mapping),
+        'is_list': isinstance(value, collections.Sequence) and not isinstance(value, basestring),
+    }
 
 
 @register.simple_tag()

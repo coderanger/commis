@@ -1,5 +1,5 @@
 {% extends 'commis/generic/base.html' %}
-{% load i18n %}
+{% load i18n commis %}
 
 {% block block_content %}
 <h3>{% trans 'Run List' %}</h3>
@@ -53,5 +53,6 @@
 </div>
 <div class="left">
   <h3 class="head"><a href="#">{% trans 'Attributes' %}</a></h3>
+  {% commis_json 'attr' obj.to_search %}
 </div>
 {% endblock %}

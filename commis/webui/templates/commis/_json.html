@@ -1,0 +1,14 @@
+{% load i18n commis %}
+<table id="{{ name }}" class="tree table">
+  <thead>
+    <tr>
+      <th class="first">{% trans 'Attribute' %}</th>
+      <th class="last">{% trans 'Value' %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for subkey, subvalue in obj.iteritems %}
+    {% commis_json_tree subkey subvalue %}
+    {% endfor %}
+  </tbody>
+</table>
