@@ -82,17 +82,22 @@ def create_error(msg, code):
     return HttpResponse(json.dumps({'error': msg, 'traceback': traceback.format_exc()}), status=code, content_type='application/json')
 
 
+def verify_request(request):
+    hashed_body = hash_body(request)
+    timestamp = decode_timestamp(request)
+    client = decode_client(request)
+    verify_timestamp(request, timestamp)
+    verify_signature(request, timestamp, client, hashed_body)
+    verify_body_hash(request, hashed_body)
+    return client
+
+
 def chef_api(admin=False):
     def dec(fn):
         @functools.wraps(fn)
         def wrapper(request, *args, **kwargs):
             try:
-                hashed_body = hash_body(request)
-                timestamp = decode_timestamp(request)
-                client = decode_client(request)
-                verify_timestamp(request, timestamp)
-                verify_signature(request, timestamp, client, hashed_body)
-                verify_body_hash(request, hashed_body)
+                client = verify_request(request)
                 if admin and not client.admin:
                     raise ChefAPIError(403, 'You are not allowed to take this action')
                 decode_json(request)
