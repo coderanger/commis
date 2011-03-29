@@ -108,20 +108,18 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.admin',
     'south',
     'djcelery',
     'haystack',
     'commis.api',
-    'commis.api.sandbox',
-    'commis.api.cookbook',
-    'commis.api.role',
-    'commis.api.node',
-    'commis.api.data_bag',
-    'commis.api.search',
+    'commis.sandbox',
+    'commis.cookbook',
+    'commis.role',
+    'commis.data_bag',
+    'commis.search',
     'commis.webui',
     'commis.webui.user',
-    'commis.webui.node',
+    'commis.node',
 ]
 
 # Enable PyZen optionally
@@ -141,7 +139,7 @@ djcelery.setup_loader()
 CELERY_ALWAYS_EAGER = True
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 
-from commis.api.search import backends
+from commis.search import backends
 backends.setup_backends()
 HAYSTACK_SITECONF = 'commis.search_sites'
 HAYSTACK_SEARCH_ENGINE = 'commis_whoosh'

@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import patterns, url, include
 
 from commis.webui import views
-from commis.webui.node.views import NodeView
+from commis.node.views import NodeView
 from commis.webui.user.views import UserView
 
 urlpatterns = patterns('',
