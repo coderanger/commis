@@ -1,4 +1,5 @@
 from django.conf.urls.defaults import patterns, url
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -61,8 +62,10 @@ class _BoundDispatchView(object):
 
 class CommisAPIViewMeta(type):
     def __init__(self, name, bases, d):
+        super(CommisAPIViewMeta, self).__init__(name, bases, d)
         self.views = {}
-        for name, obj in d.iteritems():
+        for name in dir(self):
+            obj = getattr(self, name)
             if hasattr(obj, '_commis_api'):
                 #view = method_decorator(chef_api(admin=obj._commis_api['admin']))(obj)
                 #view._commis_api = obj._commis_api
@@ -76,6 +79,13 @@ class CommisAPIViewMeta(type):
 class CommisAPIView(CommisGenericViewBase):
     __metaclass__ = CommisAPIViewMeta
     model = None
+
+    @api(r'', 'GET')
+    def list(self, request):
+        data = {}
+        for obj in self.model.objects.all():
+            data[obj.name] = request.build_absolute_uri(reverse('commis_api_%s_get'%self.get_app_label(), args=[obj.name]))
+        return data
 
     def get_urls(self):
         urlpatterns = patterns('')

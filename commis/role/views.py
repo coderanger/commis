@@ -11,13 +11,6 @@ from commis.utils import json
 class RoleAPIView(CommisAPIView):
     model = Role
 
-    @api(r'', 'GET')
-    def list(self, request):
-        data = {}
-        for role in Role.objects.all():
-            data[role.name] = request.build_absolute_uri(reverse('commis_api_%s_get'%self.get_app_label(), args=[role.name]))
-        return data
-
     @api(r'', 'POST', admin=True)
     def create(self, request):
         if Role.objects.filter(name=request.json['name']).exists():
