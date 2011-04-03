@@ -134,3 +134,15 @@ class CommisAPIView(CommisAPIViewBase):
 
     def update_data(self, request, obj):
         return obj
+
+    @api('DELETE', admin=True)
+    def delete(self, request, name):
+        try:
+            obj = self.model.objects.get(name=name)
+        except self.model.DoesNotExist:
+            raise ChefAPIError(404, '%s %s not found', self.model._meta.verbose_name, name)
+        obj.delete()
+        return self.delete_data(request, obj)
+
+    def delete_data(self, request, obj):
+        return obj

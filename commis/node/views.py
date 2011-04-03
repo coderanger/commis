@@ -34,12 +34,7 @@ class NodeAPIView(CommisAPIView):
     def node_delete(self, request, name):
         if not request.client.admin and not request.client.name == name:
             raise ChefAPIError(401, 'You are not allowed to take this action')
-        try:
-            node = Node.objects.get(name=name)
-        except Node.DoesNotExist:
-            raise ChefAPIError(404, 'Node %s not found', request.json['name'])
-        node.delete()
-        return node
+        return super(NodeAPIView, self).delete(request, name)
 
     @api('GET', '{name}/cookbooks')
     def node_cookbooks(self, request, name):
