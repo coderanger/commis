@@ -56,7 +56,6 @@ class _BoundDispatchView(object):
         except ChefAPIError, e:
             return create_error(e.msg, e.code)
         except Exception, e:
-            import traceback; traceback.print_exc()
             return create_error(str(e), 500)
 
 
@@ -76,16 +75,11 @@ class CommisAPIViewMeta(type):
             self.dispatch_views[url_pattern] = _DispatchView(view_map)
 
 
-class CommisAPIView(CommisGenericViewBase):
+class CommisAPIViewBase(CommisGenericViewBase):
     __metaclass__ = CommisAPIViewMeta
-    model = None
 
-    @api(r'', 'GET')
-    def list(self, request):
-        data = {}
-        for obj in self.model.objects.all():
-            data[obj.name] = request.build_absolute_uri(reverse('commis_api_%s_get'%self.get_app_label(), args=[obj.name]))
-        return data
+    def reverse(self, request, tag, *args):
+        return request.build_absolute_uri(reverse('commis_api_%s_%s'%(self.get_app_label(), tag), args=args))
 
     def get_urls(self):
         urlpatterns = patterns('')
@@ -93,3 +87,23 @@ class CommisAPIView(CommisGenericViewBase):
             bound_view = dispatch_view(self)
             urlpatterns.append(url(url_pattern, bound_view, name=bound_view.name))
         return urlpatterns
+
+
+class CommisAPIView(CommisAPIViewBase):
+    @api(r'', 'GET')
+    def list(self, request):
+        data = {}
+        for obj in self.model.objects.all():
+            data[obj.name] = self.reverse(request, 'get', obj)
+        return data
+
+    @api(r'^/(?P<name>[^/]*)', 'GET')
+    def get(self, request, name):
+        try:
+            obj = self.model.objects.get(name=name)
+        except self.model.DoesNotExist:
+            raise ChefAPIError(404, '%s %s not found', self.model._meta.verbose_name.capitalize(), name)
+        return self.get_data(request, obj)
+
+    def get_data(self, request, obj):
+        return obj
