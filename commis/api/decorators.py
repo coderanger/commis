@@ -91,24 +91,18 @@ def verify_request(request):
     verify_body_hash(request, hashed_body)
     return client
 
-
-def chef_api(admin=False):
-    def dec(fn):
-        @functools.wraps(fn)
-        def wrapper(request, *args, **kwargs):
-            try:
-                client = verify_request(request)
-                if admin and not client.admin:
-                    raise ChefAPIError(403, 'You are not allowed to take this action')
-                decode_json(request)
-                request.client = client
-                data = fn(request, *args, **kwargs)
-                if not isinstance(data, HttpResponse):
-                    data = HttpResponse(json.dumps(data), content_type='application/json')
-                return data
-            except ChefAPIError, e:
-                return create_error(e.msg, e.code)
-            except Exception, e:
-                return create_error(str(e), 500)
-        return wrapper
-    return dec
+def execute_request(view, request, *args, **kwargs):
+    if view is None:
+        return create_error('No method found', 404)
+    try:
+        client = verify_request(request)
+        decode_json(request)
+        request.client = client
+        data = view(request, *args, **kwargs)
+        if not isinstance(data, HttpResponse):
+            data = HttpResponse(json.dumps(data), content_type='application/json')
+        return data
+    except ChefAPIError, e:
+        return create_error(e.msg, e.code)
+    except Exception, e:
+        return create_error(str(e), 500)

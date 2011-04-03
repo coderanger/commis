@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from commis.api.decorators import verify_request, decode_json, create_error
+from commis.api.decorators import execute_request
 from commis.exceptions import ChefAPIError
 from commis.generic_views.base import CommisGenericViewBase
 from commis.utils import json, routes
@@ -45,22 +45,11 @@ class _BoundDispatchView(object):
 
     def __call__(self, request, *args, **kwargs):
         view = self.dispatch_view.view_map.get(request.method)
-        if view is None:
-            return create_error('No method found', 404)
-        try:
-            client = verify_request(request)
-            if view._commis_api['admin'] and not client.admin:
+        def wrapper_view(request, *args, **kwargs):
+            if view._commis_api['admin'] and not request.client.admin:
                 raise ChefAPIError(403, 'You are not allowed to take this action')
-            decode_json(request)
-            request.client = client
-            data = view(self.instance, request, *args, **kwargs)
-            if not isinstance(data, HttpResponse):
-                data = HttpResponse(json.dumps(data), content_type='application/json')
-            return data
-        except ChefAPIError, e:
-            return create_error(e.msg, e.code)
-        except Exception, e:
-            return create_error(str(e), 500)
+            return view(self.instance, request, *args, **kwargs)
+        return execute_request(wrapper_view, request, *args, **kwargs)
 
 
 class CommisAPIViewMeta(type):
