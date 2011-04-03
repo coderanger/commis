@@ -95,7 +95,9 @@ class CommisAPIViewBase(CommisGenericViewBase):
 
     def get_urls(self):
         urlpatterns = patterns('')
-        for url_pattern, dispatch_view in sorted(self.dispatch_views.iteritems(), reverse=True):
+        dispatch_views = self.dispatch_views.items()
+        dispatch_views.sort(key=lambda x: len(x[0]), reverse=True)
+        for url_pattern, dispatch_view in dispatch_views:
             bound_view = dispatch_view(self)
             urlpatterns.append(url(url_pattern, bound_view, name=bound_view.name))
         return urlpatterns
