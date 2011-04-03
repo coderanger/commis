@@ -19,14 +19,6 @@ class RoleAPIView(CommisAPIView):
         data = {'uri': request.build_absolute_uri(reverse('role_get', args=[role.name]))}
         return HttpResponse(json.dumps(data), status=201)
 
-    @api('GET')
-    def get(self, request, name):
-        try:
-            role = Role.objects.get(name=name)
-        except Role.DoesNotExist:
-            raise ChefAPIError(404, 'Role %s not found', name)
-        return role
-
     @api('PUT', admin=True)
     def update(self, request, name):
         if request.json['name'] != name:
