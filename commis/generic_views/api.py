@@ -101,6 +101,17 @@ class CommisAPIView(CommisAPIViewBase):
             data[obj.name] = self.reverse(request, 'get', obj)
         return data
 
+    @api('POST', admin=True)
+    def create(self, request):
+        if self.model.objects.filter(name=request.json['name']).exists():
+            raise ChefAPIError(409, '%s %s already exists', self.model._meta.verbose_name, request.json['name'])
+        obj = self.model.objects.from_dict(request.json)
+        data = self.create_data(request, obj)
+        return HttpResponse(json.dumps(data), status=201)
+
+    def create_data(self, request, obj):
+        return {'uri': self.reverse(request, 'get', obj)}
+
     @api('GET')
     def get(self, request, name):
         try:
