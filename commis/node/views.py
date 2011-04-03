@@ -1,18 +1,12 @@
-from django.core.urlresolvers import reverse
-from django.http import Http404, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-
-from commis.api.decorators import chef_api
-from commis.exceptions import ChefAPIError
 from commis.cookbook.models import Cookbook
+from commis.exceptions import ChefAPIError
+from commis.generic_views import CommisAPIView, api
 from commis.node.forms import NodeForm
 from commis.node.models import Node
-from commis.utils import json
 from commis.webui.views import CommisGenericView
 
 
 #from commis.exceptions import ChefAPIError
-from commis.generic_views import CommisAPIView, api
 #from commis.node.models import Node
 
 class NodeAPIView(CommisAPIView):
