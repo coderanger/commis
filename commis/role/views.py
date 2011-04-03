@@ -11,14 +11,6 @@ from commis.utils import json
 class RoleAPIView(CommisAPIView):
     model = Role
 
-    @api('POST', admin=True)
-    def create(self, request):
-        if Role.objects.filter(name=request.json['name']).exists():
-            raise ChefAPIError(409, 'Role %s already exists', request.json['name'])
-        role = Role.objects.from_dict(request.json)
-        data = {'uri': request.build_absolute_uri(reverse('role_get', args=[role.name]))}
-        return HttpResponse(json.dumps(data), status=201)
-
     @api('PUT', admin=True)
     def update(self, request, name):
         if request.json['name'] != name:
