@@ -63,6 +63,9 @@ class Cookbook(models.Model):
 
     objects = CookbookManager()
 
+    def __unicode__(self):
+        return self.name
+
     def to_dict(self, request=None):
         data = {}
         data['name'] = self.name + '-' + self.version
@@ -127,7 +130,7 @@ class CookbookFile(models.Model):
             'specificity': self.specificity,
         }
         if request:
-            data['url'] = request.build_absolute_uri(reverse('cookbook_file', args=[self.cookbook.name, self.cookbook.version, self.file.checksum]))
+            data['url'] = request.build_absolute_uri(reverse('commis_api_cookbook_file', args=[self.cookbook.name, self.cookbook.version, self.file.checksum]))
         return data
 
 

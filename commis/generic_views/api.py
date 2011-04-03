@@ -97,6 +97,7 @@ class CommisAPIView(CommisAPIViewBase):
     @api('GET')
     def list(self, request):
         data = {}
+        # This could be sped up by using .values_list('name', flat=true)
         for obj in self.model.objects.all():
             data[obj.name] = self.reverse(request, 'get', obj)
         return data
