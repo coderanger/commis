@@ -11,7 +11,7 @@ from commis.utils import json
 class RoleAPIView(CommisAPIView):
     model = Role
 
-    @api(r'', 'POST', admin=True)
+    @api('POST', admin=True)
     def create(self, request):
         if Role.objects.filter(name=request.json['name']).exists():
             raise ChefAPIError(409, 'Role %s already exists', request.json['name'])
@@ -19,7 +19,7 @@ class RoleAPIView(CommisAPIView):
         data = {'uri': request.build_absolute_uri(reverse('role_get', args=[role.name]))}
         return HttpResponse(json.dumps(data), status=201)
 
-    @api(r'^/(?P<name>[^/]*)', 'GET')
+    @api('GET')
     def get(self, request, name):
         try:
             role = Role.objects.get(name=name)
@@ -27,7 +27,7 @@ class RoleAPIView(CommisAPIView):
             raise ChefAPIError(404, 'Role %s not found', name)
         return role
 
-    @api(r'^/(?P<name>[^/]*)', 'PUT', admin=True)
+    @api('PUT', admin=True)
     def update(self, request, name):
         if request.json['name'] != name:
             raise ChefAPIError(500, 'Name mismatch')
@@ -35,7 +35,7 @@ class RoleAPIView(CommisAPIView):
             raise ChefAPIError(404, 'Role %s not found', name)
         return Role.objects.from_dict(request.json)
 
-    @api(r'^/(?P<name>[^/]*)', 'DELETE', admin=True)
+    @api('DELETE', admin=True)
     def delete(self, request, name):
         try:
             role = Role.objects.get(name=name)

@@ -6,13 +6,17 @@ from django.views.decorators.csrf import csrf_exempt
 from commis.api.decorators import verify_request, decode_json, create_error
 from commis.exceptions import ChefAPIError
 from commis.generic_views.base import CommisGenericViewBase
-from commis.utils import json
+from commis.utils import json, routes
 
-def api(url, method, admin=False):
+def api(method, url=None, admin=False):
     def dec(fn):
+        if url is not None:
+            realurl = routes.route_from_string(url)
+        else:
+            realurl = routes.route_from_function(fn)
         fn._commis_api = {
             'name': fn.__name__,
-            'url': url,
+            'url': realurl,
             'method': method,
             'admin': admin,
         }
@@ -90,14 +94,14 @@ class CommisAPIViewBase(CommisGenericViewBase):
 
 
 class CommisAPIView(CommisAPIViewBase):
-    @api(r'', 'GET')
+    @api('GET')
     def list(self, request):
         data = {}
         for obj in self.model.objects.all():
             data[obj.name] = self.reverse(request, 'get', obj)
         return data
 
-    @api(r'^/(?P<name>[^/]*)', 'GET')
+    @api('GET')
     def get(self, request, name):
         try:
             obj = self.model.objects.get(name=name)
