@@ -29,5 +29,6 @@ def _flatten_each(dest, data, key_path):
             _flatten_each(dest, value, key_path)
     else:
         dest.setdefault('_'.join(key_path), []).append(data)
-        dest.setdefault(key_path[-1], []).append(data)
+        if len(key_path) > 1:
+            dest.setdefault(key_path[-1], []).append(data)
     return dest
