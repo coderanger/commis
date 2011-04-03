@@ -130,6 +130,7 @@ except ImportError:
     pass
 
 TEST_RUNNER = 'commis.test.runner.CommisTestSuiteRunner'
+TEST_EXTRA = ['commis.utils']
 
 from django.contrib.messages import constants as message_constants
 MESSAGE_TAGS = {message_constants.INFO: 'notice', message_constants.SUCCESS: 'notice'}
