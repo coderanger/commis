@@ -1,13 +1,8 @@
 from commis.cookbook.models import Cookbook
 from commis.exceptions import ChefAPIError
-from commis.generic_views import CommisAPIView, api
+from commis.generic_views import CommisAPIView, api, CommisView
 from commis.node.forms import NodeForm
 from commis.node.models import Node
-from commis.webui.views import CommisGenericView
-
-
-#from commis.exceptions import ChefAPIError
-#from commis.node.models import Node
 
 class NodeAPIView(CommisAPIView):
     model = Node
@@ -54,6 +49,6 @@ class NodeAPIView(CommisAPIView):
         return cookbooks
 
 
-class NodeView(CommisGenericView):
+class NodeView(CommisView):
     model = Node
     form = NodeForm
