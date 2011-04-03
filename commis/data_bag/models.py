@@ -3,23 +3,31 @@ from django.db import models
 
 from commis.utils import json
 
+class DataBagManager(models.Manager):
+    def from_dict(self, data):
+        return self.get_or_create(name=data['name'])[0]
+
+
 class DataBag(models.Model):
     name = models.CharField(max_length=1024, unique=True)
 
+    objects = DataBagManager()
+
+    def __unicode__(self):
+        return self.name
+
     def to_dict(self):
-        chef_node = chef.Node(self.name, skip_load=True)
-        chef_node.automatic = self.automatic
-        chef_node.override = self.override
-        chef_node.normal = self.normal
-        chef_node.default = self.default
-        chef_node.run_list = [unicode(entry) for entry in self.run_list.all()]
-        return chef_node
+        chef_bag = chef.DataBag(self.name, skip_load=True)
+        return chef_bag
 
 
 class DataBagItem(models.Model):
     bag = models.ForeignKey(DataBag, related_name='items')
     name = models.CharField(max_length=1024)
     data = models.TextField()
+
+    def __unicode__(self):
+        return self.name
 
     def to_search(self):
         return json.loads(self.data)
