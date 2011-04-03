@@ -85,6 +85,14 @@ class CommisAPIViewBase(CommisGenericViewBase):
     def reverse(self, request, tag, *args):
         return request.build_absolute_uri(reverse('commis_api_%s_%s'%(self.get_app_label(), tag), args=args))
 
+    def get_or_404(self, name, model=None):
+        if model is None:
+            model = self.model
+        try:
+            return model.objects.get(name=name)
+        except model.DoesNotExist:
+            raise ChefAPIError(404, '%s %s not found', model._meta.verbose_name.capitalize(), name)
+
     def get_urls(self):
         urlpatterns = patterns('')
         for url_pattern, dispatch_view in sorted(self.dispatch_views.iteritems(), reverse=True):
@@ -115,10 +123,7 @@ class CommisAPIView(CommisAPIViewBase):
 
     @api('GET')
     def get(self, request, name):
-        try:
-            obj = self.model.objects.get(name=name)
-        except self.model.DoesNotExist:
-            raise ChefAPIError(404, '%s %s not found', self.model._meta.verbose_name.capitalize(), name)
+        obj = self.get_or_404(name)
         return self.get_data(request, obj)
 
     def get_data(self, request, obj):
@@ -138,10 +143,7 @@ class CommisAPIView(CommisAPIViewBase):
 
     @api('DELETE', admin=True)
     def delete(self, request, name):
-        try:
-            obj = self.model.objects.get(name=name)
-        except self.model.DoesNotExist:
-            raise ChefAPIError(404, '%s %s not found', self.model._meta.verbose_name, name)
+        obj = self.get_or_404(name)
         obj.delete()
         return self.delete_data(request, obj)
 
