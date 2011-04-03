@@ -122,3 +122,15 @@ class CommisAPIView(CommisAPIViewBase):
 
     def get_data(self, request, obj):
         return obj
+
+    @api('PUT', admin=True)
+    def update(self, request, name):
+        if request.json['name'] != name:
+            raise ChefAPIError(500, 'Name mismatch')
+        if not self.model.objects.filter(name=name).exists():
+            raise ChefAPIError(404, '%s %s not found', self.model._meta.verbose_name, name)
+        obj = self.model.objects.from_dict(request.json)
+        return self.update_data(request, obj)
+
+    def update_data(self, request, obj):
+        return obj

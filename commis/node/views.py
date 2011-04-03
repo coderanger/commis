@@ -24,17 +24,11 @@ class NodeAPIView(CommisAPIView):
             raise ChefAPIError(401, 'You are not allowed to take this action')
         return super(NodeAPIView, self).create(request)
 
-
     @api('PUT')
     def update(self, request, name):
         if not request.client.admin and not request.client.name == name:
             raise ChefAPIError(401, 'You are not allowed to take this action')
-        if request.json['name'] != name:
-            raise ChefAPIError(500, 'Name mismatch')
-        if not Node.objects.filter(name=name).exists():
-            raise ChefAPIError(404, 'Node %s not found', name)
-        return Node.objects.from_dict(request.json)
-
+        return super(NodeAPIView, self).update(request, name)
 
     @api('DELETE')
     def node_delete(self, request, name):
@@ -69,6 +63,7 @@ class NodeAPIView(CommisAPIView):
                 candidates.add(dep.name)
             cookbooks[candidate] = candidate_cookbook.to_dict(request)
         return cookbooks
+
 
 class NodeView(CommisGenericView):
     model = Node
