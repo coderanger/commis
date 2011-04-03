@@ -1,6 +1,7 @@
 from django.utils import unittest
 
 from commis.utils.dict import deep_merge, flatten_dict
+from commis.utils.routes import route_from_string, route_from_function
 
 class DictTestCase(unittest.TestCase):
     def test_deep_merge(self):
@@ -48,3 +49,21 @@ class DictTestCase(unittest.TestCase):
             'c_b': [3],
             'c_d': [4],
         })
+
+
+class RoutesTestCase(unittest.TestCase):
+    def test_from_string(self):
+        self.assertEqual(route_from_string(''), '')
+        self.assertEqual(route_from_string('{foo}'), '^/(?P<foo>[^/]+)')
+        self.assertEqual(route_from_string('{foo}/{bar}'), '^/(?P<foo>[^/]+)/(?P<bar>[^/]+)')
+
+    def test_from_function(self):
+        self.assertEqual(route_from_function(lambda: None), '')
+        self.assertEqual(route_from_function(lambda self: None), '')
+        self.assertEqual(route_from_function(lambda self, request: None), '')
+        self.assertEqual(route_from_function(lambda foo: None), '^/(?P<foo>[^/]+)')
+        self.assertEqual(route_from_function(lambda request, foo: None), '^/(?P<foo>[^/]+)')
+        self.assertEqual(route_from_function(lambda self, request, foo: None), '^/(?P<foo>[^/]+)')
+        self.assertEqual(route_from_function(lambda foo, bar: None), '^/(?P<foo>[^/]+)/(?P<bar>[^/]+)')
+        self.assertEqual(route_from_function(lambda request, foo, bar: None), '^/(?P<foo>[^/]+)/(?P<bar>[^/]+)')
+        self.assertEqual(route_from_function(lambda self, request, foo, bar: None), '^/(?P<foo>[^/]+)/(?P<bar>[^/]+)')
