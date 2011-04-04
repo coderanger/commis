@@ -28,7 +28,7 @@ def decode_client(request):
     if not user_id:
         raise ChefAPIError(401, 'Failed to authenticate. Ensure that your client key is valid')
     qs = Client.objects.filter(name=user_id.strip())
-    if not qs.exists:
+    if not qs:
         raise ChefAPIError(401, 'Failed to authenticate. Ensure that your client key is valid')
     return qs[0]
 
