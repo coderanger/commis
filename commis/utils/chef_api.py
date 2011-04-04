@@ -90,6 +90,7 @@ def verify_request(request):
     verify_body_hash(request, hashed_body)
     return client
 
+
 def execute_request(view, request, *args, **kwargs):
     if view is None:
         return create_error('No method found', 404)
