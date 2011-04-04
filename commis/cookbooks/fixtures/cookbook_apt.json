@@ -1,7 +1,7 @@
 [
   {
     "pk": 1, 
-    "model": "cookbook.cookbook", 
+    "model": "cookbooks.cookbook", 
     "fields": {
       "maintainer": "Opscode, Inc.", 
       "description": "Configures apt and apt services and an LWRP for managing apt repositories", 
@@ -14,7 +14,7 @@
   }, 
   {
     "pk": 1, 
-    "model": "cookbook.cookbookfile", 
+    "model": "cookbooks.cookbookfile", 
     "fields": {
       "name": "apt-cacher", 
       "file": 1, 
@@ -26,7 +26,7 @@
   }, 
   {
     "pk": 2, 
-    "model": "cookbook.cookbookfile", 
+    "model": "cookbooks.cookbookfile", 
     "fields": {
       "name": "apt-cacher.conf", 
       "file": 4, 
@@ -38,7 +38,7 @@
   }, 
   {
     "pk": 3, 
-    "model": "cookbook.cookbookfile", 
+    "model": "cookbooks.cookbookfile", 
     "fields": {
       "name": "apt-proxy-v2.conf", 
       "file": 10, 
@@ -50,7 +50,7 @@
   }, 
   {
     "pk": 4, 
-    "model": "cookbook.cookbookfile", 
+    "model": "cookbooks.cookbookfile", 
     "fields": {
       "name": "repository.rb", 
       "file": 3, 
@@ -62,7 +62,7 @@
   }, 
   {
     "pk": 5, 
-    "model": "cookbook.cookbookfile", 
+    "model": "cookbooks.cookbookfile", 
     "fields": {
       "name": "cacher.rb", 
       "file": 8, 
@@ -74,7 +74,7 @@
   }, 
   {
     "pk": 6, 
-    "model": "cookbook.cookbookfile", 
+    "model": "cookbooks.cookbookfile", 
     "fields": {
       "name": "default.rb", 
       "file": 2, 
@@ -86,7 +86,7 @@
   }, 
   {
     "pk": 7, 
-    "model": "cookbook.cookbookfile", 
+    "model": "cookbooks.cookbookfile", 
     "fields": {
       "name": "proxy.rb", 
       "file": 6, 
@@ -98,7 +98,7 @@
   }, 
   {
     "pk": 8, 
-    "model": "cookbook.cookbookfile", 
+    "model": "cookbooks.cookbookfile", 
     "fields": {
       "name": "metadata.json", 
       "file": 5, 
@@ -110,7 +110,7 @@
   }, 
   {
     "pk": 9, 
-    "model": "cookbook.cookbookfile", 
+    "model": "cookbooks.cookbookfile", 
     "fields": {
       "name": "metadata.rb", 
       "file": 7, 
@@ -122,7 +122,7 @@
   }, 
   {
     "pk": 10, 
-    "model": "cookbook.cookbookfile", 
+    "model": "cookbooks.cookbookfile", 
     "fields": {
       "name": "README.md", 
       "file": 11, 
@@ -134,7 +134,7 @@
   }, 
   {
     "pk": 1, 
-    "model": "cookbook.cookbookrecipe", 
+    "model": "cookbooks.cookbookrecipe", 
     "fields": {
       "cookbook": 1, 
       "name": "apt::proxy", 
@@ -143,7 +143,7 @@
   }, 
   {
     "pk": 2, 
-    "model": "cookbook.cookbookrecipe", 
+    "model": "cookbooks.cookbookrecipe", 
     "fields": {
       "cookbook": 1, 
       "name": "apt::cacher", 
@@ -152,7 +152,7 @@
   }, 
   {
     "pk": 3, 
-    "model": "cookbook.cookbookrecipe", 
+    "model": "cookbooks.cookbookrecipe", 
     "fields": {
       "cookbook": 1, 
       "name": "apt", 
@@ -161,7 +161,7 @@
   },
   {
     "pk": 1, 
-    "model": "cookbook.cookbookdependency", 
+    "model": "cookbooks.cookbookdependency", 
     "fields": {
       "cookbook": 1, 
       "name": "ruby"
@@ -169,7 +169,7 @@
   },
   {
     "pk": 1, 
-    "model": "sandbox.sandboxfile", 
+    "model": "sandboxes.sandboxfile", 
     "fields": {
       "uploaded": true, 
       "checksum": "046661f9e728b783ea90738769219d71", 
@@ -180,7 +180,7 @@
   }, 
   {
     "pk": 2, 
-    "model": "sandbox.sandboxfile", 
+    "model": "sandboxes.sandboxfile", 
     "fields": {
       "uploaded": true, 
       "checksum": "112a8c22a020417dcc1c1fd06a4312ef", 
@@ -191,7 +191,7 @@
   }, 
   {
     "pk": 3, 
-    "model": "sandbox.sandboxfile", 
+    "model": "sandboxes.sandboxfile", 
     "fields": {
       "uploaded": true, 
       "checksum": "33653076212a8b7737838198bbea2d72", 
@@ -202,7 +202,7 @@
   }, 
   {
     "pk": 4, 
-    "model": "sandbox.sandboxfile", 
+    "model": "sandboxes.sandboxfile", 
     "fields": {
       "uploaded": true, 
       "checksum": "3e4afb4ca7cb38b707b803cbb2a316a7", 
@@ -213,7 +213,7 @@
   }, 
   {
     "pk": 5, 
-    "model": "sandbox.sandboxfile", 
+    "model": "sandboxes.sandboxfile", 
     "fields": {
       "uploaded": true, 
       "checksum": "3e7cc22c3f9a1a9e8708d5c2a3cd2d64", 
@@ -224,7 +224,7 @@
   }, 
   {
     "pk": 6, 
-    "model": "sandbox.sandboxfile", 
+    "model": "sandboxes.sandboxfile", 
     "fields": {
       "uploaded": true, 
       "checksum": "434450082c67c354884c4b8b5db23ffb", 
@@ -235,7 +235,7 @@
   }, 
   {
     "pk": 7, 
-    "model": "sandbox.sandboxfile", 
+    "model": "sandboxes.sandboxfile", 
     "fields": {
       "uploaded": true, 
       "checksum": "4d80cafd968bb603d9f1a6a9422663e4", 
@@ -246,7 +246,7 @@
   }, 
   {
     "pk": 8, 
-    "model": "sandbox.sandboxfile", 
+    "model": "sandboxes.sandboxfile", 
     "fields": {
       "uploaded": true, 
       "checksum": "5479013c6f17fb6e1930ea31e8fb1df5", 
@@ -257,7 +257,7 @@
   }, 
   {
     "pk": 9, 
-    "model": "sandbox.sandboxfile", 
+    "model": "sandboxes.sandboxfile", 
     "fields": {
       "uploaded": true, 
       "checksum": "75c2828fd851a5fc22b5d9e9b283dfab", 
@@ -268,7 +268,7 @@
   }, 
   {
     "pk": 10, 
-    "model": "sandbox.sandboxfile", 
+    "model": "sandboxes.sandboxfile", 
     "fields": {
       "uploaded": true, 
       "checksum": "a67a0204d4c54848aad67a8e9de5cad1", 
@@ -279,7 +279,7 @@
   }, 
   {
     "pk": 11, 
-    "model": "sandbox.sandboxfile", 
+    "model": "sandboxes.sandboxfile", 
     "fields": {
       "uploaded": true, 
       "checksum": "c7faa6cd1213a6afff1e59ee447b9fd0", 
