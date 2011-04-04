@@ -111,14 +111,14 @@ INSTALLED_APPS = [
     'djcelery',
     'haystack',
     'commis.clients',
-    'commis.sandbox',
-    'commis.cookbook',
-    'commis.role',
-    'commis.data_bag',
+    'commis.sandboxes',
+    'commis.cookbooks',
+    'commis.roles',
+    'commis.data_bags',
     'commis.search',
+    'commis.nodes',
     'commis.webui',
     'commis.webui.user',
-    'commis.node',
 ]
 
 # Enable PyZen optionally
