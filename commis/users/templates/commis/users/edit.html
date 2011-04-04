@@ -1,0 +1,22 @@
+{% extends "commis/generic/base.html" %}
+
+{% block block_content %}
+<form method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <table class="table">
+    {% for field in form %}
+    {% if field.errors %}
+    <tr><td colspan="2">{{ field.errors }}</td></tr>
+    {% endif %}
+    <tr>
+      <td>{{ field.label_tag }}</td>
+      <td>{{ field }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <div class="group navform">
+    <input type="submit" value="Create">
+  </div>
+</form>
+{% endblock %}

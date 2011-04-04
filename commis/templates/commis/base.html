@@ -1,0 +1,92 @@
+{% load url from future %}
+{% load commis %}
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>{% block title %}Commis{% endblock %}</title>
+    <link type="text/css" href="{{ STATIC_URL }}stylesheets/base.css" rel="stylesheet" media="all" charset="utf-8" />
+    <link type="text/css" href="{{ STATIC_URL }}stylesheets/themes/djime-cerulean/style.css" rel="stylesheet" media="all" charset="utf-8" />
+    <link type="text/css" href="{{ STATIC_URL }}stylesheets/chef.css" rel="stylesheet" media="all" charset="utf-8" />
+    <link type="text/css" href="{{ STATIC_URL }}stylesheets/jquery-ui-1.7.1.custom.css" rel="stylesheet" media="all" charset="utf-8" />
+    <link type="text/css" href="{{ STATIC_URL }}stylesheets/jquery.treeTable.css" rel="stylesheet" media="all" charset="utf-8" />
+    <link type="text/css" href="{{ STATIC_URL }}stylesheets/jsonedit_main.css" rel="stylesheet" media="all" charset="utf-8" />
+    <link type="text/css" href="{{ STATIC_URL }}stylesheets/jquery.suggest.css" rel="stylesheet" media="all" charset="utf-8" />
+    <script type="text/javascript" src="{{ STATIC_URL }}javascripts/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}javascripts/jquery.jeditable.mini.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}javascripts/jquery.livequery.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}javascripts/jquery.localscroll.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}javascripts/jquery.scrollTo.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}javascripts/jquery.tools.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}javascripts/jquery-ui-1.7.1.custom.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}javascripts/jquery.treeTable.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}javascripts/chef.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}javascripts/drop_down_menu.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}javascripts/jquery.suggest.js"></script>
+    {% block extrahead %}{% endblock %}
+  </head>
+  <body>
+    <div id="container">
+      <div id="header">
+        <h1><a href="{% url 'commis_webui' %}">Commis</a></h1>
+        <div id="user-navigation">
+          <ul>
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'commis_webui_users_edit' user.username %}">Edit account</a></li>
+            <li><a href="{% url 'django.contrib.auth.views.logout' %}?next={{ request.path }}" confirm="Are you sure you want to logout?">Logout {{ user.username }}</a></li>
+            {% else %}
+            <li><a href="{% url 'django.contrib.auth.views.login' %}?next={{ request.path }}">Login</a></li>
+            {% endif %}
+          </ul>
+          <div class="clear"></div>
+        </div>
+        <div id="main-navigation">
+          <ul>
+            {% commis_nav_item 'Search' 'commis_webui_search' %}
+            {% commis_nav_item 'Status' 'commis_webui_status' %}
+            {% commis_nav_item 'Roles' 'commis_webui_roles_list' %}
+            {% commis_nav_item 'Nodes' 'commis_webui_nodes_list' %}
+            {% commis_nav_item 'Cookbooks' 'commis_webui_cookbooks_list' %}
+            {% commis_nav_item 'Databags' 'commis_webui_data_bags_list' %}
+            {% commis_nav_item 'Clients' 'commis_webui_clients_list' %}
+            {% commis_nav_item 'Users' 'commis_webui_users_list' %}
+          </ul>
+          <div class="clear"></div>
+        </div>
+      </div>
+      <div id="wrapper">
+        <div id="main">
+          {% if messages %}
+          <div id="block-messages" class="block">
+            <div class="content">
+              <h2 class="title">Messages</h2>
+              <div class="inner">
+                <div class="flash">
+                  {% for message in messages %}
+                  <div class="message {{ message.tags }}">
+                    <p>{{ message }}</p>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {% block content %}{% endblock %}
+         </div>
+          <div id="footer">
+            <div class="block">
+              <p>Version 0.1 &mdash; Copyright &copy; 2011 Noah Kantrowitz</p>
+            </div>
+          </div>
+        </div>
+        <div id="sidebar">
+          <div class="block notice" id="sidebar_block_notice">{% block sidebar_notice %}{% endblock %}</div>
+          <div class="block" id="sidebar_block">{% block sidebar %}{% endblock %}</div>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+  </body>
+</html>

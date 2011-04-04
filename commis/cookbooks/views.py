@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 
 from commis.exceptions import ChefAPIError
-from commis.generic_views import CommisAPIView, api
+from commis.generic_views import CommisAPIView, api, CommisView
 from commis.cookbooks.models import Cookbook, CookbookFile
 
 class CookbookAPIView(CommisAPIView):
@@ -43,3 +43,7 @@ class CookbookAPIView(CommisAPIView):
         cookbook_file = qs[0]
         response = HttpResponse(open(cookbook_file.file.path, 'rb').read(), content_type=cookbook_file.file.content_type)
         return response
+
+
+class CookbookView(CommisView):
+    model = Cookbook

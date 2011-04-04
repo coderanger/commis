@@ -1,0 +1,12 @@
+{% extends "commis/generic/base.html" %}
+
+{% block block_content %}
+<div class="left">
+  <h3>Superuser</h3>
+  {% if cur_user.is_superuser %}
+  True
+  {% else %}
+  False
+  {% endif %}
+</div>
+{% endblock %}

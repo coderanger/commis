@@ -12,7 +12,7 @@ class NodeRunList(forms.SelectMultiple):
         self.environment = environment
 
     def render(self, name, value, attrs=None):
-        return render_to_string('commis/node/_run_list.html', {
+        return render_to_string('commis/nodes/_run_list.html', {
             'value': value,
             'available_roles': Role.objects.all(),
             'available_recipes': CookbookRecipe.objects.all(),

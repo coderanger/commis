@@ -4,14 +4,13 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
-from django.utils.decorators import classonlymethod
 from django.utils.functional import update_wrapper
 from django.utils.translation import ugettext as _
 
 from commis.generic_views.base import CommisGenericViewBase
 from commis.webui.utils import get_deleted_objects
 
-class CommisView(CommisGenericViewBase):
+class CommisViewBase(CommisGenericViewBase):
     form = None
     search_key = 'name'
 
@@ -28,9 +27,24 @@ class CommisView(CommisGenericViewBase):
     def get_object(self, request, name):
         return get_object_or_404(self.model, **{self.search_key: name})
 
-    def index(self, request):
+    def block_nav(self, obj=None):
+        data = {
+            'index': reverse('commis_webui_%s_list'%self.get_app_label()),
+            'create': reverse('commis_webui_%s_create'%self.get_app_label()),
+        }
+        if obj is not None:
+            data.update({
+                'show': reverse('commis_webui_%s_show'%self.get_app_label(), args=(obj,)),
+                'edit': reverse('commis_webui_%s_edit'%self.get_app_label(), args=(obj,)),
+                'delete': reverse('commis_webui_%s_delete'%self.get_app_label(), args=(obj,)),
+            })
+        return data
+
+
+class CommisView(CommisViewBase):
+    def list(self, request):
         opts = self.model._meta
-        return TemplateResponse(request, ('commis/%s/index.html'%self.get_app_label(), 'commis/generic/index.html'), {
+        return TemplateResponse(request, ('commis/%s/list.html'%self.get_app_label(), 'commis/generic/list.html'), {
             'opts': opts,
             'object_list': self.model.objects.all(),
             'action': 'list',
@@ -49,7 +63,7 @@ class CommisView(CommisGenericViewBase):
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Created %s %s'%(opts.verbose_name, form.cleaned_data[self.search_key]))
-                return HttpResponseRedirect(reverse('commis_webui_%s_index'%self.get_app_label()))
+                return HttpResponseRedirect(reverse('commis_webui_%s_list'%self.get_app_label()))
         else:
             form = form_class()
         return TemplateResponse(request, ('commis/%s/edit.html'%self.get_app_label(), 'commis/generic/edit.html'), {
@@ -81,7 +95,7 @@ class CommisView(CommisGenericViewBase):
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Edited %s %s'%(opts.verbose_name, form.cleaned_data[self.search_key]))
-                return HttpResponseRedirect(reverse('commis_webui_%s_index'%self.get_app_label()))
+                return HttpResponseRedirect(reverse('commis_webui_%s_list'%self.get_app_label()))
         else:
             form = form_class(instance=obj)
         return TemplateResponse(request, ('commis/%s/edit.html'%self.get_app_label(), 'commis/generic/edit.html'), {
@@ -102,7 +116,7 @@ class CommisView(CommisGenericViewBase):
                 raise PermissionDenied
             obj.delete()
             messages.success(request, _(u'Deleted %s %s')%(opts.verbose_name, obj))
-            return HttpResponseRedirect(reverse('commis_webui_%s_index'%self.get_app_label()))
+            return HttpResponseRedirect(reverse('commis_webui_%s_list'%self.get_app_label()))
         return TemplateResponse(request, ('commis/%s/delete.html'%self.get_app_label(), 'commis/generic/delete.html'), {
             'opts': opts,
             'obj': obj,
@@ -114,19 +128,6 @@ class CommisView(CommisGenericViewBase):
             'protected': protected,
         })
 
-    def block_nav(self, obj=None):
-        data = {
-            'index': reverse('commis_webui_%s_index'%self.get_app_label()),
-            'create': reverse('commis_webui_%s_create'%self.get_app_label()),
-        }
-        if obj is not None:
-            data.update({
-                'show': reverse('commis_webui_%s_show'%self.get_app_label(), args=(obj,)),
-                'edit': reverse('commis_webui_%s_edit'%self.get_app_label(), args=(obj,)),
-                'delete': reverse('commis_webui_%s_delete'%self.get_app_label(), args=(obj,)),
-            })
-        return data
-
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url
 
@@ -137,8 +138,8 @@ class CommisView(CommisGenericViewBase):
 
         urlpatterns = patterns('',
             url(r'^$',
-                wrap(self.index),
-                name='commis_webui_%s_index' % self.get_app_label()),
+                wrap(self.list),
+                name='commis_webui_%s_list' % self.get_app_label()),
             url(r'^new/$',
                 wrap(self.create),
                 name='commis_webui_%s_create' % self.get_app_label()),

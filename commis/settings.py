@@ -110,6 +110,7 @@ INSTALLED_APPS = [
     'south',
     'djcelery',
     'haystack',
+    'commis',
     'commis.clients',
     'commis.sandboxes',
     'commis.cookbooks',
@@ -117,8 +118,7 @@ INSTALLED_APPS = [
     'commis.data_bags',
     'commis.search',
     'commis.nodes',
-    'commis.webui',
-    'commis.webui.user',
+    'commis.users',
 ]
 
 # Enable PyZen optionally

@@ -1,7 +1,7 @@
 import itertools
 
 from commis.data_bags.models import DataBag
-from commis.generic_views import CommisAPIViewBase, api
+from commis.generic_views import CommisAPIViewBase, api, CommisViewBase
 from commis.exceptions import ChefAPIError
 from commis.search.query_transformer import transform_query, DEFAULT_INDEXES
 
@@ -28,3 +28,18 @@ class SearchAPIView(CommisAPIViewBase):
             'start': start,
             'rows': rows,
         }
+
+class SearchView(CommisViewBase):
+    app_label = 'search'
+
+    def search(self, request):
+        pass
+
+    def get_urls(self):
+        from django.conf.urls.defaults import patterns, url
+        urlpatterns = patterns('',
+            url(r'^$',
+                self.search,
+                name='commis_webui_%s' % self.get_app_label()),
+        )
+        return urlpatterns
