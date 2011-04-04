@@ -2,9 +2,9 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 
-from commis.cookbook.models import CookbookRecipe
-from commis.node.models import Node
-from commis.role.models import Role
+from commis.cookbooks.models import CookbookRecipe
+from commis.nodes.models import Node
+from commis.roles.models import Role
 
 class NodeRunList(forms.SelectMultiple):
     def __init__(self, attrs=None, environment=None):

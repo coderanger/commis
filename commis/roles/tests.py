@@ -1,7 +1,7 @@
 import chef
 
 from commis.test import ChefTestCase
-from commis.role.models import Role
+from commis.roles.models import Role
 
 class RoleAPITestCase(ChefTestCase):
     def test_list(self):

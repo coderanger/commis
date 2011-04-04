@@ -1,6 +1,6 @@
 import itertools
 
-from commis.data_bag.models import DataBag
+from commis.data_bags.models import DataBag
 from commis.generic_views import CommisAPIViewBase, api
 from commis.exceptions import ChefAPIError
 from commis.search.query_transformer import transform_query, DEFAULT_INDEXES

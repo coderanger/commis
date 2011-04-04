@@ -1,6 +1,6 @@
 from haystack import indexes, site
 
-from commis.data_bag.models import DataBagItem
+from commis.data_bags.models import DataBagItem
 from commis.search.indexes import CommisSearchIndex
 
 class DataBagItemIndex(CommisSearchIndex):

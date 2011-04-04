@@ -2,7 +2,7 @@ from django.http import HttpResponse
 
 from commis.exceptions import ChefAPIError
 from commis.generic_views import CommisAPIView, api
-from commis.cookbook.models import Cookbook, CookbookFile
+from commis.cookbooks.models import Cookbook, CookbookFile
 
 class CookbookAPIView(CommisAPIView):
     model = Cookbook

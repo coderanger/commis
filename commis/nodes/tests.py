@@ -1,7 +1,7 @@
 import chef
 
 from commis.test import ChefTestCase
-from commis.node.models import Node
+from commis.nodes.models import Node
 
 class NodeAPITestCase(ChefTestCase):
     fixtures = ['cookbook_apt']

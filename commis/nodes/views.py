@@ -1,8 +1,8 @@
-from commis.cookbook.models import Cookbook
+from commis.cookbooks.models import Cookbook
 from commis.exceptions import ChefAPIError
 from commis.generic_views import CommisAPIView, api, CommisView
-from commis.node.forms import NodeForm
-from commis.node.models import Node
+from commis.nodes.forms import NodeForm
+from commis.nodes.models import Node
 
 class NodeAPIView(CommisAPIView):
     model = Node

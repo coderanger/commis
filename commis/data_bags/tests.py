@@ -1,7 +1,7 @@
 import chef
 
 from commis.test import ChefTestCase
-from commis.data_bag.models import DataBag, DataBagItem
+from commis.data_bags.models import DataBag, DataBagItem
 from commis.utils import json
 
 class DataBagAPITestCase(ChefTestCase):

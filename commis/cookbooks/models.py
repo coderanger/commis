@@ -2,7 +2,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 from commis.exceptions import ChefAPIError
-from commis.sandbox.models import SandboxFile
+from commis.sandboxes.models import SandboxFile
 
 class CookbookManager(models.Manager):
     def from_dict(self, data):
@@ -130,7 +130,7 @@ class CookbookFile(models.Model):
             'specificity': self.specificity,
         }
         if request:
-            data['url'] = request.build_absolute_uri(reverse('commis_api_cookbook_file', args=[self.cookbook.name, self.cookbook.version, self.file.checksum]))
+            data['url'] = request.build_absolute_uri(reverse('commis_api_cookbooks_file', args=[self.cookbook.name, self.cookbook.version, self.file.checksum]))
         return data
 
 

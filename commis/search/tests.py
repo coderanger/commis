@@ -2,7 +2,7 @@ import chef
 from django.utils import unittest
 
 from commis.test import ChefTestCase
-from commis.data_bag.models import DataBag
+from commis.data_bags.models import DataBag
 from commis.utils import json
 
 class SearchAPITestCase(ChefTestCase):

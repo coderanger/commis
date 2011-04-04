@@ -2,7 +2,7 @@ import hashlib
 
 from commis.generic_views import CommisAPIViewBase, api
 from commis.exceptions import ChefAPIError
-from commis.sandbox.models import Sandbox, SandboxFile
+from commis.sandboxes.models import Sandbox, SandboxFile
 from commis.db import update
 
 class SandboxAPIView(CommisAPIViewBase):

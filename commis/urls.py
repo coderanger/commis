@@ -1,11 +1,11 @@
 from django.conf.urls.defaults import patterns, url, include
 
 from commis.clients.views import ClientAPIView
-from commis.cookbook.views import CookbookAPIView
-from commis.data_bag.views import DataBagAPIView
-from commis.node.views import NodeAPIView
-from commis.role.views import RoleAPIView
-from commis.sandbox.views import SandboxAPIView
+from commis.cookbooks.views import CookbookAPIView
+from commis.data_bags.views import DataBagAPIView
+from commis.nodes.views import NodeAPIView
+from commis.roles.views import RoleAPIView
+from commis.sandboxes.views import SandboxAPIView
 from commis.search.views import SearchAPIView
 
 urlpatterns = patterns('',

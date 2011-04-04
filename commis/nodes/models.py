@@ -1,7 +1,7 @@
 import chef
 from django.db import models
 
-from commis.role.models import Role
+from commis.roles.models import Role
 from commis.utils import json
 from commis.utils.dict import deep_merge
 

@@ -2,7 +2,7 @@ import os
 
 from commis import conf
 from commis.test import ChefTestCase
-from commis.sandbox.models import SandboxFile
+from commis.sandboxes.models import SandboxFile
 
 class SandboxAPITestCase(ChefTestCase):
     def test_create(self):

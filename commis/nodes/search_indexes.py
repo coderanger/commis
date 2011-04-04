@@ -1,6 +1,6 @@
 from haystack import site
 
-from commis.node.models import Node
+from commis.nodes.models import Node
 from commis.search.indexes import CommisSearchIndex
 
 class NodeIndex(CommisSearchIndex):

@@ -2,7 +2,7 @@ from django.http import HttpResponse
 
 from commis.exceptions import ChefAPIError
 from commis.generic_views import CommisAPIView, api
-from commis.data_bag.models import DataBag, DataBagItem
+from commis.data_bags.models import DataBag, DataBagItem
 from commis.db import update
 
 class DataBagAPIView(CommisAPIView):
