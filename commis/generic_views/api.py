@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from commis.api.decorators import execute_request
+from commis.utils.chef_api import execute_request
 from commis.exceptions import ChefAPIError
 from commis.generic_views.base import CommisGenericViewBase
 from commis.utils import json, routes

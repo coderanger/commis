@@ -1,6 +1,5 @@
 import base64
 import datetime
-import functools
 import itertools
 import traceback
 
@@ -8,9 +7,9 @@ from chef.auth import sha1_base64, canonical_request
 from chef.rsa import SSLError
 from django.http import HttpResponse
 
-from commis.api import conf
-from commis.api.exceptions import ChefAPIError
-from commis.api.models import Client
+from commis import conf
+from commis.exceptions import ChefAPIError
+from commis.clients.models import Client
 from commis.utils import json
 
 def decode_timestamp(request):

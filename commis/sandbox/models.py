@@ -4,7 +4,7 @@ from django.db import models
 from django_extensions.db.fields import UUIDField, CreationDateTimeField
 
 from commis import conf
-from commis.api.models import Client
+from commis.clients.models import Client
 
 class Sandbox(models.Model):
     uuid = UUIDField()

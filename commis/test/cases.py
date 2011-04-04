@@ -8,7 +8,7 @@ from django.test import TestCase
 import chef
 
 from commis import conf
-from commis.api.models import Client
+from commis.clients.models import Client
 
 
 class TestChefAPI(chef.ChefAPI):

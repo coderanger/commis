@@ -1,1 +1,1 @@
-from commis.test.cases import ChefTestCase
+from commis.test.cases import ChefTestCase, TestChefAPI
