@@ -34,7 +34,6 @@ class _DispatchView(object):
 
 class _BoundDispatchView(object):
     def __init__(self, dispatch_view, instance):
-        csrf_exempt(self)
         self.dispatch_view = dispatch_view
         self.instance = instance
         if 'GET' in self.dispatch_view.view_map:
@@ -88,7 +87,7 @@ class CommisAPIViewBase(CommisGenericViewBase):
         dispatch_views.sort(key=lambda x: len(x[0]), reverse=True)
         for url_pattern, dispatch_view in dispatch_views:
             bound_view = dispatch_view(self)
-            urlpatterns.append(url(url_pattern, bound_view, name=bound_view.name))
+            urlpatterns.append(url(url_pattern, csrf_exempt(bound_view), name=bound_view.name))
         return urlpatterns
 
 
