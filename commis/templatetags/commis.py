@@ -5,7 +5,7 @@ from django import template
 from django.core.urlresolvers import reverse
 from django.utils.encoding import force_unicode
 
-from commis.webui.utils import get_deleted_objects
+from commis.utils.deleted_objects import get_deleted_objects
 
 register = template.Library()
 

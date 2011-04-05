@@ -8,7 +8,7 @@ from django.utils.functional import update_wrapper
 from django.utils.translation import ugettext as _
 
 from commis.generic_views.base import CommisGenericViewBase
-from commis.webui.utils import get_deleted_objects
+from commis.utils.deleted_objects import get_deleted_objects
 
 class CommisViewBase(CommisGenericViewBase):
     form = None
