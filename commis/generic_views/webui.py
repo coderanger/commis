@@ -29,6 +29,7 @@ class CommisViewBase(CommisGenericViewBase):
 
     def block_nav(self, obj=None):
         data = {
+            'name': self.model and self.model.__name__.lower() or self.get_app_label(),
             'index': reverse('commis_webui_%s_list'%self.get_app_label()),
             'create': reverse('commis_webui_%s_create'%self.get_app_label()),
         }

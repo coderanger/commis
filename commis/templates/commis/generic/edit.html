@@ -2,8 +2,8 @@
 {% load i18n %}
 
 {% block block_content_outer %}
-<div class="content {{ opts.app_label }}FormContainer">
-  <form method="post" id="{{ action }}_{{ opts.app_label }}" class="form">
+<div class="content {{ block_nav.name }}FormContainer">
+  <form method="post" id="{{ action }}_{{ block_nav.name }}" class="form">
     {% csrf_token %}
     {{ form.non_field_errors }}
     <div class="group form">
