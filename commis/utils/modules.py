@@ -9,9 +9,11 @@ def guess_app(obj):
         name = obj
     else:
         name = obj.__module__
+    possibles = []
     for app in settings.INSTALLED_APPS:
         if name.startswith(app):
-            return app
+            possibles.append(app)
+    return max(possibles, key=len)
 
 def guess_app_label(obj):
     app = guess_app(obj)
