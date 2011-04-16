@@ -1,7 +1,7 @@
 import chef
 from chef.rsa import Key
 from django.db import models
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from commis import conf
 from commis.db import update
