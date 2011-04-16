@@ -1,0 +1,13 @@
+{% extends "commis/generic/base.html" %}
+{% load i18n %}
+
+{% block block_content %}
+<div class="left">
+  <h3>{% trans 'Admin' %}</h3>
+  {% if obj.admin %}
+  True
+  {% else %}
+  False
+  {% endif %}
+</div>
+{% endblock %}

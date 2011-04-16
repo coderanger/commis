@@ -1,4 +1,5 @@
 from commis import conf
+from commis.clients.forms import ClientForm
 from commis.clients.models import Client
 from commis.exceptions import ChefAPIError
 from commis.generic_views import CommisAPIView, api, CommisView
@@ -15,3 +16,4 @@ class ClientAPIView(CommisAPIView):
 
 class ClientView(CommisView):
     model = Client
+    form = ClientForm
