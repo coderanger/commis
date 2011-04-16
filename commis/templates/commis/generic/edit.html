@@ -12,7 +12,20 @@
       <span class="description">{% blocktrans with verbose_name=opts.verbose_name %}The name of the {{ verbose_name }}{% endblocktrans %}</span>
     </div>
 
-    {% block edit_content %}{% endblock %}
+    {% block edit_content %}
+      {% for field in form %}
+      {% if field.name  != 'name' %}
+      <div class="group form">
+        {% if field.errors %}
+        <div class="errors">{{ field.errors }}</div>
+        {% endif %}
+        {{ field.label_tag }}
+        {{ field }}
+        <span class="description">{{ field.help_text }}</span>
+      </div>
+      {% endif %}
+      {% endfor %}
+    {% endblock %}
 
     <div class="group" style="clear:both;">
       <div class="actions_bar">
