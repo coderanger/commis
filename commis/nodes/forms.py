@@ -27,7 +27,7 @@ class MultipleChoiceAnyField(forms.MultipleChoiceField):
 
 
 class NodeForm(forms.ModelForm):
-    run_list = MultipleChoiceAnyField()
+    run_list = MultipleChoiceAnyField(required=False)
 
     class Meta:
         model = Node
