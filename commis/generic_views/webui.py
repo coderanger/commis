@@ -64,7 +64,7 @@ class CommisView(CommisViewBase):
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Created %s %s'%(opts.verbose_name, form.cleaned_data[self.search_key]))
-                return HttpResponseRedirect(reverse('commis_webui_%s_list'%self.get_app_label()))
+                return self.change_redirect(request, 'create', form.instance)
         else:
             form = form_class()
         return TemplateResponse(request, ('commis/%s/edit.html'%self.get_app_label(), 'commis/generic/edit.html'), {
@@ -96,7 +96,7 @@ class CommisView(CommisViewBase):
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Edited %s %s'%(opts.verbose_name, form.cleaned_data[self.search_key]))
-                return HttpResponseRedirect(reverse('commis_webui_%s_list'%self.get_app_label()))
+                return self.change_redirect(request, 'edit', obj)
         else:
             form = form_class(instance=obj)
         return TemplateResponse(request, ('commis/%s/edit.html'%self.get_app_label(), 'commis/generic/edit.html'), {
@@ -117,7 +117,7 @@ class CommisView(CommisViewBase):
                 raise PermissionDenied
             obj.delete()
             messages.success(request, _(u'Deleted %s %s')%(opts.verbose_name, obj))
-            return HttpResponseRedirect(reverse('commis_webui_%s_list'%self.get_app_label()))
+            return self.change_redirect(request, 'delete', obj)
         return TemplateResponse(request, ('commis/%s/delete.html'%self.get_app_label(), 'commis/generic/delete.html'), {
             'opts': opts,
             'obj': obj,
@@ -128,6 +128,9 @@ class CommisView(CommisViewBase):
             'perms_lacking': perms_needed,
             'protected': protected,
         })
+
+    def change_redirect(self, request, action, obj):
+        return HttpResponseRedirect(reverse('commis_webui_%s_list'%self.get_app_label()))
 
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url
