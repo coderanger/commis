@@ -156,6 +156,7 @@ INSTALLED_APPS = [
     'commis.search',
     'commis.nodes',
     'commis.users',
+    'commis.status',
 ]
 
 # Enable PyZen optionally

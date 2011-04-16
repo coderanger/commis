@@ -1,0 +1,86 @@
+{% extends "commis/block.html" %}
+{% load url from future %}
+{% load i18n commis commis_status %}
+
+{% block block_content %}
+<table class="table">
+  <thead>
+    <tr>
+      <th class="first">{% trans 'Node Name' %}</th>
+      <th>{% trans 'Platform' %}</th>
+      <th>{% trans 'FQDN' %}</th>
+      <th>{% trans 'IP Address' %}</th>
+      <th>{% trans 'Uptime' %}</th>
+      <th>{% trans 'Last Check-in' %}</th>
+      <th class="last">{% trans 'Run List' %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for node in nodes %}
+      {% with node_data=node.to_search %}
+      <tr class="{% cycle 'even' 'odd' %}">
+        <td><a href="{% url 'commis_webui_nodes_show' node %}">{{ node }}</a></td>
+        <td>{{ node_data.platform }} {{ node_data.platform_version }}</td>
+        <td>{{ node_data.fqdn }}</td>
+        <td>{{ node_data.ipaddress }}</td>
+        <td>
+        {% if node_data.uptime %}
+          <div class="accordion">
+            <a href="#" class="tooltip">{{ node_data.uptime|commis_status_short_uptime }}</a>
+            <div class="tooltip">
+              <table class="table tooltip">
+                <tbody><tr><td>{{ node_data.uptime }}</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        {% endif %}
+        </td>
+        {% if node_data.ohai_time %}
+        <td>SOMETHING</td>
+        {% else %}
+        <td>{% trans 'Not checked in' %}</td>
+        {% endif %}
+        <td>
+          {% if node.run_list %}
+          <div class="accordion">
+            <a href="#" class="tooltip">{% trans 'Run List' %}</a>
+            <div class="tooltip">
+              <table class="table tooltip">
+                <thead>
+                  <tr>
+                    <th class="first">{% trans 'Position' %}</th>
+                    <th>{% trans 'Name' %}</th>
+                    <th>{% trans 'Version' %}</th>
+                    <th class="last">{% trans 'Type' %}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for entry in node.run_list.all %}
+                    <td>{{ forloop.counter0 }}</td>
+                    <td>{{ entry.name }}</td>
+                    <td>{{ entry.version }}</td>
+                    <td>{{ entry.type }}</td>
+                  {% empty %}
+                    <td colspan="4">
+                    {% blocktrans %}This node has no roles or recipes applied.{% endblocktrans %}
+                    </td>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {% endif %}
+        </td>
+      </tr>
+      {% endwith %}
+    {% empty %}
+      <tr><td colspan="7">
+      {% url 'commis_webui_nodes_list' as client_url %}
+      {% blocktrans %}
+      You appear to have no nodes - try connecting one, or creating or editing a <a href="{{ client_url }}">client</a>.
+      {% endblocktrans %}
+      </td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
