@@ -36,7 +36,7 @@
         {% endif %}
         </td>
         {% if node_data.ohai_time %}
-        <td>SOMETHING</td>
+        <td class="flash">{% commis_status_last_checkin node_data.ohai_time %}</td>
         {% else %}
         <td>{% trans 'Not checked in' %}</td>
         {% endif %}
