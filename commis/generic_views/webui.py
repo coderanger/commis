@@ -66,13 +66,10 @@ class CommisView(CommisViewBase):
             raise InsuffcientPermissions(self.model, 'list')
         return TemplateResponse(request, ('commis/%s/list.html'%self.get_app_label(), 'commis/generic/list.html'), {
             'opts': opts,
-            'object_list': self.model.objects.all(),
+            'object_list': [(obj, self.block_nav(request, obj)) for obj in self.model.objects.all()],
             'action': 'list',
             'block_title': opts.verbose_name_plural.capitalize(),
             'block_nav': self.block_nav(request),
-            'show_view': 'commis_webui_%s_show'%self.get_app_label(),
-            'edit_view': 'commis_webui_%s_edit'%self.get_app_label(),
-            'delete_view': 'commis_webui_%s_delete'%self.get_app_label(),
         })
 
     def create(self, request):
