@@ -40,7 +40,8 @@ class CommisViewBase(CommisGenericViewBase):
             'edit': 'change',
             'delete': 'delete',
         }[action]
-        return request.user.has_perm('%s.%s_%s'%(self.get_app_label(), django_action, self.get_model_name().lower()), obj)
+        permission = '%s.%s_%s'%(self.get_app_label(), django_action, self.get_model_name().lower())
+        return request.user.has_perm(permission)
 
     def block_nav(self, request, obj=None):
         data = {
