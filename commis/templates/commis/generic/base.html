@@ -5,11 +5,19 @@
 {% block block_title %}{{ block_title }}{% endblock %}
 
 {% block block_nav %}
-<li class="first{% if action == 'list' %} active{% endif %}"><a href="{{ block_nav.index }}">{% trans 'List' %}</a></li>
+{% if block_nav.list %}
+<li class="first{% if action == 'list' %} active{% endif %}"><a href="{{ block_nav.list }}">{% trans 'List' %}</a></li>
+{% endif %}
+{% if block_nav.create %}
 <li {% if action == 'create' %}class="active"{% endif %}><a href="{{ block_nav.create }}">{% trans 'Create' %}</a></li>
-{% if action != 'list' and action != 'create' %}
+{% endif %}
+{% if block_nav.show %}
 <li {% if action == 'show' %}class="active"{% endif %}><a href="{{ block_nav.show }}">{% trans 'Show' %}</a></li>
+{% endif %}
+{% if block_nav.edit %}
 <li {% if action == 'edit' %}class="active"{% endif %}><a href="{{ block_nav.edit }}">{% trans 'Edit' %}</a></li>
+{% endif %}
+{% if block_nav.delete %}
 <li {% if action == 'delete' %}class="active"{% endif %}><a href="{{ block_nav.delete }}">{% trans 'Delete' %}</a></li>
 {% endif %}
 {% endblock %}

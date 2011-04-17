@@ -7,6 +7,7 @@ from django.template.response import TemplateResponse
 from django.utils.functional import update_wrapper
 from django.utils.translation import ugettext as _
 
+from commis.exceptions import InsuffcientPermissions
 from commis.generic_views.base import CommisGenericViewBase
 from commis.utils.deleted_objects import get_deleted_objects
 
@@ -29,18 +30,31 @@ class CommisViewBase(CommisGenericViewBase):
     def get_object(self, request, name):
         return get_object_or_404(self.model, **{self.search_key: name})
 
-    def block_nav(self, obj=None):
+    def has_permission(self, request, action, obj=None):
+        if action == 'list':
+            # I don't, yet, have an actual Django permission for list
+            return request.user.is_authenticated()
+        django_action = {
+            'create': 'add',
+            'edit': 'change',
+            'delete': 'delete',
+        }[action]
+        return request.user.has_perm('%s.%s_%s'%(self.get_app_label(), django_action, self.model._meta.object_name.lower()), obj)
+
+    def block_nav(self, request, obj=None):
         data = {
             'name': self.model and self.model.__name__.lower() or self.get_app_label(),
-            'index': reverse('commis_webui_%s_list'%self.get_app_label()),
-            'create': reverse('commis_webui_%s_create'%self.get_app_label()),
+            'list': reverse('commis_webui_%s_list'%self.get_app_label()),
         }
+        if self.has_permission(request, 'create'):
+            data['create'] = reverse('commis_webui_%s_create'%self.get_app_label())
         if obj is not None:
-            data.update({
-                'show': reverse('commis_webui_%s_show'%self.get_app_label(), args=(obj,)),
-                'edit': reverse('commis_webui_%s_edit'%self.get_app_label(), args=(obj,)),
-                'delete': reverse('commis_webui_%s_delete'%self.get_app_label(), args=(obj,)),
-            })
+            if self.has_permission(request, 'show', obj):
+                data['show'] = reverse('commis_webui_%s_show'%self.get_app_label(), args=(obj,))
+            if self.has_permission(request, 'edit', obj):
+                data['edit'] = reverse('commis_webui_%s_edit'%self.get_app_label(), args=(obj,))
+            if self.has_permission(request, 'delete', obj):
+                data['delete'] = reverse('commis_webui_%s_delete'%self.get_app_label(), args=(obj,))
         return data
 
 
@@ -52,13 +66,15 @@ class CommisView(CommisViewBase):
             'object_list': self.model.objects.all(),
             'action': 'list',
             'block_title': opts.verbose_name_plural.capitalize(),
-            'block_nav': self.block_nav(),
+            'block_nav': self.block_nav(request),
             'show_view': 'commis_webui_%s_show'%self.get_app_label(),
             'edit_view': 'commis_webui_%s_edit'%self.get_app_label(),
             'delete_view': 'commis_webui_%s_delete'%self.get_app_label(),
         })
 
     def create(self, request):
+        if not self.has_permission(request, 'create'):
+            raise InsuffcientPermissions(self.model, 'create')
         opts = self.model._meta
         form_class = self.get_create_form(request)
         if request.method == 'POST':
@@ -75,7 +91,7 @@ class CommisView(CommisViewBase):
             'form': form,
             'action': 'create',
             'block_title': opts.verbose_name.capitalize(),
-            'block_nav': self.block_nav(),
+            'block_nav': self.block_nav(request),
         })
 
     def show(self, request, name):
@@ -86,7 +102,7 @@ class CommisView(CommisViewBase):
             'obj': obj,
             'action': 'show',
             'block_title': u'%s %s'%(opts.verbose_name.capitalize(), obj),
-            'block_nav': self.block_nav(obj),
+            'block_nav': self.block_nav(request, obj),
         })
 
     def edit(self, request, name):
@@ -107,7 +123,7 @@ class CommisView(CommisViewBase):
             'form': form,
             'action': 'edit',
             'block_title': u'%s %s'%(opts.verbose_name.capitalize(), obj),
-            'block_nav': self.block_nav(obj),
+            'block_nav': self.block_nav(request, obj),
         })
 
     def delete(self, request, name):
@@ -125,7 +141,7 @@ class CommisView(CommisViewBase):
             'obj': obj,
             'action': 'delete',
             'block_title': u'%s %s'%(opts.verbose_name.capitalize(), obj),
-            'block_nav': self.block_nav(obj),
+            'block_nav': self.block_nav(request, obj),
             'deleted_objects': deleted_objects,
             'perms_lacking': perms_needed,
             'protected': protected,

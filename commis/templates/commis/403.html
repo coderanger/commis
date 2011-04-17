@@ -1,0 +1,12 @@
+{% extends "commis/block.html" %}
+{% load i18n %}
+
+{% block block_title %}{% trans 'Insuffcient Permissions' %}{% endblock %}
+
+{% block block_nav_outer %}{% endblock %}
+
+{% block block_content %}
+{% blocktrans %}
+You do not have the required permissions to access this page.
+{% endblocktrans %}
+{% endblock %}
