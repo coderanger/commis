@@ -1,5 +1,7 @@
+from django.template.response import TemplateResponse
+
 from commis import conf
-from commis.clients.forms import ClientForm
+from commis.clients.forms import ClientForm, ClientEditForm
 from commis.clients.models import Client
 from commis.exceptions import ChefAPIError
 from commis.generic_views import CommisAPIView, api, CommisView
@@ -17,3 +19,17 @@ class ClientAPIView(CommisAPIView):
 class ClientView(CommisView):
     model = Client
     form = ClientForm
+    edit_form = ClientEditForm
+
+    def change_redirect(self, request, action, obj):
+        if not obj.key.public:
+            # Rekey occured
+            opts = self.model._meta
+            return TemplateResponse(request, 'commis/%s/show.html'%self.get_app_label(), {
+                'opts': opts,
+                'obj': obj,
+                'action': 'show',
+                'block_title': u'%s %s'%(opts.verbose_name.capitalize(), obj),
+                'block_nav': self.block_nav(obj),
+            })
+        return super(ClientView, self).change_redirect(request, action, obj)

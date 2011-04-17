@@ -10,4 +10,19 @@
   False
   {% endif %}
 </div>
+
+<div class="left">
+  <h3>{% trans 'Public Key' %}</h3>
+  <pre>{{ obj.key.public_export }}</pre>
+</div>
+
+{% if not obj.key.public %}
+<div class="left">
+  <h3>{% trans 'Private Key' %}</h3>
+  {% blocktrans %}
+  Please copy and save as the client's key (e.g. client.pem). It will not be shown again.
+  {% endblocktrans %}
+  <pre>{{ obj.key.private_export }}</pre>
+</div>
+{% endif %}
 {% endblock %}
