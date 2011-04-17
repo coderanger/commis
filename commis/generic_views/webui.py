@@ -81,7 +81,7 @@ class CommisView(CommisViewBase):
             form = form_class(request.POST)
             if form.is_valid():
                 form.save()
-                messages.success(request, 'Created %s %s'%(opts.verbose_name, form.cleaned_data[self.search_key]))
+                messages.success(request, _('Created %(verbose_name)s %(object)s')%{'verbose_name':opts.verbose_name, 'object':form.cleaned_data[self.search_key]})
                 return self.change_redirect(request, 'create', form.instance)
         else:
             form = form_class()
@@ -117,7 +117,7 @@ class CommisView(CommisViewBase):
             form = form_class(request.POST, instance=obj)
             if form.is_valid():
                 form.save()
-                messages.success(request, 'Edited %s %s'%(opts.verbose_name, form.cleaned_data[self.search_key]))
+                messages.success(request, _('Edited %(verbose_name)s %(object)s')%{'verbose_name':opts.verbose_name, 'object':form.cleaned_data[self.search_key]})
                 return self.change_redirect(request, 'edit', obj)
         else:
             form = form_class(instance=obj)
