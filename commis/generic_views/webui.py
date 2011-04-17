@@ -43,6 +43,10 @@ class CommisViewBase(CommisGenericViewBase):
         permission = '%s.%s_%s'%(self.get_app_label(), django_action, self.get_model_name().lower())
         return request.user.has_perm(permission)
 
+    def assert_permission(self, request, action, obj=None):
+        if not self.has_permission(request, action, obj):
+            raise InsuffcientPermissions(self.model, action)
+
     def block_nav(self, request, obj=None):
         data = {
             'name': self.model and self.model.__name__.lower() or self.get_app_label(),
@@ -63,8 +67,7 @@ class CommisViewBase(CommisGenericViewBase):
 class CommisView(CommisViewBase):
     def list(self, request):
         opts = self.model._meta
-        if not self.has_permission(request, 'list'):
-            raise InsuffcientPermissions(self.model, 'list')
+        self.assert_permission(request, 'list')
         return TemplateResponse(request, ('commis/%s/list.html'%self.get_app_label(), 'commis/generic/list.html'), {
             'opts': opts,
             'object_list': [(obj, self.block_nav(request, obj)) for obj in self.model.objects.all()],
@@ -75,8 +78,7 @@ class CommisView(CommisViewBase):
 
     def create(self, request):
         opts = self.model._meta
-        if not self.has_permission(request, 'create'):
-            raise InsuffcientPermissions(self.model, 'create')
+        self.assert_permission(request, 'create')
         form_class = self.get_create_form(request)
         if request.method == 'POST':
             form = form_class(request.POST)
@@ -98,8 +100,7 @@ class CommisView(CommisViewBase):
     def show(self, request, name):
         opts = self.model._meta
         obj = self.get_object(request, name)
-        if not self.has_permission(request, 'show', obj):
-            raise InsuffcientPermissions(self.model, 'show')
+        self.assert_permission(request, 'show', obj)
         return TemplateResponse(request, ('commis/%s/show.html'%self.get_app_label(), 'commis/generic/show.html'), {
             'opts': opts,
             'obj': obj,
@@ -111,8 +112,7 @@ class CommisView(CommisViewBase):
     def edit(self, request, name):
         opts = self.model._meta
         obj = self.get_object(request, name)
-        if not self.has_permission(request, 'edit', obj):
-            raise InsuffcientPermissions(self.model, 'edit')
+        self.assert_permission(request, 'edit', obj)
         form_class = self.get_edit_form(request)
         if request.method == 'POST':
             form = form_class(request.POST, instance=obj)
@@ -134,8 +134,7 @@ class CommisView(CommisViewBase):
     def delete(self, request, name):
         opts = self.model._meta
         obj = self.get_object(request, name)
-        if not self.has_permission(request, 'delete', obj):
-            raise InsuffcientPermissions(self.model, 'delete')
+        self.assert_permission(request, 'delete', obj)
         deleted_objects, perms_needed, protected = get_deleted_objects(obj, request)
         if request.POST: # The user has already confirmed the deletion.
             if perms_needed:
