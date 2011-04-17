@@ -12,15 +12,17 @@ from commis.utils.deleted_objects import get_deleted_objects
 
 class CommisViewBase(CommisGenericViewBase):
     form = None
+    create_form = None
+    edit_form = None
     search_key = 'name'
 
     def get_create_form(self, request):
-        if hasattr(self, 'create_form'):
+        if self.create_form is not None:
             return self.create_form
         return self.form
 
     def get_edit_form(self, request):
-        if hasattr(self, 'edit_form'):
+        if self.edit_form is not None:
             return self.edit_form
         return self.form
 
