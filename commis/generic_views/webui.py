@@ -101,7 +101,7 @@ class CommisView(CommisViewBase):
         opts = self.model._meta
         obj = self.get_object(request, name)
         self.assert_permission(request, 'show', obj)
-        return TemplateResponse(request, ('commis/%s/show.html'%self.get_app_label(), 'commis/generic/show.html'), {
+        return TemplateResponse(request, 'commis/%s/show.html'%self.get_app_label(), {
             'opts': opts,
             'obj': obj,
             'action': 'show',
