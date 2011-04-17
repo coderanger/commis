@@ -31,8 +31,8 @@ class CommisViewBase(CommisGenericViewBase):
         return get_object_or_404(self.model, **{self.search_key: name})
 
     def has_permission(self, request, action, obj=None):
-        if action == 'list':
-            # I don't, yet, have an actual Django permission for list
+        if action == 'list' or action == 'show':
+            # I don't, yet, have an actual Django permission for list or show
             return request.user.is_authenticated()
         django_action = {
             'create': 'add',
@@ -60,6 +60,8 @@ class CommisViewBase(CommisGenericViewBase):
 
 class CommisView(CommisViewBase):
     def list(self, request):
+        if not self.has_permission(request, 'list'):
+            raise InsuffcientPermissions(self.model, 'list')
         opts = self.model._meta
         return TemplateResponse(request, ('commis/%s/list.html'%self.get_app_label(), 'commis/generic/list.html'), {
             'opts': opts,
@@ -95,6 +97,8 @@ class CommisView(CommisViewBase):
         })
 
     def show(self, request, name):
+        if not self.has_permission(request, 'show'):
+            raise InsuffcientPermissions(self.model, 'show')
         opts = self.model._meta
         obj = self.get_object(request, name)
         return TemplateResponse(request, ('commis/%s/show.html'%self.get_app_label(), 'commis/generic/show.html'), {
@@ -106,6 +110,8 @@ class CommisView(CommisViewBase):
         })
 
     def edit(self, request, name):
+        if not self.has_permission(request, 'edit'):
+            raise InsuffcientPermissions(self.model, 'edit')
         opts = self.model._meta
         obj = self.get_object(request, name)
         form_class = self.get_edit_form(request)
@@ -127,6 +133,8 @@ class CommisView(CommisViewBase):
         })
 
     def delete(self, request, name):
+        if not self.has_permission(request, 'delete'):
+            raise InsuffcientPermissions(self.model, 'delete')
         opts = self.model._meta
         obj = self.get_object(request, name)
         deleted_objects, perms_needed, protected = get_deleted_objects(obj, request)
