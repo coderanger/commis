@@ -154,7 +154,10 @@ class CommisView(CommisViewBase):
         })
 
     def change_redirect(self, request, action, obj):
-        return HttpResponseRedirect(reverse('commis_webui_%s_list'%self.get_app_label()))
+        if self.has_permission(request, 'show', obj):
+            return HttpResponseRedirect(reverse('commis_webui_%s_show'%self.get_app_label(), args=(obj,)))
+        else:
+            return HttpResponseRedirect(reverse('commis_webui_%s_list'%self.get_app_label()))
 
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url
