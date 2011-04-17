@@ -5,11 +5,11 @@
 {% block block_title %}{{ block_title }}{% endblock %}
 
 {% block block_nav %}
-<li class="first{% if action == 'list' %} active{% endif %}"><a href="{{ block_nav.index }}">List</a></li>
-<li {% if action == 'create' %}class="active"{% endif %}><a href="{{ block_nav.create }}">Create</a></li>
+<li class="first{% if action == 'list' %} active{% endif %}"><a href="{{ block_nav.index }}">{% trans 'List' %}</a></li>
+<li {% if action == 'create' %}class="active"{% endif %}><a href="{{ block_nav.create }}">{% trans 'Create' %}</a></li>
 {% if action != 'list' and action != 'create' %}
-<li {% if action == 'show' %}class="active"{% endif %}><a href="{{ block_nav.show }}">Show</a></li>
-<li {% if action == 'edit' %}class="active"{% endif %}><a href="{{ block_nav.edit }}">Edit</a></li>
-<li {% if action == 'delete' %}class="active"{% endif %}><a href="{{ block_nav.delete }}">Delete</a></li>
+<li {% if action == 'show' %}class="active"{% endif %}><a href="{{ block_nav.show }}">{% trans 'Show' %}</a></li>
+<li {% if action == 'edit' %}class="active"{% endif %}><a href="{{ block_nav.edit }}">{% trans 'Edit' %}</a></li>
+<li {% if action == 'delete' %}class="active"{% endif %}><a href="{{ block_nav.delete }}">{% trans 'Delete' %}</a></li>
 {% endif %}
 {% endblock %}
