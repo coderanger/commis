@@ -1,10 +1,10 @@
+from django.conf.urls.defaults import patterns, url
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
-from django.utils.functional import update_wrapper
 from django.utils.translation import ugettext as _
 
 from commis.exceptions import InsuffcientPermissions
@@ -160,28 +160,21 @@ class CommisView(CommisViewBase):
             return HttpResponseRedirect(reverse('commis_webui_%s_list'%self.get_app_label()))
 
     def get_urls(self):
-        from django.conf.urls.defaults import patterns, url
-
-        def wrap(view):
-            def wrapper(*args, **kwargs):
-                return view(*args, **kwargs)
-            return update_wrapper(wrapper, view)
-
         urlpatterns = patterns('',
             url(r'^$',
-                wrap(self.list),
+                self.list,
                 name='commis_webui_%s_list' % self.get_app_label()),
             url(r'^new/$',
-                wrap(self.create),
+                self.create,
                 name='commis_webui_%s_create' % self.get_app_label()),
             url(r'^(?P<name>[^/]+)/delete/$',
-                wrap(self.delete),
+                self.delete,
                 name='commis_webui_%s_delete' % self.get_app_label()),
             url(r'^(?P<name>[^/]+)/edit/$',
-                wrap(self.edit),
+                self.edit,
                 name='commis_webui_%s_edit' % self.get_app_label()),
             url(r'^(?P<name>[^/]+)/$',
-                wrap(self.show),
+                self.show,
                 name='commis_webui_%s_show' % self.get_app_label()),
         )
         return urlpatterns
