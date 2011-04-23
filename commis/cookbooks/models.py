@@ -106,6 +106,12 @@ class Cookbook(models.Model):
             data[file.type].append(file.to_dict(request))
         return data
 
+    def parts(self):
+        for type, label in CookbookFile.TYPES:
+            qs = self.files.filter(type=type).order_by('name')
+            if qs:
+                yield type, label(len(qs)), qs
+
 
 class CookbookFile(models.Model):
     class Meta:
