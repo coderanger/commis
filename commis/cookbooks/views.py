@@ -64,7 +64,7 @@ class CookbookView(CommisViewBase):
             qs = qs.filter(name=name)
         cookbooks = {}
         for obj in qs:
-            cookbooks.setdefault(obj.name, []).append((obj, self.block_nav(obj)))
+            cookbooks.setdefault(obj.name, []).append((obj, self.block_nav(request, obj)))
         for name, cookbook_list in cookbooks.iteritems():
             cookbook_list.sort(key=lambda x: parse_version(x[0].version), reverse=True)
         cookbooks = sorted(cookbooks.iteritems())
