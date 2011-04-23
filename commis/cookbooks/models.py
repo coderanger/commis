@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ungettext_lazy
 
 from commis.exceptions import ChefAPIError
 from commis.sandboxes.models import SandboxFile
@@ -112,18 +112,18 @@ class CookbookFile(models.Model):
         verbose_name = _('cookbook file')
         verbose_name_plural = _('cookbook files')
     TYPES = (
-        ('definitions', _('Definition')),
-        ('attributes', _('Attribute')),
-        ('files', _('File')),
-        ('libraries', _('Library')),
-        ('templates', _('Template')),
-        ('providers', _('Provider')),
-        ('resources', _('Resource')),
-        ('recipes', _('Recipe')),
-        ('root_files', _('Root File')),
+        ('definitions', lambda n: ungettext_lazy('Definition', 'Definitions', n)),
+        ('attributes', lambda n: ungettext_lazy('Attribute', 'Attributes', n)),
+        ('files', lambda n: ungettext_lazy('File', 'Files', n)),
+        ('libraries', lambda n: ungettext_lazy('Library', 'Libraries', n)),
+        ('templates', lambda n: ungettext_lazy('Template', 'Templates', n)),
+        ('providers', lambda n: ungettext_lazy('Provider', 'Providers', n)),
+        ('resources', lambda n: ungettext_lazy('Resource', 'Resources', n)),
+        ('recipes', lambda n: ungettext_lazy('Recipe', 'Recipes', n)),
+        ('root_files', lambda n: ungettext_lazy('Root File', 'Root Files', n)),
     )
     cookbook = models.ForeignKey(Cookbook, related_name='files')
-    type = models.CharField(max_length=32, choices=TYPES)
+    type = models.CharField(max_length=32, choices=[(k, v(1)) for k, v in TYPES])
     name = models.CharField(max_length=1024)
     file = models.ForeignKey(SandboxFile, related_name='cookbook_files')
     path = models.CharField(max_length=1024)
