@@ -5,17 +5,15 @@
 {% block block_content %}
 <table class="table">
   <tr>
+    {% block list_header %}
     <th class="first" colspan="2">{% trans 'Name' %}</th>
     <th>&nbsp;</th>
     <th class="last">&nbsp;</th>
+    {% endblock %}
   </tr>
-  {% if not object_list %}
-  <tr><td colspan="4">
-    {% blocktrans with verbose_name_plural=opts.verbose_name_plural %}No {{ verbose_name_plural }} found.{% endblocktrans %}
-  </td></tr>
-  {% endif %}
   {% for obj, links in object_list %}
   <tr class="{% cycle 'odd' 'even' %}">
+    {% block list_row %}
     <td colspan="2">
       {% if links.show %}
       <a href="{{ links.show }}">{{ obj }}</a>
@@ -28,6 +26,15 @@
       {% if links.edit and links.delete %}|{% endif %}
       {% if links.delete %}<a href="{{ links.delete }}">{% trans 'Delete' %}</a>{% endif %}
     </td>
+    {% endblock %}
+  </tr>
+  {% empty %}
+  <tr>
+    {% block list_empty %}
+    <td colspan="4">
+    {% blocktrans with verbose_name_plural=opts.verbose_name_plural %}No {{ verbose_name_plural }} found.{% endblocktrans %}
+    </td>
+    {% endblock %}
   </tr>
   {% endfor %}
 </table>
