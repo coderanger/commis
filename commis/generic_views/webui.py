@@ -47,20 +47,23 @@ class CommisViewBase(CommisGenericViewBase):
         if not self.has_permission(request, action, obj):
             raise InsuffcientPermissions(self.model, action)
 
+    def reverse(self, request, action, *args):
+        return reverse('commis_webui_%s_%s'%(self.get_app_label(), action), args=args)
+
     def block_nav(self, request, obj=None):
         data = {
             'name': self.model and self.model.__name__.lower() or self.get_app_label(),
-            'list': reverse('commis_webui_%s_list'%self.get_app_label()),
+            'list': self.reverse(request, 'list'),
         }
         if self.has_permission(request, 'create'):
-            data['create'] = reverse('commis_webui_%s_create'%self.get_app_label())
+            data['create'] = self.reverse(request, 'create')
         if obj is not None:
             if self.has_permission(request, 'show', obj):
-                data['show'] = reverse('commis_webui_%s_show'%self.get_app_label(), args=(obj,))
+                data['show'] = self.reverse(request, 'show', obj)
             if self.has_permission(request, 'edit', obj):
-                data['edit'] = reverse('commis_webui_%s_edit'%self.get_app_label(), args=(obj,))
+                data['edit'] = self.reverse(request, 'edit', obj)
             if self.has_permission(request, 'delete', obj):
-                data['delete'] = reverse('commis_webui_%s_delete'%self.get_app_label(), args=(obj,))
+                data['delete'] = self.reverse(request, 'delete', obj)
         return data
 
 
