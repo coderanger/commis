@@ -5,6 +5,7 @@ from django_extensions.db.fields import UUIDField, CreationDateTimeField
 
 from commis import conf
 from commis.clients.models import Client
+from commis.sandboxes.exceptions import SandboxConflict
 
 class Sandbox(models.Model):
     uuid = UUIDField()
