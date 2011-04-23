@@ -1,0 +1,24 @@
+{% extends "commis/generic/base.html" %}
+{% load url from future %}
+{% load i18n %}
+
+{% block block_title %}{{ obj.name }} {{ obj.version }}{% endblock %}
+{# add in a list of versions to jump between them with the viewed version bold #}
+
+{% block block_content %}
+<div class="accordion">
+{% for type, label, qs in obj.parts %}
+{% if qs %}
+<h4 class="head" id="{{ type }}"><a href="#{{ type }}">{{ label }}</a></h4>
+<div class="files">
+{% for cookbook_file in qs %}
+<div class="head" id="{{ cookbook_file.file.checksum }}"><a href="#{{ cookbook_file.file.checksum }}">{{ cookbook_file.name }}</a></div>
+<pre>
+{{ cookbook_file.file.content }}
+</pre>
+{% endfor %}
+</div>
+{% endif %}
+{% endfor %}
+</div>
+{% endblock %}
