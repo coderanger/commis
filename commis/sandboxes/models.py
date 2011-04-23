@@ -41,6 +41,12 @@ class SandboxFile(models.Model):
     def path(self):
         return os.path.join(conf.COMMIS_FILE_ROOT, self.checksum[0], self.checksum[1], self.checksum)
 
+    @property
+    def content(self):
+        if not self.uploaded:
+            raise ValueError('File not uploaded')
+        return open(self.path, 'rb').read()
+
     def pending_path(self, sandbox):
         return os.path.join(conf.COMMIS_FILE_ROOT, 'pending', sandbox.uuid, self.checksum[0], self.checksum[1], self.checksum)
 

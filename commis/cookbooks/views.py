@@ -45,7 +45,7 @@ class CookbookAPIView(CommisAPIView):
         if not qs:
             raise ChefAPIError(404, 'File not found')
         cookbook_file = qs[0]
-        response = HttpResponse(open(cookbook_file.file.path, 'rb').read(), content_type=cookbook_file.file.content_type)
+        response = HttpResponse(cookbook_file.file.content, content_type=cookbook_file.file.content_type)
         return response
 
 
