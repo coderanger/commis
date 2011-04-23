@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import patterns, url
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from pkg_resources import parse_version
 
@@ -56,6 +57,12 @@ class CookbookView(CommisViewBase):
             return False
         return super(CookbookView, self).has_permission(request, action, obj)
 
+    def reverse(self, request, action, *args):
+        if action == 'show':
+            obj = args[0]
+            args = obj.name, obj.version
+        return super(CookbookView, self).reverse(request, action, *args)
+
     def list(self, request, name=None):
         opts = self.model._meta
         self.assert_permission(request, 'list')
@@ -78,7 +85,7 @@ class CookbookView(CommisViewBase):
 
     def show(self, request, name, version):
         opts = self.model._meta
-        obj = self.get_object(request, name)
+        obj = get_object_or_404(self.model, name=name, version=version)
         self.assert_permission(request, 'show', obj)
         return TemplateResponse(request, 'commis/%s/show.html'%self.get_app_label(), {
             'opts': opts,
