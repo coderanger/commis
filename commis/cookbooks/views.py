@@ -1,7 +1,10 @@
+from django.conf.urls.defaults import patterns, url
 from django.http import HttpResponse
+from django.template.response import TemplateResponse
+from pkg_resources import parse_version
 
 from commis.exceptions import ChefAPIError
-from commis.generic_views import CommisAPIView, api, CommisView
+from commis.generic_views import CommisAPIView, api, CommisViewBase
 from commis.cookbooks.models import Cookbook, CookbookFile
 
 class CookbookAPIView(CommisAPIView):
@@ -45,5 +48,56 @@ class CookbookAPIView(CommisAPIView):
         return response
 
 
-class CookbookView(CommisView):
+class CookbookView(CommisViewBase):
     model = Cookbook
+
+    def has_permission(self, request, action, obj=None):
+        if action != 'list' and action != 'show':
+            return False
+        return super(CookbookView, self).has_permission(request, action, obj)
+
+    def list(self, request, name=None):
+        opts = self.model._meta
+        self.assert_permission(request, 'list')
+        qs = self.model.objects.all()
+        if name:
+            qs = qs.filter(name=name)
+        cookbooks = {}
+        for obj in qs:
+            cookbooks.setdefault(obj.name, []).append((obj, self.block_nav(obj)))
+        for name, cookbook_list in cookbooks.iteritems():
+            cookbook_list.sort(key=lambda x: parse_version(x[0].version), reverse=True)
+        cookbooks = sorted(cookbooks.iteritems())
+        return TemplateResponse(request, 'commis/%s/list.html'%self.get_app_label(), {
+            'opts': opts,
+            'object_list': cookbooks,
+            'action': 'list',
+            'block_title': opts.verbose_name_plural.capitalize(),
+            'block_nav': self.block_nav(request),
+        })
+
+    def show(self, request, name, version):
+        opts = self.model._meta
+        obj = self.get_object(request, name)
+        self.assert_permission(request, 'show', obj)
+        return TemplateResponse(request, 'commis/%s/show.html'%self.get_app_label(), {
+            'opts': opts,
+            'obj': obj,
+            'action': 'show',
+            'block_title': u'%s %s'%(opts.verbose_name.capitalize(), obj),
+            'block_nav': self.block_nav(request, obj),
+        })
+
+    def get_urls(self):
+        urlpatterns = patterns('',
+            url(r'^$',
+                self.list,
+                name='commis_webui_%s_list' % self.get_app_label()),
+            url(r'^(?P<name>[^/]+)/$',
+                self.list,
+                name='commis_webui_%s_list_single' % self.get_app_label()),
+            url(r'^(?P<name>[^/]+)/(?P<version>[^/]+)/$',
+                self.show,
+                name='commis_webui_%s_show' % self.get_app_label()),
+        )
+        return urlpatterns

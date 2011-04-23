@@ -1,0 +1,35 @@
+{% extends "commis/generic/list.html" %}
+{% load url from future %}
+{% load i18n %}
+
+{% block list_header %}
+<th class="first" colspan="2">{% trans 'Name' %}</th>
+<th>{% trans 'Latest Version' %}</th>
+<th class="last">{% trans 'Other Versions' %}</th>
+{% endblock %}
+
+{% block list_row %}
+{% with cookbook_name=obj cookbook_list=links %}
+<td colspan="2">
+  <a href="{% url 'commis_webui_cookbooks_list_single' cookbook_name %}">{{ cookbook_name }}</a>
+</td>
+<td>
+  {% with cookbook=cookbook_list.0.0 links=cookbook_list.0.1 %}
+  {% if links.show %}
+  <a href="{{ links.show }}">{{ cookbook.version }}</a>
+  {% else %}
+  {{ cookbook.version }}
+  {% endif %}
+  {% endwith %}
+</td>
+<td>
+  {% for cookbook, links in cookbook_list|slice:"1:" %}
+  {% if links.show %}
+  <a href="{{ links.show }}">{{ cookbook.version }}</a>
+  {% else %}
+  {{ cookbook.version }}
+  {% endif %}
+  {% endfor %}
+</td>
+{% endwith %}
+{% endblock %}
