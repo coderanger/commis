@@ -1,5 +1,6 @@
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 from commis.exceptions import ChefAPIError
 from commis.sandboxes.models import SandboxFile
@@ -53,6 +54,9 @@ class CookbookManager(models.Manager):
 
 
 class Cookbook(models.Model):
+    class Meta:
+        verbose_name = _('cookbook')
+        verbose_name_plural = _('cookbooks')
     name = models.CharField(max_length=1024)
     version = models.CharField(max_length=1024)
     maintainer = models.CharField(max_length=1024, blank=True)
@@ -104,16 +108,19 @@ class Cookbook(models.Model):
 
 
 class CookbookFile(models.Model):
+    class Meta:
+        verbose_name = _('cookbook file')
+        verbose_name_plural = _('cookbook files')
     TYPES = (
-        ('definitions', 'Definition'),
-        ('attributes', 'Attribute'),
-        ('files', 'File'),
-        ('libraries', 'Library'),
-        ('templates', 'Template'),
-        ('providers', 'Provider'),
-        ('resources', 'Resource'),
-        ('recipes', 'Recipe'),
-        ('root_files', 'Root File'),
+        ('definitions', _('Definition')),
+        ('attributes', _('Attribute')),
+        ('files', _('File')),
+        ('libraries', _('Library')),
+        ('templates', _('Template')),
+        ('providers', _('Provider')),
+        ('resources', _('Resource')),
+        ('recipes', _('Recipe')),
+        ('root_files', _('Root File')),
     )
     cookbook = models.ForeignKey(Cookbook, related_name='files')
     type = models.CharField(max_length=32, choices=TYPES)
@@ -135,11 +142,17 @@ class CookbookFile(models.Model):
 
 
 class CookbookDependency(models.Model):
+    class Meta:
+        verbose_name = _('cookbook dependency')
+        verbose_name_plural = _('cookbook dependencies')
     cookbook = models.ForeignKey(Cookbook, related_name='dependencies')
     name = models.CharField(max_length=1024)
 
 
 class CookbookRecipe(models.Model):
+    class Meta:
+        verbose_name = _('cookbook recipe')
+        verbose_name_plural = _('cookbook recipes')
     cookbook = models.ForeignKey(Cookbook, related_name='recipes')
     name = models.CharField(max_length=1024)
     description = models.TextField(blank=True)
