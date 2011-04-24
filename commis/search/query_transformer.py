@@ -12,6 +12,9 @@ DEFAULT_INDEXES = {
 def transform_query(query_text):
     if query_text == '*:*':
          return query_text
+    if ':' not in query_text:
+        # Use simple query mode
+        query_text = ' AND '.join('%s:*'%field for field in query_text.split())
     query = expression.parseString(query_text, parseAll=True)
     return _transform(query[0])
 
