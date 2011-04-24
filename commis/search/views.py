@@ -41,9 +41,8 @@ class SearchView(CommisViewBase):
     app_label = 'search'
 
     def search(self, request):
-        form = SearchForm(request.GET)
         return TemplateResponse(request, 'commis/search/search.html', {
-            'form': form,
+            'form': SearchForm(request.GET),
         })
 
     def get_urls(self):
