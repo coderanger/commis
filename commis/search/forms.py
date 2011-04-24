@@ -37,9 +37,7 @@ class SearchForm(forms.Form):
         return self.is_valid() and self.cleaned_data['q']
 
     def _run_search(self):
-        print '%r %r'%(self.cleaned_data['index'], self.cleaned_data['q'])
         if self._sqs is None and self.is_searchable():
-            print 'RUNNING SEARCH'
             self._sqs = execute_query(self.cleaned_data['index'], self.cleaned_data['q'])
 
     @property
