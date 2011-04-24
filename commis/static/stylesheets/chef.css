@@ -342,3 +342,7 @@ tbody.cookbook_versions td {
 #cbVerAddRow td {
     background: #c1c8d2;
 }
+
+form#search {
+  margin-bottom: 10px;
+}

@@ -7,7 +7,7 @@
 {% block block_nav_outer %}{% endblock %}
 
 {% block block_content %}
-<form method="get">
+<form id="search" method="get">
   {% if not form.is_valid %}
   <div class="errors">
   {{ form.index.errors }}
