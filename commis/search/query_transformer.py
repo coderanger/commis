@@ -2,13 +2,21 @@ from haystack.query import SearchQuerySet, SQ
 
 from commis.nodes.models import Node
 from commis.data_bags.models import DataBagItem
+from commis.search.exceptions import InvalidSearchQuery
 from commis.search.query_parser import expression
 
 DEFAULT_INDEXES = {
     'node': Node,
 }
 
-def transform_query(index, query_text):
+def transform_query(query_text):
+    if query_text == '*:*':
+         return query_text
+    query = expression.parseString(query_text, parseAll=True)
+    return _transform(query[0])
+
+
+def execute_query(index, query_text):
     qs = SearchQuerySet().order_by('id_order')
     model = DEFAULT_INDEXES.get(index)
     if model is None:
@@ -18,8 +26,7 @@ def transform_query(index, query_text):
     if query_text == '*:*':
         # Shortcut for all models, this could even skip haystack entirely.
         return qs
-    query = expression.parseString(query_text, parseAll=True)
-    return qs.filter(_transform(query[0]))
+    return qs.filter(query_text)
 
 
 def _transform(query):
@@ -46,4 +53,4 @@ def _transform(query):
         return ~ _transform(query[1])
     if len(query) == 1:
         return _transform(query[0])
-    raise Exception
+    raise InvalidSearchQuery

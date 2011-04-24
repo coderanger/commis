@@ -1,0 +1,27 @@
+{% extends "commis/block.html" %}
+{% load url from future %}
+{% load i18n commis commis_status %}
+
+{% block block_title %}{% trans 'Search' %}{% endblock %}
+
+{% block block_nav_outer %}{% endblock %}
+
+{% block block_content %}
+<form method="get">
+  {% if not form.is_valid %}
+  <div class="errors">
+  {{ form.index.errors }}
+  {{ form.q.errors }}
+  </div>
+  {% endif %}
+  {{ form.index }}
+  {{ form.q }}
+  <input type="submit" value="{% trans 'Search' %}" />
+</form>
+{% if form.results %}
+Found {{ form.results.count }} matches
+{% for row in form.results %}
+{{ row.object.name }}
+{% endfor %}
+{% endif %}
+{% endblock %}
