@@ -42,7 +42,7 @@ class SearchView(CommisViewBase):
 
     def search(self, request):
         return TemplateResponse(request, 'commis/search/search.html', {
-            'form': SearchForm(request.GET),
+            'form': SearchForm(request.GET, size=70),
         })
 
     def get_urls(self):

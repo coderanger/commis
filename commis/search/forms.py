@@ -9,6 +9,7 @@ class SearchForm(forms.Form):
     q = forms.CharField(required=False)
 
     def __init__(self, *args, **kwargs):
+        size = kwargs.pop('size', 0)
         super(SearchForm, self).__init__(*args, **kwargs)
         indexes = {}
         for name, model in DEFAULT_INDEXES.iteritems():
@@ -17,6 +18,11 @@ class SearchForm(forms.Form):
             if name not in indexes:
                 indexes[name] = name.capitalize()
         self.fields['index'].choices = sorted(indexes.iteritems())
+        # If the query is too big to see, scale up to field (capped at 150)
+        if len(self.data['q']) > size - 10:
+            size = min(len(self.data['q']) + 20, 150)
+        if size:
+            self.fields['q'].widget.attrs['size'] = size
         self._sqs = None
 
     def clean_q(self):
