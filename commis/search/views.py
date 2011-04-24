@@ -7,7 +7,7 @@ from commis.data_bags.models import DataBag
 from commis.generic_views import CommisAPIViewBase, api, CommisViewBase
 from commis.exceptions import ChefAPIError
 from commis.search.forms import SearchForm
-from commis.search.query_transformer import transform_query, DEFAULT_INDEXES
+from commis.search.query_transformer import DEFAULT_INDEXES
 
 class SearchAPIView(CommisAPIViewBase):
     app_label = 'search'
@@ -21,14 +21,17 @@ class SearchAPIView(CommisAPIViewBase):
 
     @api('GET')
     def get(self, request, name):
-        if name not in DEFAULT_INDEXES and not DataBag.objects.filter(name=name).exists():
-            raise ChefAPIError(404, 'Index %s not found', name)
-        sqs = transform_query(name, request.GET.get('q', '*:*'))
+        args = {'index': name, 'q': request.GET.get('q', '*:*')}
+        form = SearchForm(args)
+        if not form.is_searchable():
+            if form['index'].errors:
+                raise ChefAPIError(404, 'Index %s not found', name)
+            raise ChefAPIError(500, 'Invalid search')
         rows = int(request.GET.get('rows', 20))
         start = int(request.GET.get('start', 0))
-        rows = [result.object for result in sqs[start:start+rows]]
+        rows = [result.object for result in form.results[start:start+rows]]
         return {
-            'total': sqs.count(),
+            'total': form.results.count(),
             'start': start,
             'rows': rows,
         }
