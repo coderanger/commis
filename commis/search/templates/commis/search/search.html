@@ -18,10 +18,28 @@
   {{ form.q }}
   <input type="submit" value="{% trans 'Search' %}" />
 </form>
-{% if form.results %}
-Found {{ form.results.count }} matches
-{% for row in form.results %}
-{{ row.object.name }}
-{% endfor %}
+{% if form.is_searchable %}
+<table class="table">
+  <tr>
+    <th class="first">{% trans 'Name' %}</th>
+    <th>&nbsp;</th>
+    <th class="last">&nbsp;</th>
+  </tr>
+  {% for row in form.results %}
+  {% with obj=row.object %}
+  <tr class="{% cycle 'odd' 'even' %}">
+    <td>{{ obj }}</td>
+    <td></td>
+    <td></td>
+  </tr>
+  {% endwith %}
+  {% empty %}
+  <tr>
+    <td colspan="3">
+    {% blocktrans %}No results found.{% endblocktrans %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
 {% endif %}
 {% endblock %}
