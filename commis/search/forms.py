@@ -23,7 +23,7 @@ class SearchForm(forms.Form):
         if self.cleaned_data['q']:
             # No query isn't error, but just pass through
             try:
-                self.cleaned_data['q'] = transform_query(self.cleaned_data['q'])
+                self.cleaned_data['q'], self.cleaned_data['q_fields'] = transform_query(self.cleaned_data['q'])
             except Exception:
                 raise forms.ValidationError(_('Invalid query'))
         return self.cleaned_data['q']
