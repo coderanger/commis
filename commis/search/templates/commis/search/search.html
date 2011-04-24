@@ -1,6 +1,6 @@
 {% extends "commis/block.html" %}
 {% load url from future %}
-{% load i18n commis commis_status %}
+{% load i18n commis commis_search %}
 
 {% block block_title %}{% trans 'Search' %}{% endblock %}
 
@@ -22,20 +22,22 @@
 <table class="table">
   <tr>
     <th class="first">{% trans 'Name' %}</th>
-    <th>&nbsp;</th>
-    <th class="last">&nbsp;</th>
+    {% for field in form.cleaned_data.q_fields %}
+    <th>{{ field }}</th>
+    {% endfor %}
   </tr>
   {% for row in form.results %}
   {% with obj=row.object %}
   <tr class="{% cycle 'odd' 'even' %}">
-    <td>{{ obj }}</td>
-    <td></td>
-    <td></td>
+    <td><a href="{{ obj.get_absolute_url }}">{{ obj }}</a></td>
+    {% for field in form.cleaned_data.q_fields %}
+    <td>{{ row|commis_search_row_get:field|join:" " }}</td>
+    {% endfor %}
   </tr>
   {% endwith %}
   {% empty %}
   <tr>
-    <td colspan="3">
+    <td colspan="{{ form.cleaned_data.q_fields|length|add:1 }}">
     {% blocktrans %}No results found.{% endblocktrans %}
     </td>
   </tr>
