@@ -21,7 +21,7 @@
 {% if form.is_searchable %}
 <table class="table">
   <tr>
-    <th class="first">{% trans 'Name' %}</th>
+    <th>{% trans 'Name' %}</th>
     {% for field in form.cleaned_data.q_fields %}
     <th>{{ field }}</th>
     {% endfor %}
