@@ -1,4 +1,5 @@
 import chef
+from django.core.urlresolvers import reverse
 from django.db import models
 
 from commis.roles.models import Role
@@ -35,6 +36,9 @@ class Node(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('commis_webui_nodes_show', args=(self,))
 
     @property
     def automatic(self):
