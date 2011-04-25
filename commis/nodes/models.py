@@ -74,7 +74,14 @@ class Node(models.Model):
         return chef_node
 
     def to_search(self):
-        return deep_merge(self.automatic, self.override, self.normal, self.default)
+        data = deep_merge(self.automatic, self.override, self.normal, self.default)
+        data['name'] = self.name
+        data['chef_type'] = 'node'
+        run_list = list(self.run_list.all().order_by('id'))
+        data['recipe'] = [entry.name for entry in run_list if entry.type == 'recipe']
+        data['role'] = [entry.name for entry in run_list if entry.type == 'role']
+        data['run_list'] = [entry.name for entry in run_list]
+        return data
 
     def expand_run_list(self):
         recipes = []
