@@ -6,6 +6,13 @@ from django.conf.urls.defaults import patterns, url
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
 from django.utils.translation import ugettext as _
+try:
+    import json
+except ImportError:
+    try:
+        import simplejson as json
+    except ImportError:
+        import django.utils.simplejson as json
 
 from commis.data_bags.models import DataBag
 from commis.generic_views import CommisAPIViewBase, api, CommisViewBase
@@ -56,7 +63,13 @@ class SearchView(CommisViewBase):
                     writer.writerow([unicode(row['obj'])] + row['data'])
                 return HttpResponse(outf.getvalue(), mimetype='text/plain')
             elif format == 'json':
-                pass
+                json_data = []
+                for row in form.table:
+                    json_row = {_('name'): unicode(row['obj'])}
+                    for field, value in itertools.izip(form.table_header, row['data']):
+                        json_row[field] = value
+                    json_data.append(json_row)
+                return HttpResponse(json.dumps(json_data), mimetype='application/json')
         return TemplateResponse(request, 'commis/search/search.html', {
             'form': form,
         })
