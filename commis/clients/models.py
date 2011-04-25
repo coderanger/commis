@@ -1,6 +1,7 @@
 import chef
 from chef.rsa import Key
 from django.db import models
+from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from commis import conf
@@ -22,6 +23,9 @@ class Client(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('commis_webui_clients_show', args=(self,))
 
     @property
     def key(self):
@@ -46,3 +50,6 @@ class Client(models.Model):
         client.admin = self.admin
         client.public_key = self.key_pem
         return client.to_dict()
+
+    def to_search(self):
+        return self.to_dict()

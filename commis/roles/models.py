@@ -1,4 +1,5 @@
 import chef
+from django.core.urlresolvers import reverse
 from django.db import models
 
 from commis.utils import json
@@ -32,6 +33,9 @@ class Role(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('commis_webui_roles_show', args=(self,))
+
     @property
     def override(self):
         if not self.override_data:
@@ -51,6 +55,9 @@ class Role(models.Model):
         chef_role.default_attributes = self.default
         chef_role.override_attributes = self.override
         return chef_role
+
+    def to_search(self):
+        return self.to_dict()
 
     def expand_run_list(self):
         recipes = []

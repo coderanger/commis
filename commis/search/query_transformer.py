@@ -1,12 +1,16 @@
 from haystack.query import SearchQuerySet, SQ
 
-from commis.nodes.models import Node
+from commis.clients.models import Client
 from commis.data_bags.models import DataBagItem
+from commis.nodes.models import Node
+from commis.roles.models import Role
 from commis.search.exceptions import InvalidSearchQuery
 from commis.search.query_parser import expression
 
 DEFAULT_INDEXES = {
+    'client': Client,
     'node': Node,
+    'role': Role,
 }
 
 def transform_query(query_text):
