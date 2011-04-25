@@ -20,7 +20,7 @@ class SearchForm(forms.Form):
                 indexes[name] = name.capitalize()
         self.fields['index'].choices = sorted(indexes.iteritems())
         # If the query is too big to see, scale up to field (capped at 150)
-        if len(self.data['q']) > size - 10:
+        if 'q' in self.data and len(self.data['q']) > size - 10:
             size = min(len(self.data['q']) + 20, 150)
         if size:
             self.fields['q'].widget.attrs['size'] = size
