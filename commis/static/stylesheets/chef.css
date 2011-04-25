@@ -343,6 +343,10 @@ tbody.cookbook_versions td {
     background: #c1c8d2;
 }
 
-form#search {
+form#search, #search_formats {
   margin-bottom: 10px;
+}
+
+#search_formats {
+  float: right;
 }

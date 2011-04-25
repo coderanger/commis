@@ -7,6 +7,13 @@
 {% block block_nav_outer %}{% endblock %}
 
 {% block block_content %}
+{% if form.is_searchable %}
+<div id="search_formats">
+  {% trans 'Other formats' %}:
+  <a href="{{ request.get_full_path }}&format=csv">{% trans 'CSV' %}</a>
+  <a href="{{ request.get_full_path }}&format=json">{% trans 'JSON' %}</a>
+</div>
+{% endif %}
 <form id="search" method="get">
   {% if not form.is_valid %}
   <div class="errors">

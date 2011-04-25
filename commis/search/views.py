@@ -1,7 +1,11 @@
+import csv
 import itertools
+from StringIO import StringIO
 
 from django.conf.urls.defaults import patterns, url
+from django.http import HttpResponse
 from django.template.response import TemplateResponse
+from django.utils.translation import ugettext as _
 
 from commis.data_bags.models import DataBag
 from commis.generic_views import CommisAPIViewBase, api, CommisViewBase
@@ -41,8 +45,20 @@ class SearchView(CommisViewBase):
     app_label = 'search'
 
     def search(self, request):
+        form = SearchForm(request.GET, size=70)
+        format = request.GET.get('format')
+        if format and form.is_searchable():
+            if format == 'csv':
+                outf = StringIO()
+                writer = csv.writer(outf)
+                writer.writerow([_('name')] + form.table_header)
+                for row in form.table:
+                    writer.writerow([unicode(row['obj'])] + row['data'])
+                return HttpResponse(outf.getvalue(), mimetype='text/plain')
+            elif format == 'json':
+                pass
         return TemplateResponse(request, 'commis/search/search.html', {
-            'form': SearchForm(request.GET, size=70),
+            'form': form,
         })
 
     def get_urls(self):
