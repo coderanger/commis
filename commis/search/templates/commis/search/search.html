@@ -22,19 +22,17 @@
 <table class="table">
   <tr>
     <th>{% trans 'Name' %}</th>
-    {% for field in form.cleaned_data.q_fields %}
+    {% for field in form.table_header %}
     <th>{{ field }}</th>
     {% endfor %}
   </tr>
-  {% for row in form.results %}
-  {% with obj=row.object %}
+  {% for row in form.table %}
   <tr class="{% cycle 'odd' 'even' %}">
-    <td><a href="{{ obj.get_absolute_url }}">{{ obj }}</a></td>
-    {% for field in form.cleaned_data.q_fields %}
-    <td>{{ row|commis_search_row_get:field|join:" " }}</td>
+    <td><a href="{{ row.url }}">{{ row.obj }}</a></td>
+    {% for field in row.data %}
+    <td>{{ field }}</td>
     {% endfor %}
   </tr>
-  {% endwith %}
   {% empty %}
   <tr>
     <td colspan="{{ form.cleaned_data.q_fields|length|add:1 }}">

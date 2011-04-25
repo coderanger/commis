@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from commis.data_bags.models import DataBag
 from commis.search.query_transformer import transform_query, execute_query, DEFAULT_INDEXES
+from commis.utils.dict import flatten_dict
 
 class SearchForm(forms.Form):
     index = forms.ChoiceField(choices=(), required=False)
@@ -50,3 +51,20 @@ class SearchForm(forms.Form):
     def results(self):
         self._run_search()
         return self._sqs
+
+    @property
+    def table_header(self):
+        return self.cleaned_data['q_fields']
+
+    @property
+    def table(self):
+        for row in self.results:
+            table_row = {
+                'obj': row.object,
+                'url': row.object.get_absolute_url(),
+                'data': [],
+            }
+            data = flatten_dict(row.object.to_search())
+            for name in self.cleaned_data['q_fields']:
+                table_row['data'].append(' '.join(data.get(name, ())))
+            yield table_row
