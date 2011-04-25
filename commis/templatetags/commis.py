@@ -5,6 +5,7 @@ from django import template
 from django.core.urlresolvers import reverse
 from django.utils.encoding import force_unicode
 
+from commis.search.forms import SearchForm
 from commis.utils.deleted_objects import get_deleted_objects
 
 register = template.Library()
@@ -71,3 +72,8 @@ def commis_run_list_class(entry):
 @register.simple_tag()
 def commis_run_list_name(entry):
     return entry.split('[', 1)[1].rstrip(']')
+
+
+@register.inclusion_tag('commis/_header_search.html', takes_context=True)
+def commis_header_search(context):
+    return {'form': SearchForm(size=20)}

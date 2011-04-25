@@ -350,3 +350,8 @@ form#search, #search_formats {
 #search_formats {
   float: right;
 }
+
+#header_search {
+  float: right;
+  margin: 7px 5px 0 0;
+}

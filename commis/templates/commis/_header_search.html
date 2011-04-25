@@ -1,0 +1,7 @@
+{% load url from future %}
+{% load i18n %}
+<form id="header_search" method="get" action="{% url 'commis_webui_search' %}">
+  {{ form.index }}
+  {{ form.q }}
+  <input type="submit" value="{% trans 'Search' %}" />
+</form>

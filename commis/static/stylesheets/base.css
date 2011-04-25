@@ -133,7 +133,7 @@ body {
 }
 
 #user-navigation ul li {
-  padding: 60px 10px;
+  padding: 60px 10px 0 10px;
 }
 
 #main-navigation ul li a:link, #main-navigation ul li a:visited, #main-navigation ul li a:hover, #main-navigation ul li a:active,
