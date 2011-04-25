@@ -66,5 +66,6 @@ class SearchForm(forms.Form):
             }
             data = flatten_dict(row.object.to_search())
             for name in self.cleaned_data['q_fields']:
-                table_row['data'].append(' '.join(data.get(name, ())))
+                values = [unicode(v) for v in data.get(name, ())]
+                table_row['data'].append(' '.join(values))
             yield table_row
