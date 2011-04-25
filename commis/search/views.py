@@ -51,25 +51,33 @@ class SearchAPIView(CommisAPIViewBase):
 class SearchView(CommisViewBase):
     app_label = 'search'
 
+    def csv_format(self, request, form):
+        outf = StringIO()
+        writer = csv.writer(outf)
+        writer.writerow([_('name')] + form.table_header)
+        for row in form.table:
+            writer.writerow([unicode(row['obj'])] + row['data'])
+        return HttpResponse(outf.getvalue(), mimetype='text/plain')
+
+    def json_format(self, request, form):
+        json_data = []
+        for row in form.table:
+            json_row = {_('name'): unicode(row['obj'])}
+            for field, value in itertools.izip(form.table_header, row['data']):
+                json_row[field] = value
+            json_data.append(json_row)
+        return HttpResponse(json.dumps(json_data), mimetype='application/json')
+
     def search(self, request):
         form = SearchForm(request.GET, size=70)
         format = request.GET.get('format')
         if format and form.is_searchable():
-            if format == 'csv':
-                outf = StringIO()
-                writer = csv.writer(outf)
-                writer.writerow([_('name')] + form.table_header)
-                for row in form.table:
-                    writer.writerow([unicode(row['obj'])] + row['data'])
-                return HttpResponse(outf.getvalue(), mimetype='text/plain')
-            elif format == 'json':
-                json_data = []
-                for row in form.table:
-                    json_row = {_('name'): unicode(row['obj'])}
-                    for field, value in itertools.izip(form.table_header, row['data']):
-                        json_row[field] = value
-                    json_data.append(json_row)
-                return HttpResponse(json.dumps(json_data), mimetype='application/json')
+            format_cb = {
+                'csv': self.csv_format,
+                'json': self.json_format,
+            }.get(format)
+            if format_cb:
+                return format_cb(request, form)
         return TemplateResponse(request, 'commis/search/search.html', {
             'form': form,
         })
