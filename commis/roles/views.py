@@ -1,4 +1,5 @@
 from commis.generic_views import CommisAPIView, CommisView
+from commis.roles.forms import RoleForm
 from commis.roles.models import Role
 
 class RoleAPIView(CommisAPIView):
@@ -6,3 +7,4 @@ class RoleAPIView(CommisAPIView):
 
 class RoleView(CommisView):
     model = Role
+    form = RoleForm

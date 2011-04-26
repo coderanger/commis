@@ -47,9 +47,20 @@ $(document).ready(function(){
   $('a#debugFormBuild').click(function(event) {buildHiddenFormFromDragDrop(event)});
 
 
-  $('form.roleForm').submit(function(event) {
-    buildHiddenFormFromDragDrop($(this), $('ul.runListItemList'));
-    buildHiddenFormFromJSONEditor($(this));
+  $('form.#create_role, form#edit_role').submit(function(event) {
+    //buildHiddenFormFromDragDrop($(this), $('ul.runListItemList'));
+    //buildHiddenFormFromJSONEditor($(this));
+    var form = $(this);
+    var to_role = $('ul#for_role').sortable('toArray');
+    //if (form.attr('id') == 'edit_node') {
+    //  form.append('<input type="hidden" name="_method" value="put">');
+    //}
+    //form.append($('input#node_name')).css('display', 'none');
+    //form.append('<input type="hidden" id="attributes" name="attributes"/>');
+    //$('input#attributes').attr('value', BCJTEP.save());
+    jQuery.each(to_role, function(i, field) {
+      form.append('<input type="hidden" name="run_list" value="' + field + '"/>');
+    });
   });
 
   $('form#edit_environment, form#create_environment').submit(function(event) {

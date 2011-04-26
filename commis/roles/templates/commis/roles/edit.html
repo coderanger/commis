@@ -1,0 +1,15 @@
+{% extends "commis/generic/edit.html" %}
+{% load i18n %}
+
+{% block edit_content %}
+    <div>{{ form.description.label_tag }}</div>
+    {% if form.description.errors %}
+    <p>{{ form.description.errors }}</p>
+    {% endif %}
+    {{ form.description }}
+
+    {% if form.run_list.errors %}
+    <p>{{ form.run_list.errors }}</p>
+    {% endif %}
+    {{ form.run_list }}
+{% endblock %}
