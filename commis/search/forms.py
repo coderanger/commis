@@ -58,6 +58,7 @@ class SearchForm(forms.Form):
 
     @property
     def table(self):
+        header = self.table_header
         for row in self.results:
             table_row = {
                 'obj': row.object,
@@ -65,7 +66,7 @@ class SearchForm(forms.Form):
                 'data': [],
             }
             data = flatten_dict(row.object.to_search())
-            for name in self.cleaned_data['q_fields']:
+            for name in header:
                 values = [unicode(v) for v in data.get(name, ())]
                 table_row['data'].append(' '.join(values))
             yield table_row

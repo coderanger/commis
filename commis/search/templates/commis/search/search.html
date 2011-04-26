@@ -42,7 +42,7 @@
   </tr>
   {% empty %}
   <tr>
-    <td colspan="{{ form.cleaned_data.q_fields|length|add:1 }}">
+    <td colspan="{{ form.table_header|length|add:1 }}">
     {% blocktrans %}No results found.{% endblocktrans %}
     </td>
   </tr>
