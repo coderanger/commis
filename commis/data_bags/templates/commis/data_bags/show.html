@@ -1,0 +1,8 @@
+{% extends 'commis/generic/show.html' %}
+{% load i18n commis %}
+
+{% block block_content %}
+<div class="accordion">
+  {% commis_json 'attrs' obj.object %}
+</div>
+{% endblock %}
