@@ -29,8 +29,17 @@ class DataBagItem(models.Model):
     def __unicode__(self):
         return self.name
 
+    @property
+    def object(self):
+        if self.data:
+            return json.loads(self.data)
+        return {}
+
     def to_search(self):
-        return json.loads(self.data)
+        data = self.object
+        data['chef_type'] = 'data_bag_item'
+        data['data_bag'] = self.bag.name
+        return data
 
     def to_dict(self):
         return {
