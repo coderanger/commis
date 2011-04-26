@@ -1,0 +1,76 @@
+{% extends 'commis/generic/show.html' %}
+{% load i18n commis %}
+
+{% block block_content %}
+<div class="left">
+  <h3>{% trans 'Description' %}</h3>
+  {{ obj.description }}
+</div>
+<div class="left">
+  <h3>{% trans 'Run List' %}</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th class="first">{% trans 'Position' %}</th>
+        <th>{% trans 'Name' %}</th>
+        <th>{% trans 'Version' %}</th>
+        <th class="last">{% trans 'Type' %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in obj.run_list.all %}
+      <tr>
+        <td class="position">{{ forloop.counter }}</td>
+        <td>{{ entry.name }}</td>
+        <td></td>
+        <td>{{ entry.type }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4">{% trans 'This node has no roles or recipes applied.' %}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="left accordion">
+  <h3 class="head"><a href="#">{% trans 'Recipes' %}</a></h3>
+  <div>
+    <span class="description form help">{% blocktrans %}This is the list of recipes, fully expanded, as they will be applied by the role in question.{% endblocktrans %}</span>
+    <table id="recipes" class="table">
+      <thead>
+        <tr>
+          <th class="first">{% trans 'Position' %}</th>
+          <th>{% trans 'Name' %}</th>
+          <th class="last">{% trans 'Version' %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in obj.expand_run_list %}
+          <tr>
+            <td class="position">{{ forloop.counter }}</td>
+            <td>{{ entry }}</td>
+            <td></td>
+          </tr>
+        {% empty %}
+        <tr><td colspan="3">{% blocktrans %}This role has no recipes.{% endblocktrans %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% with data=obj.default %}
+{% if data %}
+<div class="left">
+  <h3 class="head"><a href="#">{% trans 'Default Attributes' %}</a></h3>
+  {% commis_json 'defattrs' data %}
+</div>
+{% endif %}
+{% endwith %}
+{% with data=obj.override %}
+{% if data %}
+<div class="left">
+  <h3 class="head"><a href="#">{% trans 'Override Attributes' %}</a></h3>
+  {% commis_json 'overattrs' data %}
+</div>
+{% endif %}
+{% endwith %}
+{% endblock %}
