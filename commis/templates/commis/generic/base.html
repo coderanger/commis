@@ -5,19 +5,7 @@
 {% block block_title %}{{ block_title }}{% endblock %}
 
 {% block block_nav %}
-{% if block_nav.list %}
-<li class="first{% if action == 'list' %} active{% endif %}"><a href="{{ block_nav.list }}">{% trans 'List' %}</a></li>
-{% endif %}
-{% if block_nav.create %}
-<li {% if action == 'create' %}class="active"{% endif %}><a href="{{ block_nav.create }}">{% trans 'Create' %}</a></li>
-{% endif %}
-{% if block_nav.show %}
-<li {% if action == 'show' %}class="active"{% endif %}><a href="{{ block_nav.show }}">{% trans 'Show' %}</a></li>
-{% endif %}
-{% if block_nav.edit %}
-<li {% if action == 'edit' %}class="active"{% endif %}><a href="{{ block_nav.edit }}">{% trans 'Edit' %}</a></li>
-{% endif %}
-{% if block_nav.delete %}
-<li {% if action == 'delete' %}class="active"{% endif %}><a href="{{ block_nav.delete }}">{% trans 'Delete' %}</a></li>
-{% endif %}
+{% for nav_action, nav in block_nav.iteritems %}
+<li class="{% if forloop.first %}first{% endif %}{% if action == nav_action %} active{% endif %}"><a href="{{ nav.link }}">{{ nav.label}}</a></li>
+{% endfor %}
 {% endblock %}

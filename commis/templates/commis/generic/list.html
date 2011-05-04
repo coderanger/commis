@@ -16,15 +16,15 @@
     {% block list_row %}
     <td colspan="2">
       {% if links.show %}
-      <a href="{{ links.show }}">{{ obj }}</a>
+      <a href="{{ links.show.link }}">{{ obj }}</a>
       {% else %}
       {{ obj }}
       {% endif %}
     </td>
     <td>
-      {% if links.edit %}<a href="{{ links.edit }}">{% trans 'Edit' %}</a>{% endif %}
+      {% if links.edit %}<a href="{{ links.edit.link }}">{% trans 'Edit' %}</a>{% endif %}
       {% if links.edit and links.delete %}|{% endif %}
-      {% if links.delete %}<a href="{{ links.delete }}">{% trans 'Delete' %}</a>{% endif %}
+      {% if links.delete %}<a href="{{ links.delete.link }}">{% trans 'Delete' %}</a>{% endif %}
     </td>
     {% endblock %}
   </tr>

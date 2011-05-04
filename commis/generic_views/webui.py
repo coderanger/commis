@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
+from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext as _
 
 from commis.exceptions import InsuffcientPermissions
@@ -51,19 +52,18 @@ class CommisViewBase(CommisGenericViewBase):
         return reverse('commis_webui_%s_%s'%(self.get_app_label(), action), args=args)
 
     def block_nav(self, request, obj=None):
-        data = {
-            'name': self.model and self.model.__name__.lower() or self.get_app_label(),
-            'list': self.reverse(request, 'list'),
-        }
+        data = SortedDict()
+        data.name = self.model and self.model.__name__.lower() or self.get_app_label()
+        data['list'] = {'label': _('Link'), 'link': self.reverse(request, 'list')}
         if self.has_permission(request, 'create'):
-            data['create'] = self.reverse(request, 'create')
+            data['create'] = {'label': _('Create'), 'link': self.reverse(request, 'create')}
         if obj is not None:
             if self.has_permission(request, 'show', obj):
-                data['show'] = self.reverse(request, 'show', obj)
+                data['show'] = {'label': _('Show'), 'link': self.reverse(request, 'show', obj)}
             if self.has_permission(request, 'edit', obj):
-                data['edit'] = self.reverse(request, 'edit', obj)
+                data['edit'] = {'label': _('Edit'), 'link': self.reverse(request, 'edit', obj)}
             if self.has_permission(request, 'delete', obj):
-                data['delete'] = self.reverse(request, 'delete', obj)
+                data['delete'] = {'label': _('Delete'), 'link': self.reverse(request, 'delete', obj)}
         return data
 
 
