@@ -54,7 +54,7 @@ class CommisViewBase(CommisGenericViewBase):
     def block_nav(self, request, obj=None):
         data = SortedDict()
         data.name = self.model and self.model.__name__.lower() or self.get_app_label()
-        data['list'] = {'label': _('Link'), 'link': self.reverse(request, 'list')}
+        data['list'] = {'label': _('List'), 'link': self.reverse(request, 'list')}
         if self.has_permission(request, 'create'):
             data['create'] = {'label': _('Create'), 'link': self.reverse(request, 'create')}
         if obj is not None:
