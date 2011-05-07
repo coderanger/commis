@@ -163,7 +163,7 @@ class CommisView(CommisViewBase):
             return HttpResponseRedirect(reverse('commis_webui_%s_list'%self.get_app_label()))
 
     def get_urls(self):
-        urlpatterns = patterns('',
+        return patterns('',
             url(r'^$',
                 self.list,
                 name='commis_webui_%s_list' % self.get_app_label()),
@@ -180,4 +180,3 @@ class CommisView(CommisViewBase):
                 self.show,
                 name='commis_webui_%s_show' % self.get_app_label()),
         )
-        return urlpatterns
