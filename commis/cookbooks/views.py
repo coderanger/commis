@@ -79,7 +79,6 @@ class CookbookView(CommisViewBase):
             'opts': opts,
             'object_list': cookbooks,
             'action': 'list',
-            'block_title': opts.verbose_name_plural.capitalize(),
             'block_nav': self.block_nav(request),
         })
 
@@ -91,7 +90,6 @@ class CookbookView(CommisViewBase):
             'opts': opts,
             'obj': obj,
             'action': 'show',
-            'block_title': u'%s %s'%(opts.verbose_name.capitalize(), obj),
             'block_nav': self.block_nav(request, obj),
         })
 

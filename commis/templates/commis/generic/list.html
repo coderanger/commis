@@ -2,6 +2,8 @@
 {% load url from future %}
 {% load i18n %}
 
+{% block block_title %}{{ opts.verbose_name_plural.capitalize }}{% endblock %}
+
 {% block block_content %}
 <table class="table">
   <tr>

@@ -78,7 +78,6 @@ class CommisView(CommisViewBase):
             'opts': opts,
             'object_list': [(obj, self.block_nav(request, obj)) for obj in qs],
             'action': 'list',
-            'block_title': opts.verbose_name_plural.capitalize(),
             'block_nav': self.block_nav(request),
         })
 
@@ -103,7 +102,6 @@ class CommisView(CommisViewBase):
             'obj': self.model(),
             'form': form,
             'action': 'create',
-            'block_title': opts.verbose_name.capitalize(),
             'block_nav': self.block_nav(request),
         })
 
@@ -118,7 +116,6 @@ class CommisView(CommisViewBase):
             'opts': opts,
             'obj': obj,
             'action': 'show',
-            'block_title': u'%s %s'%(opts.verbose_name.capitalize(), obj),
             'block_nav': self.block_nav(request, obj),
         })
 
@@ -144,7 +141,6 @@ class CommisView(CommisViewBase):
             'obj': obj,
             'form': form,
             'action': 'edit',
-            'block_title': u'%s %s'%(opts.verbose_name.capitalize(), obj),
             'block_nav': self.block_nav(request, obj),
         })
 
@@ -163,7 +159,6 @@ class CommisView(CommisViewBase):
             'opts': opts,
             'obj': obj,
             'action': 'delete',
-            'block_title': u'%s %s'%(opts.verbose_name.capitalize(), obj),
             'block_nav': self.block_nav(request, obj),
             'deleted_objects': deleted_objects,
             'perms_lacking': perms_needed,
