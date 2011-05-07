@@ -1,4 +1,6 @@
+from django.conf.urls.defaults import patterns, url
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 
 from commis.exceptions import ChefAPIError
 from commis.generic_views import CommisAPIView, api, CommisView
@@ -56,3 +58,16 @@ class DataBagAPIView(CommisAPIView):
 
 class DataBagView(CommisView):
     model = DataBag
+
+    def show_response(self, request, obj):
+        return self.list_response(request, obj.items.all())
+
+    def show_item(self, request, name, item_name):
+        pass
+
+    def get_urls(self):
+        return super(DataBagView, self).get_urls() + patterns('',
+            url(r'^(?P<name>[^/]+)/(?P<item_name>[^/]+)/$',
+                self.show_item,
+                name='commis_webui_%s_show_item' % self.get_app_label()),
+        )
