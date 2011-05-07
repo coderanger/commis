@@ -69,11 +69,14 @@ class CommisViewBase(CommisGenericViewBase):
 
 class CommisView(CommisViewBase):
     def list(self, request):
-        opts = self.model._meta
         self.assert_permission(request, 'list')
+        return self.list_response(request, self.model.objects.all())
+
+    def list_response(self, request, qs):
+        opts = self.model._meta
         return TemplateResponse(request, ('commis/%s/list.html'%self.get_app_label(), 'commis/generic/list.html'), {
             'opts': opts,
-            'object_list': [(obj, self.block_nav(request, obj)) for obj in self.model.objects.all()],
+            'object_list': [(obj, self.block_nav(request, obj)) for obj in qs],
             'action': 'list',
             'block_title': opts.verbose_name_plural.capitalize(),
             'block_nav': self.block_nav(request),
@@ -91,6 +94,10 @@ class CommisView(CommisViewBase):
                 return self.change_redirect(request, 'create', form.instance)
         else:
             form = form_class()
+        return self.create_response(request, form)
+
+    def create_response(self, request, form):
+        opts = self.model._meta
         return TemplateResponse(request, ('commis/%s/edit.html'%self.get_app_label(), 'commis/generic/edit.html'), {
             'opts': opts,
             'obj': self.model(),
@@ -101,9 +108,12 @@ class CommisView(CommisViewBase):
         })
 
     def show(self, request, name):
-        opts = self.model._meta
         obj = self.get_object(request, name)
         self.assert_permission(request, 'show', obj)
+        return self.show_response(request, obj)
+
+    def show_response(self, request, obj):
+        opts = self.model._meta
         return TemplateResponse(request, 'commis/%s/show.html'%self.get_app_label(), {
             'opts': opts,
             'obj': obj,
@@ -125,6 +135,10 @@ class CommisView(CommisViewBase):
                 return self.change_redirect(request, 'edit', obj)
         else:
             form = form_class(instance=obj)
+        return self.edit_response(request, obj, form)
+
+    def edit_response(self, request, obj, form):
+        opts = self.model._meta
         return TemplateResponse(request, ('commis/%s/edit.html'%self.get_app_label(), 'commis/generic/edit.html'), {
             'opts': opts,
             'obj': obj,
