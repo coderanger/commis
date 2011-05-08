@@ -1,0 +1,9 @@
+{% extends "commis/generic/list.html" %}
+
+{% block block_title %}
+{% if action == 'list' %}
+{{ block.super }}
+{% else %}
+{{ opts.verbose_name.capitalize }} {{ obj }}
+{% endif %}
+{% endblock %}

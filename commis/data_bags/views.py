@@ -60,7 +60,10 @@ class DataBagView(CommisView):
     model = DataBag
 
     def show_response(self, request, obj):
-        return self.list_response(request, obj.items.all())
+        response = self.list_response(request, obj.items.all())
+        response.context_data['obj'] = obj
+        response.context_data['action'] = 'show'
+        return response
 
     def show_item(self, request, name, item_name):
         pass
