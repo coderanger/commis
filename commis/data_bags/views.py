@@ -1,6 +1,5 @@
 from django.conf.urls.defaults import patterns, url
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.http import HttpResponse, Http404
 
 from commis.exceptions import ChefAPIError
 from commis.generic_views import CommisAPIView, api, CommisView
@@ -58,18 +57,39 @@ class DataBagAPIView(CommisAPIView):
 
 class DataBagView(CommisView):
     model = DataBag
+    item_model = DataBagItem
 
     def show_response(self, request, obj):
-        response = self.list_response(request, obj.items.all())
+        response = super(DataBagView, self).list_response(request, obj.items.all())
         response.context_data['obj'] = obj
         response.context_data['action'] = 'show'
         return response
 
     def show_item(self, request, name, item_name):
-        pass
+        bag = self.get_object(request, name)
+        try:
+            item = bag.items.get(name=item_name)
+        except self.item_model.DoesNotExist:
+            raise Http404
+        return super(DataBagView, self).show_response(request, item)
+
+    def reverse(self, request, action, *args):
+        if args and isinstance(args[0], self.item_model):
+            action += '_item'
+            args = args[0].bag.name, args[0].name
+        return super(DataBagView, self).reverse(request, action, *args)
 
     def get_urls(self):
         return super(DataBagView, self).get_urls() + patterns('',
+            url(r'^(?P<name>[^/]+)/new/$',
+                self.show_item,
+                name='commis_webui_%s_create_item' % self.get_app_label()),
+            url(r'^(?P<name>[^/]+)/(?P<item_name>[^/]+)/delete/$',
+                self.show_item,
+                name='commis_webui_%s_delete_item' % self.get_app_label()),
+            url(r'^(?P<name>[^/]+)/(?P<item_name>[^/]+)/edit/$',
+                self.show_item,
+                name='commis_webui_%s_edit_item' % self.get_app_label()),
             url(r'^(?P<name>[^/]+)/(?P<item_name>[^/]+)/$',
                 self.show_item,
                 name='commis_webui_%s_show_item' % self.get_app_label()),
