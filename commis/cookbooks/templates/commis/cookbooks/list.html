@@ -16,7 +16,7 @@
 <td>
   {% with cookbook=cookbook_list.0.0 links=cookbook_list.0.1 %}
   {% if links.show %}
-  <a href="{{ links.show }}">{{ cookbook.version }}</a>
+  <a href="{{ links.show.link }}">{{ cookbook.version }}</a>
   {% else %}
   {{ cookbook.version }}
   {% endif %}
@@ -25,7 +25,7 @@
 <td>
   {% for cookbook, links in cookbook_list|slice:"1:" %}
   {% if links.show %}
-  <a href="{{ links.show }}">{{ cookbook.version }}</a>
+  <a href="{{ links.show.link }}">{{ cookbook.version }}</a>
   {% else %}
   {{ cookbook.version }}
   {% endif %}
