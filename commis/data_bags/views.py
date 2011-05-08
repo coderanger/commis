@@ -98,7 +98,9 @@ class DataBagView(CommisView):
             item = bag.items.get(name=item_name)
         except self.item_model.DoesNotExist:
             raise Http404
-        return super(DataBagView, self).show_response(request, item)
+        response = super(DataBagView, self).show_response(request, item)
+        response.context_data['action'] = 'show_item'
+        return response
 
     def reverse(self, request, action, *args):
         if args and isinstance(args[0], self.item_model):
@@ -110,10 +112,23 @@ class DataBagView(CommisView):
         data = super(DataBagView, self).block_nav(request, obj)
         if obj is not None:
             if isinstance(obj, self.model):
-                if self.has_permission(request, 'create_item', obj):
-                    data.insert(data.keyOrder.index('show'), 'create_item', {'label': _('Create Item'), 'link': self.reverse(request, 'create_item', obj)})
+                bag = obj
+                item = None
             elif isinstance(obj, self.item_model):
-                pass
+                bag = obj.bag
+                item = obj
+            if self.has_permission(request, 'create_item', bag):
+                data.insert(data.keyOrder.index('create')+1, 'create_item', {'label': _('Create Item'), 'link': self.reverse(request, 'create_item', bag)})
+            del data['create']
+            if item is not None:
+                if self.has_permission(request, 'show', bag):
+                    data['list']['link'] = self.reverse(request, 'show', bag)
+                else:
+                    del data['list']
+                
+                #data['show']['label'] = _('Show Bag')
+                #data['show']['link'] = self.reverse(request, 'show', bag)
+                data.insert(data.keyOrder.index('show')+1, 'show_item', {'label': _('Show Item'), 'link': self.reverse(request, 'show', item)})
         return data
 
     def change_redirect(self, request, action, obj):
