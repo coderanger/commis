@@ -4,4 +4,4 @@ PyChef
 django-celery
 django-haystack==1.1.0
 Whoosh==1.7.8
-
+django-extensions==0.6
