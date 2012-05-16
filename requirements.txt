@@ -1,4 +1,6 @@
-Django
+# Needs at least 1.2, only tested on 1.4
+# (coderanger tested on 1.2 mostly.)
+Django>=1.2,<1.5
 South
 PyChef
 django-celery
