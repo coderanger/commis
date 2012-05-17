@@ -12,6 +12,24 @@ class CookbookAPIView(CommisAPIView):
     model = Cookbook
 
     @api('GET')
+    def list(self, request):
+        data = {}
+        # Expected format for Chef 0.10:
+        # {
+        #   'cookbook_name': {
+        #       'versions': [
+        #           {'version': <version_number>, 'url': <url>},
+        #           ...
+        #       ]
+        #   },
+        #   ...
+        # }
+        for obj in self.model.objects.all():
+            url = self.reverse(request, 'get', obj)
+            data[obj.name] = {'versions': [{'version': obj.version, 'url': url}]}
+        return data
+
+    @api('GET')
     def get(self, request, name):
         versions = Cookbook.objects.filter(name=name).values_list('version', flat=True)
         if not versions:
