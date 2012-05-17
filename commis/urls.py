@@ -13,7 +13,7 @@ from commis.users.views import UserView
 
 urlpatterns = patterns('',
     url(r'^api/clients', include(ClientAPIView.as_view())),
-    url(r'^api/cookbooks', include(CookbookAPIView.as_view())),
+    url(r'^api//?cookbooks', include(CookbookAPIView.as_view())),
     url(r'^api/data', include(DataBagAPIView.as_view())),
     url(r'^api/nodes', include(NodeAPIView.as_view())),
     url(r'^api/roles', include(RoleAPIView.as_view())),
