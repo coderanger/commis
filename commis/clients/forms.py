@@ -15,7 +15,11 @@ class ClientForm(forms.ModelForm):
         return ret
 
 class ClientEditForm(ClientForm):
-    rekey = forms.BooleanField(_('Regenerate private key'), help_text=_('Generate a new key for this client. This will invalidate the current key.'))
+    rekey = forms.BooleanField(
+        label=_('Regenerate private key'),
+        required=False,
+        help_text=_('Generate a new key for this client. This will invalidate the current key.')
+    )
 
     def save(self, commit=True):
         if self.cleaned_data['rekey']:
