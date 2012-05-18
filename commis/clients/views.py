@@ -13,7 +13,7 @@ class ClientAPIView(CommisAPIView):
     def create(self, request):
         if not (request.client.admin or request.client.name == conf.COMMIS_VALIDATOR_NAME):
             raise ChefAPIError(403, 'You are not allowed to take this action')
-        super(ClientAPIView, self).create(request)
+        return super(ClientAPIView, self).create(request)
 
 
 class ClientView(CommisView):
