@@ -10,15 +10,18 @@ from commis.sandboxes.views import SandboxAPIView
 from commis.search.views import SearchAPIView, SearchView
 from commis.status.views import StatusView
 from commis.users.views import UserView
+from commis.environments.views import EnvironmentAPIView
+
 
 urlpatterns = patterns('',
     url(r'^api/clients', include(ClientAPIView.as_view())),
-    url(r'^api/cookbooks', include(CookbookAPIView.as_view())),
+    url(r'^api//?cookbooks', include(CookbookAPIView.as_view())),
     url(r'^api/data', include(DataBagAPIView.as_view())),
     url(r'^api/nodes', include(NodeAPIView.as_view())),
     url(r'^api/roles', include(RoleAPIView.as_view())),
     url(r'^api/sandboxes', include(SandboxAPIView.as_view())),
     url(r'^api/search', include(SearchAPIView.as_view())),
+    url(r'^api/environments', include(EnvironmentAPIView.as_view())),
 
     url(r'^clients/', include(ClientView.as_view())),
     url(r'^cookbooks/', include(CookbookView.as_view())),
