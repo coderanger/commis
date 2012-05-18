@@ -13,6 +13,13 @@ class ClientManager(models.Manager):
         client.generate_key()
         return client
 
+    def from_dict(self, data, *args, **kwargs):
+        chef_client = chef.Client.from_search(data)
+        client, created = self.get_or_create(name=chef_client.name)
+        client.generate_key()
+        client.save()
+        client.private_key = client._key_cache.private_export()
+        return client
 
 class Client(models.Model):
     name = models.CharField(_('Name'), unique=True, max_length=1024)
