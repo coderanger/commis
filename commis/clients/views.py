@@ -29,6 +29,6 @@ class ClientView(CommisView):
                 'opts': opts,
                 'obj': obj,
                 'action': 'show',
-                'block_nav': self.block_nav(obj),
+                'block_nav': self.block_nav(request, obj),
             })
         return super(ClientView, self).change_redirect(request, action, obj)
