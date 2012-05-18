@@ -15,6 +15,14 @@ class ClientAPIView(CommisAPIView):
             raise ChefAPIError(403, 'You are not allowed to take this action')
         return super(ClientAPIView, self).create(request)
 
+    def create_data(self, request, obj):
+        data = super(ClientAPIView, self).create_data(request, obj)
+        # Initial creation (via ClientManager.from_dict, which should end up
+        # being called by our parent classes) attaches a temporary .private_key
+        # attribute which we can send back to the Chef client.
+        data['private_key'] = obj.private_key
+        return data
+
 
 class ClientView(CommisView):
     model = Client
