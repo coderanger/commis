@@ -1,5 +1,8 @@
 from __future__ import absolute_import
+
+from functools import partial
 import types
+
 try: #pragma: no cover
     import json
 except ImportError: #pragma: no cover
@@ -37,5 +40,5 @@ class JSONEncoder(DjangoJSONEncoder):
 
 load = json.load
 loads = json.loads
-dump = lambda obj: json.dump(obj, cls=JSONEncoder)
-dumps = lambda obj: json.dumps(obj, cls=JSONEncoder)
+dump = partial(json.dump, cls=JSONEncoder)
+dumps = partial(json.dumps, cls=JSONEncoder)
