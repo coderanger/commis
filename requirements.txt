@@ -1,7 +1,12 @@
-Django
+# Needs at least 1.2, only tested on 1.4
+# (coderanger tested on 1.2 mostly.)
+Django>=1.2,<1.5
 South
 PyChef
 django-celery
 django-haystack==1.1.0
 Whoosh==1.7.8
 django-extensions==0.6
+# Only tested on 1.5.x
+pyparsing>=1.5,<1.6
+# vim:set ft=conf nospell :
