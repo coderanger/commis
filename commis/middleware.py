@@ -23,7 +23,7 @@ class LogOutputMiddleware(object):
                 obj = json.loads(content)
                 # And responses containing a top level traceback key should
                 # also pretty-print that value.
-                traceback = obj.pop('traceback', None)
+                traceback = obj and obj.pop('traceback', None)
                 if traceback is not None:
                     logger.debug(traceback)
                 content = json.dumps(obj, indent=4)
