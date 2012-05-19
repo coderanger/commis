@@ -28,7 +28,7 @@ class NodeAPIView(CommisAPIView):
     def node_delete(self, request, name):
         return super(NodeAPIView, self).delete(request, name)
 
-    @api('GET', '{name}/cookbooks')
+    @api('GET', '{name}/cookbooks', validator=authorize_client)
     def node_cookbooks(self, request, name):
         try:
             node = Node.objects.get(name=name)
