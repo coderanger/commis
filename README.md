@@ -58,3 +58,42 @@ shops with pre-existing Python systems or Python deployment experience.
 Learning Ruby to write Chef manifests is one thing; becoming comfortable
 deploying a complex Ruby web-app is another entirely. With Commis, you might
 not have to.
+
+
+## HOW
+
+Here's how to get started hacking on or evaluating Commis. It assumes you want
+to run off the abovementioned pure-Python default stack; to move away from
+those defaults, you'll just need to install the additional components you want
+and modify `commis/settings.py` appropriately.
+
+On the system acting as Chef Server:
+
+* Clone, download tarball, etc.
+* `pip install -r requirements.txt`
+* `python commis/manage.py syncdb` to impress the SQL schema onto the default
+  SQLite database.
+    * By default, this database lives in `commis/commis.db`. As always, you can
+    change this in `commis/settings.py`.
+    * It will prompt you for a new admin user -- make sure you keep track of
+    this as it's how you will login to the Web UI and manage everything.
+* `python commis/manage.py runserver 0.0.0.0:8000`
+    * Obviously you may alter the port number to taste.
+    * Commis currently runs both the Web UI and the REST API on the same Web
+    worker/port. API requests go to `/api/*` while everything else is assumed
+    to be part of the regular Web app. By contrast, Chef Server runs the API
+    off port 4000 and the Web UI off 4040, by default.
+
+### TK
+
+* Setting up an admin user with `manage.py commis_client <name>` -- or does
+  `syncdb` do that for you now? can't remember.
+* Setting up the validator client/certificate (ditto)
+* Is `manage.py migrate` required? ISTR running it at one point.
+* Configure a knife install on some workstation
+* Upload your cookbooks, if any
+    * Doesn't require a cookbooks repo, AFAICT -- I just manually pointed it at
+    cookbooks in a shared repo.
+* Test by running `chef-client` on a new box:
+    * Set `/etc/chef/client.rb` to use a URI of `http://commis_server:8000/api`
+    - the `/api` is an important distinction from Chef Server!
