@@ -1,3 +1,5 @@
+from functools import wraps
+
 from django.conf.urls.defaults import patterns, url
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
@@ -8,19 +10,29 @@ from commis.exceptions import ChefAPIError
 from commis.generic_views.base import CommisGenericViewBase
 from commis.utils import json, routes
 
-def api(method, url=None, admin=False):
+
+def api(method, url=None, admin=False, validator=None):
     def dec(fn):
+        # Return modified function wrapping fn and possibly doing work before
+        # it runs.
+        @wraps(fn)
+        def inner(*args, **kwargs):
+            if validator is not None:
+                validator(*args, **kwargs)
+            return fn(*args, **kwargs)
+
+        # Decorate returned function with API metadata
         if url is not None:
             realurl = routes.route_from_string(url)
         else:
             realurl = routes.route_from_function(fn)
-        fn._commis_api = {
+        inner._commis_api = {
             'name': fn.__name__,
             'url': realurl,
             'method': method,
             'admin': admin,
         }
-        return fn
+        return inner
     return dec
 
 

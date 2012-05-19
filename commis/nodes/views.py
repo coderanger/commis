@@ -4,31 +4,32 @@ from commis.generic_views import CommisAPIView, api, CommisView
 from commis.nodes.forms import NodeForm
 from commis.nodes.models import Node
 
+
+def authorize_client(self, request, name=None):
+    # Normalize name -- in create hooks it comes from the form, not the URI
+    # path
+    node_name = name or request.json['name']
+    if not request.client.admin and not request.client.name == node_name:
+        raise ChefAPIError(401, 'You are not allowed to take this action')
+
+
 class NodeAPIView(CommisAPIView):
     model = Node
 
-    @api('POST')
+    @api('POST', validator=authorize_client)
     def create(self, request):
-        if not request.client.admin and not request.client.validator:
-            raise ChefAPIError(401, 'You are not allowed to take this action')
         return super(NodeAPIView, self).create(request)
 
-    @api('PUT')
+    @api('PUT', validator=authorize_client)
     def update(self, request, name):
-        if not request.client.admin and not request.client.name == name:
-            raise ChefAPIError(401, 'You are not allowed to take this action')
         return super(NodeAPIView, self).update(request, name)
 
-    @api('DELETE')
+    @api('DELETE', validator=authorize_client)
     def node_delete(self, request, name):
-        if not request.client.admin and not request.client.name == name:
-            raise ChefAPIError(401, 'You are not allowed to take this action')
         return super(NodeAPIView, self).delete(request, name)
 
     @api('GET', '{name}/cookbooks')
     def node_cookbooks(self, request, name):
-        if not request.client.admin and not request.client.name == name:
-            raise ChefAPIError(401, 'You are not allowed to take this action')
         try:
             node = Node.objects.get(name=name)
         except Node.DoesNotExist:
