@@ -121,15 +121,15 @@ the server. Here's a conceptual overview:
     create new node clients on the fly.
 * Thus, the workflow you need looks like this:
     * Ensure an admin client exists, so you can use it to manage the server via
-    `knife`
+    `knife`.
         * Chef is generally oriented around `knife` management -- the Web UI is
         more limited, at least at the moment. Theoretically, a richer Web
         interface could remove any need for a command-line admin client.
     * Ensure a validator client exists and that its private key file is in a
     known location.
     * New Chef-managed systems then obtain a temporary copy of the validator
-    key (e.g. via `scp` or authenticated download) and `chef-client` will use
-    it to create new node clients/keys for themselves.
+    key (e.g. via `scp` or authenticated download) and use it with
+    `chef-client` to create new node clients/keys for themselves.
 
 That's a lot to digest, but hopefully we distilled it enough to be clear.
 Here's the actual steps to take with your new Commis server to get it ready for
