@@ -178,11 +178,61 @@ node clients:
   `knife client list`. It should spit back the two clients you just made,
   `<name>` and `validator`.
 
+### Running cookbooks on your servers
+
+At this point, you've got Commis running and can manage/query it via `knife`.
+The next step is to do actual work: run some cookbooks on a target server/node!
+
+#### Uploading cookbooks
+
+To run cookbooks, you must first get those cookbooks into Commis. `chef-client`
+runs expect to get all their cookbooks/recipes/etc from the server. Get some
+cookbooks, either ones you already have, or quickly whip up a new one. We'll
+use a trivial test cookbook:
+
+    .
+    └── testcookbook
+        └── recipes
+            └── default.rb
+
+where `default.rb` just looks like this:
+
+    log "Hello world!"
+
+Get that `testcookbook` directory onto your `knife` system, enter its parent directory, and execute:
+
+    knife cookbook upload -o . testcookbook
+
+(You could skip the "enter its parent directory" step, and simply point to said parent directory as the arg to the `-o` flag. Your call.)
+
+This should complete successfully, and you can verify it by visiting the Web UI
+and viewing the Cookbooks tab, or running `knife cookbook list`.
+
+#### Executing on a new node
+
+Almost there now. Locate or create a system you're comfortable experimenting
+on. Install Chef there (e.g. `gem install chef`, as above re: your management
+workstation.) Then:
+
+* Copy validation key to that system
+* Create a `client.rb` for `chef-client` to use, pointing at your Commis server
+  and at your validation key (if you didn't put it in `/etc/chef/`).
+    * The server URI should be the same one you used for Knife, i.e. the
+    hostname to the Commis server, plus the port, and `/api`.
+* Execute `chef-client` -- it should create a new node client for itself, named
+  after your system's hostname, then run an empty run list.
+* Verify that it's now listed on the server with `knife node list` back on your
+  workstation, or via the web UI.
+* Update its run list to include `"testcookbook"`, again either via knife
+  (`knife node run_list add <hostname> testcookbook`) or the Web UI's edit
+  form.
+    * If using the Web UI, you can simply drag the "testcookbook" box from the
+    lower left, into the right hand side. Then click "Edit Node" and you're
+    done.
+* Re-run `chef-client` -- it should print out your "Hello world!" log entry.
+
 ### TK
 
-* Upload your cookbooks, if any
-    * Doesn't require a cookbooks repo, AFAICT -- I just manually pointed it at
-    cookbooks in a shared repo.
 * Test by running `chef-client` on a new box:
     * Set `/etc/chef/client.rb` to use a URI of `http://commis_server:8000/api`
     - the `/api` is an important distinction from Chef Server!
