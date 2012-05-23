@@ -131,6 +131,8 @@ the server. Here's a conceptual overview:
     key (e.g. via `scp` or authenticated download) and use it with
     `chef-client` to create new node clients/keys for themselves.
 
+#### Actual client HOWTO
+
 That's a lot to digest, but hopefully we distilled it enough to be clear.
 Here's the actual steps to take with your new Commis server to get it ready for
 node clients:
