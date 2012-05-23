@@ -156,11 +156,11 @@ node clients:
   prompt you for the following:
   * The location of the conf file to generate. Probably safest to use the
   default, `~/.chef/knife.rb`.
-  * The Chef Server URL. This will be the hostname or IP of your chef server,
+  * The Chef Server URL. This will be the hostname or IP of your Commis server,
   plus port 8000, and -- **this is a departure from regular Chef Server** -- a
   trailing `/api`.
-      * For example, if you are using the Commis system, simply enter
-      `http://localhost:8000/api`.
+      * For example, if you are using the Commis system itself as your
+      management host, simply enter `http://localhost:8000/api`.
   * The client name. This is the new admin user you just made above, i.e.
   `<name>`.
   * The validator name. This is `validator`.
