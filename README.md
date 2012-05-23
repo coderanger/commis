@@ -131,7 +131,7 @@ the server. Here's a conceptual overview:
     key (e.g. via `scp` or authenticated download) and use it with
     `chef-client` to create new node clients/keys for themselves.
 
-#### Actual client HOWTO
+#### Actual client/key HOWTO
 
 That's a lot to digest, but hopefully we distilled it enough to be clear.
 Here's the actual steps to take with your new Commis server to get it ready for
@@ -147,12 +147,15 @@ node clients:
 * Make the validator client with `python commis/manage.py commis_client
   --validator`.
     * This generates `validator.pem` in your working directory.
-    * Copy that file somewhere persistent that you will remember; the default
-    location Chef likes you to use is `/etc/chef/`.
+* Copy both `.pem` files somewhere persistent that you will remember, such as
+  `~/.chef/` or `/etc/chef/`.
 * Select a system to use for managing your Commis server via `knife` -- could
   be the Commis server itself, or your local workstation, doesn't matter.
 * On that system, get the `chef` Ruby gem installed (e.g. `gem install chef`)
-  and run `knife configure`. (Note: **not** `knife configure -i` as many
+  and copy down the two `.pem` files you created above (if you selected a
+  different system as the workstation.) A good location may be `~/.chef/` as
+  that's where Knife defaults to storing its config files and so forth.
+* Run `knife configure`. (Note: **not** `knife configure -i` as many
   vanilla tutorials say. We've already generated your client key above.) It'll
   prompt you for the following:
   * The location of the conf file to generate. Probably safest to use the
@@ -166,7 +169,7 @@ node clients:
   `<name>`.
   * The validator name. This is `validator`.
   * The validator key path. Depending on where you moved that to, give the path
-  here.
+  here, e.g. `~/.chef/validator.pem`.
   * A Chef repository path. You can leave this blank for now.
 * Phew! That should have created `~/.chef/knife.rb` (or whatever you told it to
   use) which contains all these answers. Assuming you answered honestly re: the
