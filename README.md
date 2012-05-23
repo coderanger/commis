@@ -138,6 +138,9 @@ Here's the actual steps to take with your new Commis server to get it ready for
 node clients:
 
 * Make an admin client with `python commis/manage.py commis_client <name>`.
+    * Here, and elsewhere, replace `<name>` with your desired client name or
+    username. It could, for example, match your Django-level superuser account
+    name -- but doesn't have to.
     * This will create a file in your working directory named `<name>.pem` --
     this is your private key, so keep it secret!
 * Make the validator client with `python commis/manage.py commis_client
