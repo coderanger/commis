@@ -69,20 +69,28 @@ and modify `commis/settings.py` appropriately.
 
 On the system acting as Chef Server:
 
-* Clone, download tarball, etc.
-* `pip install -r requirements.txt`
-* `python commis/manage.py syncdb` to impress the SQL schema onto the default
-  SQLite database.
-    * By default, this database lives in `commis/commis.db`. As always, you can
-    change this in `commis/settings.py`.
+* Get Commis:
+    * Clone, download tarball, etc.
+* (Optional but strongly recommended) Create a
+  [virtualenv](http://www.virtualenv.org) and activate it.
+* Get dependencies:
+    * `pip install -r requirements.txt`
+* Put Commis on your PYTHONPATH (some settings files need to import
+  `commis.<x>`):
+    * `pip install -e .`
+* Install DB schema:
+    * `python commis/manage.py syncdb`
+    * By default, this creates a SQLite database in `commis/commis.db`. As
+    always, you can change this in `commis/settings.py`.
     * It will prompt you for a new admin user -- make sure you keep track of
     this as it's how you will login to the Web UI and manage everything.
-* `python commis/manage.py runserver 0.0.0.0:8000`
-    * Obviously you may alter the port number to taste.
-    * Commis currently runs both the Web UI and the REST API on the same Web
-    worker/port. API requests go to `/api/*` while everything else is assumed
-    to be part of the regular Web app. By contrast, Chef Server runs the API
-    off port 4000 and the Web UI off 4040, by default.
+* Start it up:
+    * `python commis/manage.py runserver 0.0.0.0:8000`
+        * Obviously you may alter the port number to taste.
+        * Commis currently runs both the Web UI and the REST API on the same
+        Web worker/port. API requests go to `/api/*` while everything else is
+        assumed to be part of the regular Web app. By contrast, Chef Server
+        runs the API off port 4000 and the Web UI off 4040, by default.
 
 ### TK
 
