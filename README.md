@@ -215,10 +215,16 @@ on. Install Chef there (e.g. `gem install chef`, as above re: your management
 workstation.) Then:
 
 * Copy validation key to that system
-* Create a `client.rb` for `chef-client` to use, pointing at your Commis server
-  and at your validation key (if you didn't put it in `/etc/chef/`).
-    * The server URI should be the same one you used for Knife, i.e. the
-    hostname to the Commis server, plus the port, and `/api`.
+* Obtain the necessary parameters to run `chef-client` against your Commis
+  server, which can either be used as CLI flags, or go into a `client.rb`
+  config file:
+  * Path to that validation key you just copied, e.g. `/etc/chef/validator.pem`
+  * Path to desired new client key, e.g. `/etc/chef/<hostname>.pem`.
+    * You'll use this path for both initial & "real" `chef-client` runs -- it
+    will create the file initially, then load + use it in subsequent
+    invocations.
+  * Server URI: same as above for Knife,
+  `http://<commis-server-hostname>:8000/api`.
 * Execute `chef-client` -- it should create a new node client for itself, named
   after your system's hostname, then run an empty run list.
 * Verify that it's now listed on the server with `knife node list` back on your
@@ -229,10 +235,6 @@ workstation.) Then:
     * If using the Web UI, you can simply drag the "testcookbook" box from the
     lower left, into the right hand side. Then click "Edit Node" and you're
     done.
-* Re-run `chef-client` -- it should print out your "Hello world!" log entry.
-
-### TK
-
-* Test by running `chef-client` on a new box:
-    * Set `/etc/chef/client.rb` to use a URI of `http://commis_server:8000/api`
-    - the `/api` is an important distinction from Chef Server!
+* Re-run `chef-client` -- it should print out your "Hello world!" log entry in
+  the middle of its run.
+* If so, you're done! Add more cookbooks, tweak run lists, and go to town.
