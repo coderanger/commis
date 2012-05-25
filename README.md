@@ -217,6 +217,9 @@ Caveats:
   not doing this, as it's bad security practice.
 * Even if your local workstation username is `<username>`, you still have to
   explicitly specify it with `-x`, as `knife` will try to use `root` otherwise.
+* If you're giving a non-human-readable hostname, like an IP address, you can
+  also give `-N <nodename>` to override the Chef-facing name this client will
+  use.
 
 ##### Manual
 
