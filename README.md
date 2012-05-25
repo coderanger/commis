@@ -190,9 +190,39 @@ or running `knife cookbook list`.
 #### Executing on a new node
 
 We're almost done. Locate or create a system you're comfortable experimenting
-on. Install Chef there, then:
+on. There's two ways to update it to run against our Commis server, the
+automatic way and the hard way.
 
-* Copy `validator.pem` to that system.
+#### `knife bootstrap`
+
+The easy way is to simply enter your management workstation's home directory,
+and run:
+
+    knife bootstrap <hostname> -x <username> --sudo
+    
+Use the target's hostname, and your SSH login username used to connect to that
+system. It should connect, ensure Chef is installed, and handle the certificate
+management for you (including copying the validator cert from your
+workstation.)
+
+Caveats:
+
+* Due to a bug in Knife, you have to run this command while inside your home
+  directory, or wherever you created a `.chef` directory containing `knife.rb`.
+  If you run it from your Commis checkout, it will fail.
+  * This is **not** true for other Knife commands like `knife node list` --
+  only `bootstrap` appears to be affected.
+* Depending on your target server's auth settings, you could leave off the `-x
+  <username>` if you have root login enabled. However, we strongly recommend
+  not doing this, as it's bad security practice.
+* Even if your local workstation username is `<username>`, you still have to
+  explicitly specify it with `-x`, as `knife` will try to use `root` otherwise.
+
+##### Manual
+
+This is basically what `knife bootstrap` is doing for you:
+
+* Copy `validator.pem` to the target system.
 * Obtain the necessary parameters to run `chef-client` against your Commis
   server, which can either be used as CLI flags (see `chef-client --help`), or
   go into a `client.rb` config file:
@@ -202,6 +232,9 @@ on. Install Chef there, then:
   `http://<commis-server-hostname>:8000/api`.
 * Execute `chef-client` -- it should create a new node client for itself, named
   after your system's hostname, then run an empty run list.
+
+##### Sanity test and run_list update
+
 * Verify that node creation with `knife node list` on your workstation or on
   the Web UI.
 * Update this node's run list to include `"testcookbook"`, again either via
@@ -209,6 +242,6 @@ on. Install Chef there, then:
   edit form.
     * If using the Web UI, drag the "testcookbook" box from the lower left,
     into the right hand side. Then click "Edit Node" to save, and you're done.
-* Re-run `chef-client` -- it should print out your "Hello world!" log entry in
-  the middle of its run.
+* Run `chef-client` on the target node -- it should print out your "Hello
+  world!" log entry in the middle of its run.
 * If so, you're done! Add more cookbooks, tweak run lists, and go to town.
