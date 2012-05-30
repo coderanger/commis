@@ -52,7 +52,7 @@ class Command(BaseCommand):
                 sys.stderr.write('Error: --validator is mutually exclusive with --admin\n')
                 return 1
             name = conf.COMMIS_VALIDATOR_NAME
-            default_output = 'validator.pem'
+            default_output = 'validation.pem'
         elif args:
             name = args[0]
             default_output = name + '.pem'

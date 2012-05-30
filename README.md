@@ -134,7 +134,7 @@ nodes:
     have to.
     * This creates a file in your working directory named `<name>.pem`.
 * Make the validator client: `python commis/manage.py commis_client
-  --validator`. This generates `validator.pem` in your working directory.
+  --validator`. This generates `validation.pem` in your working directory.
 * Copy both `.pem` files somewhere persistent that you will remember, such as
   `~/.chef/` or `/etc/chef/`.
 * Select a system to use for managing your Commis server via `knife` -- could
@@ -153,7 +153,7 @@ nodes:
   * The client name. This is the admin user you made above, i.e. `<name>`.
   * The validator name. This is `chef-validator` by default.
   * The validator key path. Depending on where you moved that to, give the path
-  here, e.g. `~/.chef/validator.pem`.
+  here, e.g. `~/.chef/validation.pem`.
   * A Chef repository path. Leave this blank.
 * Phew! That should have created e.g. `~/.chef/knife.rb`.
 * Test out `knife`: make sure your runserver is active, and execute `knife
@@ -225,11 +225,11 @@ Caveats:
 
 This is basically what `knife bootstrap` is doing for you:
 
-* Copy `validator.pem` to the target system.
+* Copy `validation.pem` to the target system.
 * Obtain the necessary parameters to run `chef-client` against your Commis
   server, which can either be used as CLI flags (see `chef-client --help`), or
   go into a `client.rb` config file:
-  * Path to `validator.pem`.
+  * Path to `validation.pem`.
   * Path to desired new client key, e.g. `/etc/chef/<hostname>.pem`.
   * Server URI: same as above for Knife,
   `http://<commis-server-hostname>:8000/api`.
