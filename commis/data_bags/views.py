@@ -31,12 +31,13 @@ class DataBagAPIView(CommisAPIView):
 
     @api('POST', admin=True)
     def item_create(self, request, name):
-        if not request.json or 'id' not in request.json:
+        json = request.json.get('raw_data', {})
+        if not json or 'id' not in json:
             raise ChefAPIError(500, 'No item ID specified')
         bag = self.get_or_404(name)
-        if bag.items.filter(name=request.json['id']).exists():
-            raise ChefAPIError(409, 'Data bag item %s::%s already exists', name, request.json['id'])
-        bag.items.create(name=request.json['id'], data=request.raw_post_data)
+        if bag.items.filter(name=json['id']).exists():
+            raise ChefAPIError(409, 'Data bag item %s::%s already exists', name, json['id'])
+        bag.items.create(name=json['id'], data=request.raw_post_data)
         return request.json
 
     @api('GET')
